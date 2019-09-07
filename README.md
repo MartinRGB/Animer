@@ -27,7 +27,7 @@ for a better Android Experience
 
 - Gesture-Driven animation,you can interact with the animation even it is animating(Like iOS's `CADisplayLink` Or Rebound's `SetEndValue`)
 - Package a gesture animator for interactive animation,attach gesture's velocity to animation system,make a flawess experience.
-- Easy2used animation listener for controlling other element when the object is interacting or animating
+- Easy2use animation listener for controlling other element when the object is interacting or animating
 
 **Performance**
 

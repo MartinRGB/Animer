@@ -13,7 +13,7 @@ for a better Android Experience
 
 - Physics animation concept from [Rebound](https://github.com/facebook/rebound) & Android DynamicAnimation
 - LookupTable Interpolation Animator + RK4 Solver + DHO Solver
-- Physics simulation from [Flutter Physics](https://api.flutter.dev/flutter/physics/physics-library.html) & UIKit Dyanmic[https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics]
+- Physics simulation from [Flutter Physics](https://api.flutter.dev/flutter/physics/physics-library.html) & [UIKit Dyanmic](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - Momentum
 
 **Advanced Animation Setting**
@@ -51,4 +51,3 @@ for a better Android Experience
 **Utils**
 
 - AE Plugin for converting curves & revealing codes
-

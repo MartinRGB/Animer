@@ -39,7 +39,7 @@ import com.example.martinrgb.dynamic_scroll.component.DynamicOverScroller;
 
 import java.util.List;
 
-public class SpringScrollView extends FrameLayout {
+public class OverScrollView extends FrameLayout {
   static final int ANIMATED_SCROLL_GAP = 500;
 
   static final float MAX_SCROLL_FACTOR = 0.5f;
@@ -117,15 +117,15 @@ public class SpringScrollView extends FrameLayout {
 
   private SavedState mSavedState;
 
-  public SpringScrollView(Context context) {
+  public OverScrollView(Context context) {
     this(context, null);
   }
 
-  public SpringScrollView(Context context, AttributeSet attrs) {
+  public OverScrollView(Context context, AttributeSet attrs) {
     this(context, attrs, 0); //TODO: com.android.internal.R.attr.scrollViewStyle);
   }
 
-  public SpringScrollView(Context context, AttributeSet attrs, int defStyle) {
+  public OverScrollView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
     initScrollView();
 
@@ -751,7 +751,7 @@ public class SpringScrollView extends FrameLayout {
   @Override
   public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
     super.onInitializeAccessibilityNodeInfo(info);
-    info.setClassName(SpringScrollView.class.getName());
+    info.setClassName(OverScrollView.class.getName());
     if (isEnabled()) {
       final int scrollRange = getScrollRange();
       if (scrollRange > 0) {
@@ -769,7 +769,7 @@ public class SpringScrollView extends FrameLayout {
   @Override
   public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
     super.onInitializeAccessibilityEvent(event);
-    event.setClassName(SpringScrollView.class.getName());
+    event.setClassName(OverScrollView.class.getName());
     final boolean scrollable = getScrollRange() > 0;
     event.setScrollable(scrollable);
     event.setScrollX(getScrollX());

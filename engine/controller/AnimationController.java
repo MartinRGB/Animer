@@ -1,12 +1,15 @@
 //package com.martinrgb.swipeexample.controller;
 
-import android.util.Log;
-
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
+
+import com.martinrgb.swipeexample.converter.DHOConverter;
+import com.martinrgb.swipeexample.converter.OrigamiPOPConverter;
+import com.martinrgb.swipeexample.converter.RK4Converter;
+import com.martinrgb.swipeexample.converter.UIViewSpringConverter;
 
 public class AnimationController {
 
@@ -16,24 +19,27 @@ public class AnimationController {
     private SpringAnimation mSpringAnimation;
     private float mDampingRatio = 0.7f;
     private float mStiffness = 400;
+    private boolean isValueAnimator;
 
     public AnimationController() {
         mTarget = null;
         mProperty = null;
         mPhysicsState = new PhysicsState();
-        setupAnimator(true);
+        isValueAnimator = true;
+        setupAnimator(isValueAnimator);
     }
 
     public <K> AnimationController(K object, FloatPropertyCompat<K> property) {
         mTarget = object;
         mProperty = property;
         mPhysicsState = new PhysicsState();
-        setupAnimator(false);
+        isValueAnimator = false;
+        setupAnimator(isValueAnimator);
     }
 
-    private void setupAnimator(boolean isValueAnimator){
+    private void setupAnimator(boolean isValAnimator){
 
-        mSpringAnimation = (isValueAnimator)? new SpringAnimation(new FloatValueHolder()):new SpringAnimation(mTarget,mProperty,mPhysicsState.getValue());
+        mSpringAnimation = (isValAnimator)? new SpringAnimation(new FloatValueHolder()):new SpringAnimation(mTarget,mProperty,mPhysicsState.getValue());
         mSpringAnimation.setSpring(new SpringForce());
         mSpringAnimation.getSpring().setDampingRatio(mDampingRatio);
         mSpringAnimation.getSpring().setStiffness(mStiffness);
@@ -112,30 +118,35 @@ public class AnimationController {
     public void useAndroidSpring(float stiffness,float dampingratio){
         mStiffness = stiffness;
         mDampingRatio = dampingratio;
+        setupAnimator(isValueAnimator);
     }
 
     public void useRK4Spring(float tension,float friction){
         RK4Converter rk4Converter = new RK4Converter(tension,friction);
         mStiffness = rk4Converter.getStiffness();
         mDampingRatio = rk4Converter.getDampingRatio();
+        setupAnimator(isValueAnimator);
     }
 
     public void useDHOSpring(float stiffness,float damping){
         DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
         mStiffness = dhoConverter.getStiffness();
         mDampingRatio = dhoConverter.getDampingRatio();
+        setupAnimator(isValueAnimator);
     }
 
     public void useOrigamiPOPSpring(float bounciness,float speed){
         OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(bounciness,speed);
         mStiffness = origamiPOPConverter.getStiffness();
         mDampingRatio = origamiPOPConverter.getDampingRatio();
+        setupAnimator(isValueAnimator);
     }
 
     public void useiOSUIViewSpring(float dampingratio,float duration){
         UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
         mStiffness = uiViewSpringConverter.getStiffness();
         mDampingRatio = uiViewSpringConverter.getDampingRatio();
+        setupAnimator(isValueAnimator);
     }
 
     public void useiOSCASpring(float stiffness,float damping){

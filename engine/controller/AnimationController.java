@@ -107,10 +107,50 @@ public class AnimationController {
         mSpringAnimation.animateToFinalPosition(mPhysicsState.getValue());
     }
 
-    public void setSpringProperty(float stiffness,float dampingratio){
+    // ########### Spring Animation Converter ###########
+
+    public void useAndroidSpring(float stiffness,float dampingratio){
         mStiffness = stiffness;
         mDampingRatio = dampingratio;
     }
+
+    public void useRK4Spring(float tension,float friction){
+        RK4Converter rk4Converter = new RK4Converter(tension,friction);
+        mStiffness = rk4Converter.getStiffness();
+        mDampingRatio = rk4Converter.getDampingRatio();
+    }
+
+    public void useDHOSpring(float stiffness,float damping){
+        DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
+        mStiffness = dhoConverter.getStiffness();
+        mDampingRatio = dhoConverter.getDampingRatio();
+    }
+
+    public void useOrigamiPOPSpring(float bounciness,float speed){
+        OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(bounciness,speed);
+        mStiffness = origamiPOPConverter.getStiffness();
+        mDampingRatio = origamiPOPConverter.getDampingRatio();
+    }
+
+    public void useiOSUIViewSpring(float dampingratio,float duration){
+        UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
+        mStiffness = uiViewSpringConverter.getStiffness();
+        mDampingRatio = uiViewSpringConverter.getDampingRatio();
+    }
+
+    public void useiOSCASpring(float stiffness,float damping){
+        useDHOSpring(stiffness,damping);
+    }
+
+    public void useProtopieSpring(float tension,float friction){
+        useRK4Spring(tension,friction);
+    }
+
+    public void usePrincipleSpring(float tension,float friction){
+        useRK4Spring(tension,friction);
+    }
+
+    // ########### Spring Animation Listener ###########
 
     private AnimationListener mListener;
 

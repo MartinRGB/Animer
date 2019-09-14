@@ -1,7 +1,6 @@
-package com.martinrgb.swipeexample.controller;
+package com.martinrgb.animation_engine.controller;
 
 
-import android.animation.ObjectAnimator;
 import android.util.Log;
 
 import androidx.dynamicanimation.animation.DynamicAnimation;
@@ -10,10 +9,10 @@ import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.martinrgb.swipeexample.converter.DHOConverter;
-import com.martinrgb.swipeexample.converter.OrigamiPOPConverter;
-import com.martinrgb.swipeexample.converter.RK4Converter;
-import com.martinrgb.swipeexample.converter.UIViewSpringConverter;
+import com.martinrgb.animation_engine.converter.DHOConverter;
+import com.martinrgb.animation_engine.converter.OrigamiPOPConverter;
+import com.martinrgb.animation_engine.converter.RK4Converter;
+import com.martinrgb.animation_engine.converter.UIViewSpringConverter;
 
 
 

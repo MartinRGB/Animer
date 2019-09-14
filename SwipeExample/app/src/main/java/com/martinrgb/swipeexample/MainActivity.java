@@ -1,7 +1,6 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.dynamicanimation.animation.SpringAnimation;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -13,9 +12,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.martinrgb.swipeexample.controller.AnimationProperty;
-import com.martinrgb.swipeexample.controller.AnimationController;
-import com.martinrgb.swipeexample.controller.AnimatorProperty;
+import com.martinrgb.animation_engine.controller.AnimationProperty;
+import com.martinrgb.animation_engine.controller.AnimationController;
 
 public class MainActivity extends AppCompatActivity {
 

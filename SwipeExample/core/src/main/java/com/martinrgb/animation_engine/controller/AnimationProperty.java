@@ -1,4 +1,4 @@
-package com.martinrgb.swipeexample.controller;
+package com.martinrgb.animation_engine.controller;
 
 import android.view.View;
 
@@ -22,7 +22,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
             return view.getTranslationX();
         }
     };
-    
+
     public static final AnimationProperty TRANSLATION_Y = new AnimationProperty("translationY") {
         @Override
         public void setValue(View view, float value) {

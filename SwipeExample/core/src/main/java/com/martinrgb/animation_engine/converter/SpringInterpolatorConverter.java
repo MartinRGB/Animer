@@ -1,7 +1,5 @@
-package com.martinrgb.swipeexample.converter;
+package com.martinrgb.animation_engine.converter;
 
-
-import android.util.Log;
 
 public class SpringInterpolatorConverter{
 

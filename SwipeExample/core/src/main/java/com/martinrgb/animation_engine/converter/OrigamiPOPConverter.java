@@ -1,4 +1,4 @@
-package com.martinrgb.swipeexample.converter;
+package com.martinrgb.animation_engine.converter;
 
 public class OrigamiPOPConverter extends SpringConverter {
 

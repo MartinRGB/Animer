@@ -1,7 +1,4 @@
-package com.martinrgb.swipeexample.converter;
-
-import android.util.Log;
-import android.view.View;
+package com.martinrgb.animation_engine.converter;
 
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
@@ -12,7 +9,19 @@ import androidx.dynamicanimation.animation.SpringForce;
 public abstract class SpringConverter {
 
     public double mMass = 1;
-    public double mStiffness,mDamping,mDampingRatio,mTension,mFriction,mBouncyTension,mBouncyFriction,mDuration,mS,mB,mBounciness,mSpeed,mVelocity;
+    public double mStiffness;
+    public double mDamping;
+    public double mDampingRatio;
+    public double mTension;
+    public double mFriction;
+    public double mBouncyTension;
+    public double mBouncyFriction;
+    public double mDuration;
+    public double mS;
+    public double mB;
+    public double mBounciness;
+    public double mSpeed;
+    public double mVelocity;
 
     public SpringConverter() {
 

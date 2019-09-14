@@ -1,23 +1,23 @@
-package com.martinrgb.swipeexample.converter;
+package com.martinrgb.animation_engine.converter;
 
-public class RK4Converter extends SpringConverter {
+public class DHOConverter extends SpringConverter {
 
     private boolean otherParaCalculation = false;
 
-    public RK4Converter(double tension,double friction) {
+    public DHOConverter(double stiffness,double damping) {
         super();
-        calculate(tension,friction,1,0);
+        calculate(stiffness,damping,1,0);
     }
 
-    public RK4Converter(double tension,double friction,double mass,double velocity) {
+    public DHOConverter(double stiffness,double damping,double mass,double velocity) {
         super();
-        calculate(tension,friction,mass,velocity);
+        calculate(stiffness,damping,mass,velocity);
     }
 
-    private void calculate(double t,double f,double m,double v){
+    private void calculate(double s,double d,double m,double v){
 
-        mStiffness = t;
-        mDamping = f;
+        mStiffness = s;
+        mDamping = d;
         mMass = m;
         mVelocity = v;
 

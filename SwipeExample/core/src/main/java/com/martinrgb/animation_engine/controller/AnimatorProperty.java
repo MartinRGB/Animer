@@ -1,10 +1,5 @@
-package com.martinrgb.swipeexample.controller;
+package com.martinrgb.animation_engine.controller;
 
-import android.util.FloatProperty;
-import android.view.View;
-import android.view.animation.Animation;
-
-import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;

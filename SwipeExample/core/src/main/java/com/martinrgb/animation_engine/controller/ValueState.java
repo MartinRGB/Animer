@@ -1,4 +1,4 @@
-package com.martinrgb.swipeexample.controller;
+package com.martinrgb.animation_engine.controller;
 
 import android.util.Log;
 

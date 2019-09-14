@@ -61,12 +61,12 @@ public class AnimationController {
         setupSpringAnimator(ANIMATOR_MODE);
     }
 
-    private void initSpring(Object object){
-        Log.e("FinalPos",String.valueOf(object));
-        if (object instanceof Float) {
-            Log.e("Float",String.valueOf(object));
-        }
-    }
+//    private void initSpring(Object object){
+//        Log.e("FinalPos",String.valueOf(object));
+//        if (object instanceof Float) {
+//            Log.e("Float",String.valueOf(object));
+//        }
+//    }
 
     private void setupSpringAnimator(int MODE){
 
@@ -103,8 +103,8 @@ public class AnimationController {
         mPhysicsState.updatePhysicsValue(start);
         mSpringAnimation.setStartValue(start);
 
-        mPhysicsState.setStartState(start);
-        mPhysicsState.setEndState(end);
+        mPhysicsState.setStateValue("Start",start);
+        mPhysicsState.setStateValue("End",end);
     }
 
     public void start(){
@@ -122,18 +122,16 @@ public class AnimationController {
     }
 
     public void reverse(){
-        animateToState("Prev");
+        animateToState("Start");
     }
 
-    // # FramerJS Style Animation Interface,driven by a state machine in PhysicsState
+    // # FramerJS Style Animation Interface,driven by State machine in PhysicsState
 
     public void setState(String key,float value){
         mPhysicsState.setStateValue(key,value);
     }
 
     public void switchToState(String state){
-        //TODO: No Event and no Animation then set the prev State
-        //mPhysicsState.setPrevState(mPhysicsState.getStateValue(state));
         setCurrenetPhysicsValue(mPhysicsState.getStateValue(state));
     }
     public void animateToState(String state){

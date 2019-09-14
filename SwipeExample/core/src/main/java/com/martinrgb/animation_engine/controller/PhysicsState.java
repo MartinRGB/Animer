@@ -15,15 +15,13 @@ public class PhysicsState {
   }
   public PhysicsState(float start) {
     updatePhysics(start,0);
-    setStartState(start);
-    setPrevState(start);
+    setStateValue("Start",start);
   }
 
   public PhysicsState(float start,float end) {
     updatePhysics(start,0);
-    setStartState(start);
-    setEndState(end);
-    setPrevState(start);
+    setStateValue("Start",start);
+    setStateValue("End",end);
   }
 
   // ############### Functions of setting Physics Value ###############
@@ -71,42 +69,24 @@ public class PhysicsState {
 
   private String START_STATE = "Start";
   private String END_STATE = "End";
-  private String PREVIOUS_STATE = "Prev";
-//  private String CURRENT_STATE = "Curr";
 
-  public void setStartState(float value) {
-    setStateValue(START_STATE,value);
-  }
+  //TODO: No Event and no Animation then set the prev State
 
-  public void setEndState(float value) {
-    setStateValue(END_STATE,value);
-  }
-
-  public float getStartState() {
-    return getStateValue(START_STATE);
-  }
-
-  public float getEndState() {
-    return getStateValue(END_STATE);
-  }
-
-  public void setPrevState(float value) {
-    setStateValue(PREVIOUS_STATE,value);
-  }
-
-  public float getPrevState() {
-    return getStateValue(PREVIOUS_STATE);
-  }
-
-//  public void setCurrState(float value) {
-//    setStateValue(CURRENT_STATE,value);
+//  public void setStartState(float value) {
+//    setStateValue(START_STATE,value);
 //  }
 //
-//  public float getCurrState() {
-//    return getStateValue(CURRENT_STATE);
+//  public void setEndState(float value) {
+//    setStateValue(END_STATE,value);
 //  }
-
-
+//
+//  public float getStartState() {
+//    return getStateValue(START_STATE);
+//  }
+//
+//  public float getEndState() {
+//    return getStateValue(END_STATE);
+//  }
 
 
 }

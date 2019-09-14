@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/page_1_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="520px"
+        android:layout_marginLeft="48px"
+        android:background="@drawable/card_image">
+
+        <ImageView
+            android:id="@+id/page_1_card_mask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            android:background="@drawable/card_mask"/>
+
+    </RelativeLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/page_1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@drawable/page_1">-->
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/page_1_card"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="520px"-->
+            <!--android:layout_marginLeft="48px"-->
+            <!--android:background="@drawable/card_image">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/page_1_card_mask"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:alpha="0"-->
+                <!--android:background="@drawable/card_mask"/>-->
+
+        <!--</RelativeLayout>-->
+
+    <!--</RelativeLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/page_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationX="1080px"
+        android:background="@drawable/page_2">
+        <ImageView
+            android:id="@+id/page_2_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/page_2_bottom"
+            android:layout_alignParentBottom="true"
+            android:translationY="240px"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.dynamicanimation.animation.SpringAnimation;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.martinrgb.swipeexample.controller.AnimationProperty;
 import com.martinrgb.swipeexample.controller.AnimationController;
+import com.martinrgb.swipeexample.controller.AnimatorProperty;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,15 +34,10 @@ public class MainActivity extends AppCompatActivity {
         card = findViewById(R.id.page_1_card);
         card_mask = findViewById(R.id.page_1_card_mask);
 
-
-        mOpenAnimController = new AnimationController();
-
-        mOpenAnimController.useOrigamiPOPSpring(30,10);
-        mOpenAnimController.setState("Middle",300);
+        mOpenAnimController = new AnimationController(card,AnimationProperty.TRANSLATION_X,0,700);
         mOpenAnimController.setAnimationListener(new AnimationController.AnimationListener() {
             @Override
             public void onAnimationUpdate(float value, float velocity) {
-                card.setTranslationX(value);
             }
 
             @Override
@@ -57,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_DOWN:
                         Log.i("TAG", "touched down");
                         mOpenAnimController.useOrigamiPOPSpring(30,10);
-                        //mOpenAnimController.start();
-                        mOpenAnimController.animateTo(700);
+                        mOpenAnimController.setEndValue(700);
                         startX = motionEvent.getX();
                         startY = motionEvent.getY();
                         break;
@@ -69,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_UP:
                         mOpenAnimController.useOrigamiPOPSpring(5,10);
-                        //mOpenAnimController.reverse();
-                        mOpenAnimController.animateToState("Middle");
-                        //mOpenAnimController.setEndValue(1.0f);
+                        mOpenAnimController.setEndValue(0);
                         Log.i("TAG", "touched up");
                         break;
                     case MotionEvent.ACTION_CANCEL:

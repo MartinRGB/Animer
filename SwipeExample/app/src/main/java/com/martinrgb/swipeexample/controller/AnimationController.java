@@ -15,6 +15,8 @@ import com.martinrgb.swipeexample.converter.OrigamiPOPConverter;
 import com.martinrgb.swipeexample.converter.RK4Converter;
 import com.martinrgb.swipeexample.converter.UIViewSpringConverter;
 
+
+
 public class AnimationController {
 
     final Object mTarget;
@@ -25,7 +27,6 @@ public class AnimationController {
     private int VALUE_ANIMATOR_MODE = 0;
     private int OBJECT_ANIMAOTR_MODE = 1;
     private int ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
-    private ValueState mValueState = new ValueState();
 
     public AnimationController() {
         mTarget = null;
@@ -40,7 +41,6 @@ public class AnimationController {
         mProperty = property;
         float proertyValue = mProperty.getValue(mTarget);
         mPhysicsState = new PhysicsState(proertyValue);
-        mValueState.setState("Start",proertyValue);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
         setupSpringAnimator(ANIMATOR_MODE);
     }
@@ -49,9 +49,15 @@ public class AnimationController {
         mTarget = object;
         mProperty = property;
         float proertyValue = mProperty.getValue(mTarget);
-        mPhysicsState = new PhysicsState(proertyValue);
-        mValueState.setState("Start",proertyValue);
-        mValueState.setState("End",to);
+        mPhysicsState = new PhysicsState(proertyValue,to);
+        ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
+        setupSpringAnimator(ANIMATOR_MODE);
+    }
+
+    public <K> AnimationController(K object, FloatPropertyCompat<K> property,float from,float to) {
+        mTarget = object;
+        mProperty = property;
+        mPhysicsState = new PhysicsState(from,to);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
         setupSpringAnimator(ANIMATOR_MODE);
     }
@@ -73,7 +79,7 @@ public class AnimationController {
         mSpringAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
             @Override
             public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                mPhysicsState.updateState(value,velocity);
+                mPhysicsState.updatePhysics(value,velocity);
                 if(mListener !=null){
                     mListener.onAnimationUpdate(value,velocity);
                 }
@@ -82,8 +88,7 @@ public class AnimationController {
         mSpringAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
             public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                mPhysicsState.updateState(value,velocity);
-
+                mPhysicsState.updatePhysics(value,velocity);
                 if(mListener !=null){
                     mListener.onAnimationEnd(canceled,value,velocity);
                 }
@@ -94,9 +99,16 @@ public class AnimationController {
 
     // ###########  Animation Play|Pause|End Control ###########
 
+    // # Android Style Animaton Interface,driven by a state machine in PhysicsState
+    public void setStartAndEnd(float start,float end){
+        mPhysicsState.updatePhysicsValue(start);
+        mSpringAnimation.setStartValue(start);
+
+        mPhysicsState.setStartState(start);
+        mPhysicsState.setEndState(end);
+    }
+
     public void start(){
-        //mSpringAnimation.start();
-        setCurrenetValue(mPhysicsState.getValue());
         animateToState("End");
     }
     public void cancel(){
@@ -106,63 +118,64 @@ public class AnimationController {
         if(mSpringAnimation.canSkipToEnd()){
             mSpringAnimation.cancel();
             mSpringAnimation.skipToEnd();
+            switchToState("End");
         }
     }
 
     public void reverse(){
-        animateToState("Start");
+        animateToState("Prev");
     }
 
+    // # FramerJS Style Animation Interface,driven by a state machine in PhysicsState
+
     public void setState(String key,float value){
-        mValueState.setState(key,value);
+        mPhysicsState.setStateValue(key,value);
     }
 
     public void switchToState(String state){
-        setCurrenetValue(mValueState.getStateValue(state));
+        //TODO: No Event and no Animation then set the prev State
+        //mPhysicsState.setPrevState(mPhysicsState.getStateValue(state));
+        setCurrenetPhysicsValue(mPhysicsState.getStateValue(state));
     }
-
     public void animateToState(String state){
-        mSpringAnimation.setStartVelocity(mPhysicsState.getVelocity());
-        mSpringAnimation.animateToFinalPosition(mValueState.getStateValue(state));
+        setCurrenetPhysicsValue(mPhysicsState.getPhysicsValue());
+        mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
+        mSpringAnimation.animateToFinalPosition(mPhysicsState.getStateValue(state));
     }
 
-    public void setStartValue(float value){
-        mPhysicsState.updateValue(value);
-        mSpringAnimation.setStartValue(value);
-        mValueState.setState("Start",value);
+    // # Origami-POP-Rebound Style Animation Interface,driven by PhysicsState
 
-    }
     public void setEndValue(float value){
-        mValueState.setState("End",value);
+        mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
+        mSpringAnimation.animateToFinalPosition(value);
     }
 
-    public void animateTo(float value){
-        mSpringAnimation.setStartVelocity(mPhysicsState.getVelocity());
-        mSpringAnimation.animateToFinalPosition(value);
+    public void setCurrentValue(float value){
+        setCurrenetPhysicsValue(value);
     }
 
     // ########### Animation Controller PhysicsState Control ###########
 
-    public void setCurrenetValue(float value){
-        mPhysicsState.updateValue(value);
+    public void setCurrenetPhysicsValue(float value){
+        mPhysicsState.updatePhysicsValue(value);
         if(mProperty !=null){
             mProperty.setValue(mTarget,value);
         }
     }
-    public float getCurrentValue(){
-        return mPhysicsState.getValue();
+    public float getCurrentPhysicsValue(){
+        return mPhysicsState.getPhysicsValue();
     }
-    public void setCurrentVelocity(float velocity){
-        mPhysicsState.updateVelocity(velocity);
+    public void setCurrentPhysicsVelocity(float velocity){
+        mPhysicsState.updatePhysicsVelocity(velocity);
     }
-    public float getCurrentVelocity(){
-        return  mPhysicsState.getVelocity();
+    public float getCurrentPhysicsVelocity(){
+        return  mPhysicsState.getPhysicsVelocity();
     }
-    public void setCurrentState(float value,float velocity){
-        setCurrenetValue(value);
-        setCurrentVelocity(velocity);
+    public void setCurrentPhysicsState(float value,float velocity){
+        setCurrenetPhysicsValue(value);
+        setCurrentPhysicsVelocity(velocity);
     }
-    public PhysicsState getCurrentState(){
+    public PhysicsState getCurrentPhysicsState(){
        return mPhysicsState;
     }
 

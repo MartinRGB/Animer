@@ -9,7 +9,9 @@ public class PhysicsState {
   private float velocity;
   Map<String,Float> kvMap = new HashMap<>();
 
-  // ############### Constructor ###############
+  // ############################################
+  // Constructor
+  // ############################################
   public PhysicsState() {
     updatePhysics(0,0);
   }
@@ -24,7 +26,9 @@ public class PhysicsState {
     setStateValue("End",end);
   }
 
-  // ############### Functions of setting Physics Value ###############
+  // ############################################
+  // PhysicsState Value's Getter & Setter
+  // ############################################
 
   public void updatePhysics(float val,float vel){
     updatePhysicsValue(val);
@@ -47,7 +51,9 @@ public class PhysicsState {
     return velocity;
   }
 
-  // ############### Functions of setting Animation State ###############
+  // ############################################
+  // PhysicsState State's Getter & Setter
+  // ############################################
 
   public void setStateValue(String key,float value){
     kvMap.put(key,value);
@@ -65,28 +71,7 @@ public class PhysicsState {
     return -1;
   }
 
-  // ############### Basic states of Animation ###############
-
-  private String START_STATE = "Start";
-  private String END_STATE = "End";
-
-  //TODO: No Event and no Animation then set the prev State
-
-//  public void setStartState(float value) {
-//    setStateValue(START_STATE,value);
-//  }
-//
-//  public void setEndState(float value) {
-//    setStateValue(END_STATE,value);
-//  }
-//
-//  public float getStartState() {
-//    return getStateValue(START_STATE);
-//  }
-//
-//  public float getEndState() {
-//    return getStateValue(END_STATE);
-//  }
+  //TODO: Prev State
 
 
 }

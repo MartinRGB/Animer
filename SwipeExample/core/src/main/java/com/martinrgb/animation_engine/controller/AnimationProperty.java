@@ -7,9 +7,16 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 
 public abstract class AnimationProperty extends FloatPropertyCompat<View> {
 
+    private String mName;
+
     private AnimationProperty(String name) {
         super(name);
+        mName= name;
     }
+
+    public String getPropertyName(){
+        return mName;
+    };
 
     public static final AnimationProperty TRANSLATION_X = new AnimationProperty("translationX") {
         @Override
@@ -46,19 +53,19 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
             return ViewCompat.getTranslationZ(view);
         }
     };
-
-    public static final AnimationProperty SCALE = new AnimationProperty("scale") {
-        @Override
-        public void setValue(View view, float value) {
-            view.setScaleX(value);
-            view.setScaleY(value);
-        }
-
-        @Override
-        public float getValue(View view) {
-            return view.getScaleX();
-        }
-    };
+//
+//    public static final AnimationProperty SCALE = new AnimationProperty("scale") {
+//        @Override
+//        public void setValue(View view, float value) {
+//            view.setScaleX(value);
+//            view.setScaleY(value);
+//        }
+//
+//        @Override
+//        public float getValue(View view) {
+//            return view.getScaleX();
+//        }
+//    };
 
     public static final AnimationProperty SCALE_X = new AnimationProperty("scaleX") {
         @Override

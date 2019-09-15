@@ -49,19 +49,19 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
             return ViewCompat.getTranslationZ(view);
         }
     };
-//
-//    public static final AnimationProperty SCALE = new AnimationProperty("scale") {
-//        @Override
-//        public void setValue(View view, float value) {
-//            view.setScaleX(value);
-//            view.setScaleY(value);
-//        }
-//
-//        @Override
-//        public float getValue(View view) {
-//            return view.getScaleX();
-//        }
-//    };
+
+    public static final AnimationProperty SCALE = new AnimationProperty("scale") {
+        @Override
+        public void setValue(View view, float value) {
+            view.setScaleX(value);
+            view.setScaleY(value);
+        }
+
+        @Override
+        public float getValue(View view) {
+            return view.getScaleX();
+        }
+    };
 
     public static final AnimationProperty SCALE_X = new AnimationProperty("scaleX") {
         @Override

@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 
 import com.martinrgb.animation_engine.controller.AnimationProperty;
 import com.martinrgb.animation_engine.controller.AnimationController;
+import com.martinrgb.animation_engine.solver.AnimationSolver;
 import com.martinrgb.animation_engine.solver.FlingSolver;
 import com.martinrgb.animation_engine.solver.SpringSolver;
 import com.martinrgb.animation_engine.solver.TimingSolver;
@@ -42,50 +43,71 @@ public class MainActivity extends AppCompatActivity {
         card_mask = findViewById(R.id.page_1_card_mask);
 
 
-        //SpringSolver springSolver = new SpringSolver(200,30);
 
-        mOpenAnimController = new AnimationController(new TimingSolver(new FastOutSlowInInterpolator(),500),card,AnimationProperty.TRANSLATION_Y,0,700);
-
+        // # Animation Solver
+        AnimationSolver mTimingSolver = new TimingSolver(new DecelerateInterpolator(), 500);
+        // # Init the AnimController
+        mOpenAnimController = new AnimationController(mTimingSolver,card,AnimationProperty.SCALE,1,0.5f);
+        // # Add a state into state Machine
+        mOpenAnimController.setState("Bigger",3);
+        // # Animation Listener;
         mOpenAnimController.setAnimationListener(new AnimationController.AnimationListener() {
             @Override
-            public void onAnimationUpdate(float value, float velocity) {
-
-                Log.e("Canceled",String.valueOf(velocity));
+            public void onAnimationUpdate(float value, float velocity) {Log.e("Velocity",String.valueOf(velocity));
             }
-
             @Override
             public void onAnimationEnd(boolean canceled, float value, float velocity) {
 
             }
         });
 
-        
-
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.i("TAG", "touched down");
-                        mOpenAnimController.setSolver(new FlingSolver(2500,0.5f));
+                        // # Reset The Solver;
+                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(40,2));
+                        // # Start The Animation to End
                         mOpenAnimController.start();
                         break;
-                    case MotionEvent.ACTION_MOVE:
-                        Log.i("TAG", "touched move");
-                        break;
                     case MotionEvent.ACTION_UP:
-                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(40f,5f));
-                        mOpenAnimController.animateToState("Start");
-                        Log.i("TAG", "touched up");
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        Log.i("TAG", "touched cancel");
+                        // # Reset The Solver;
+                        mOpenAnimController.setSolver(new TimingSolver(new FastOutSlowInInterpolator(),1000));
+                        // # Animate to State "Bigger"
+                        mOpenAnimController.animateToState("Bigger");
                         break;
                 }
-
                 return true;
             }
         });
+
+
+//        card.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                switch (motionEvent.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        Log.i("TAG", "touched down");
+//                        mOpenAnimController.setSolver(new TimingSolver(new FastOutSlowInInterpolator(),200));
+//                        mOpenAnimController.start();
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        Log.i("TAG", "touched move");
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        mOpenAnimController.setSolver(new TimingSolver(new DecelerateInterpolator(),200));
+//                        mOpenAnimController.reverse();
+//                        Log.i("TAG", "touched up");
+//                        break;
+//                    case MotionEvent.ACTION_CANCEL:
+//                        Log.i("TAG", "touched cancel");
+//                        break;
+//                }
+//
+//                return true;
+//            }
+//        });
 
     }
 

@@ -1,16 +1,16 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.FlingAnimation;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+//import androidx.dynamicanimation.animation.DynamicAnimation;
+//import androidx.dynamicanimation.animation.FlingAnimation;
+//import androidx.dynamicanimation.animation.SpringAnimation;
+//import androidx.dynamicanimation.animation.SpringForce;
+//import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+//
+//import android.animation.Animator;
+//import android.animation.AnimatorListenerAdapter;
+//import android.animation.ObjectAnimator;
+//import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,13 +18,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
+//import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.martinrgb.animation_engine.controller.AnimationProperty;
 import com.martinrgb.animation_engine.controller.AnimationController;
-import com.martinrgb.animation_engine.controller.AnimatorCreator;
+//import com.martinrgb.animation_engine.controller.AnimatorCreator;
+//import com.martinrgb.animation_engine.controller.solver.SpringSolver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -117,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //        mValueAnimator.start();
 
-        mOpenAnimController = new AnimationController(AnimatorCreator.createSpringAnimator(),card,AnimationProperty.TRANSLATION_Y,0,700);
+        //SpringSolver springSolver = new SpringSolver(200,30);
+
+        mOpenAnimController = new AnimationController(AnimationController.createSpringSolver(400,0.25f),card,AnimationProperty.TRANSLATION_Y,0,700);
 
         mOpenAnimController.setAnimationListener(new AnimationController.AnimationListener() {
             @Override
@@ -132,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -139,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         Log.i("TAG", "touched down");
-                        mOpenAnimController.useOrigamiPOPSpring(30,10);
+//                        mOpenAnimController.useOrigamiPOPSpring(30,10);
+                        mOpenAnimController.getSpringSolver().useAndroidSpring(1500,0.5f);
                         mOpenAnimController.animateTo(700);
                         startX = motionEvent.getX();
                         startY = motionEvent.getY();
@@ -150,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("TAG", "touched move");
                         break;
                     case MotionEvent.ACTION_UP:
-                        mOpenAnimController.useOrigamiPOPSpring(5,10);
+//                        mOpenAnimController.useOrigamiPOPSpring(5,10);
+                        mOpenAnimController.getSpringSolver().useOrigamiPOPSpring(30,10);
                         mOpenAnimController.animateTo(0);
                         Log.i("TAG", "touched up");
                         break;

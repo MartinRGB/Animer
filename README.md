@@ -3,24 +3,6 @@ for a better Android Experience
 
 ## Core concpet:
 
-
-```
-SpringAnimation anim = new SpringAnimation(object,new FloatValueHolder());
-anim.setPropertyName("translation_X");
-anim.setStartValue(0);
-SpringForce force = new SpringForce(700);
-force.setStiffness(400);
-force.setDampingRatio(0.5);
-anim.setSpringForce(force);
-
-AnimationController animcontroller = new AnimationController(
-AnimationController.createSpringSolver(400,0.5),
-object,
-"translation_X",
-0,700
-)
-```
-
 **Data**
 
 - State machine concpet from [FramerJS](https://github.com/koenbok/Framer/tree/master/framer)

@@ -19,10 +19,6 @@ public class SpringSolver extends AnimationSolver {
     private float mStiffness = 300.f,mDampingRatio = 0.6f;
     private Object springSolver;
 
-    public SpringSolver() {
-        springSolver= this;
-    }
-
     public SpringSolver(float stiffness,float dampingratio) {
         setStiffness(stiffness);
         setDampingRatio(dampingratio);
@@ -30,48 +26,43 @@ public class SpringSolver extends AnimationSolver {
     }
 
     // ############################################
-    // Spring Animation Converter
+    // Spring Animation Solver's Converter
     // ############################################
 
-    public void useAndroidSpring(float stiffness,float dampingratio){
-        setStiffness(stiffness);
-        setDampingRatio(dampingratio);
+    public static SpringSolver createAndroidSpring(float stiffness,float dampingratio){
+        return new SpringSolver(stiffness,dampingratio);
     }
 
-    public void useRK4Spring(float tension,float friction){
+    public static SpringSolver createRK4Spring(float tension,float friction){
         RK4Converter rk4Converter = new RK4Converter(tension,friction);
-        setStiffness(rk4Converter.getStiffness());
-        setDampingRatio(rk4Converter.getDampingRatio());
+        return new SpringSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio());
     }
 
-    public void useDHOSpring(float stiffness,float damping){
+    public static SpringSolver createDHOSpring(float stiffness,float damping){
         DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
-        setStiffness(dhoConverter.getStiffness());
-        setDampingRatio(dhoConverter.getDampingRatio());
+        return new SpringSolver(dhoConverter.getStiffness(),dhoConverter.getDampingRatio());
     }
 
-    public void useOrigamiPOPSpring(float bounciness,float speed){
+    public static SpringSolver createOrigamiSpring(float bounciness,float speed){
         OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(bounciness,speed);
-        setStiffness(origamiPOPConverter.getStiffness());
-        setDampingRatio(origamiPOPConverter.getDampingRatio());
+        return new SpringSolver(origamiPOPConverter.getStiffness(),origamiPOPConverter.getDampingRatio());
     }
 
-    public void useiOSUIViewSpring(float dampingratio,float duration){
+    public static SpringSolver createUIViewSpring(float dampingratio,float duration){
         UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
-        setStiffness(uiViewSpringConverter.getStiffness());
-        setDampingRatio(uiViewSpringConverter.getDampingRatio());
+        return new SpringSolver(uiViewSpringConverter.getStiffness(),uiViewSpringConverter.getDampingRatio());
     }
 
-    public void useiOSCASpring(float stiffness,float damping){
-        useDHOSpring(stiffness,damping);
+    public static SpringSolver createCASpring(float stiffness,float damping){
+        return createDHOSpring(stiffness,damping);
     }
 
-    public void useProtopieSpring(float tension,float friction){
-        useRK4Spring(tension,friction);
+    public static SpringSolver createProtopieSpring(float tension,float friction){
+        return createRK4Spring(tension,friction);
     }
 
-    public void usePrincipleSpring(float tension,float friction){
-        useRK4Spring(tension,friction);
+    public static SpringSolver createPrincipleSpring(float tension,float friction){
+        return createRK4Spring(tension,friction);
     }
 
     // ############################################
@@ -112,6 +103,11 @@ public class SpringSolver extends AnimationSolver {
     @Override
     public Object getSolver(){
         return springSolver;
+    }
+
+    @Override
+    public int getSolverMode() {
+        return 1;
     }
 }
 

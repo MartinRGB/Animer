@@ -1,6 +1,8 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +11,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.martinrgb.animation_engine.controller.AnimationProperty;
 import com.martinrgb.animation_engine.controller.AnimationController;
-import com.martinrgb.animation_engine.controller.AnimatorCreator;
+import com.martinrgb.animation_engine.solver.FlingSolver;
 import com.martinrgb.animation_engine.solver.SpringSolver;
 import com.martinrgb.animation_engine.solver.TimingSolver;
 
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         //SpringSolver springSolver = new SpringSolver(200,30);
 
-        mOpenAnimController = new AnimationController(AnimatorCreator.createFlingAnimation(),card,AnimationProperty.TRANSLATION_Y,0,700);
+        mOpenAnimController = new AnimationController(new TimingSolver(new FastOutSlowInInterpolator(),500),card,AnimationProperty.TRANSLATION_Y,0,700);
 
         mOpenAnimController.setAnimationListener(new AnimationController.AnimationListener() {
             @Override
@@ -56,9 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
+        
 
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -66,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         Log.i("TAG", "touched down");
-                        mOpenAnimController.setSolver(AnimationController.createSpringSolver(500,0.5f));
-                        mOpenAnimController.animateToState("End");
+                        mOpenAnimController.setSolver(new FlingSolver(2500,0.5f));
+                        mOpenAnimController.start();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         Log.i("TAG", "touched move");
                         break;
                     case MotionEvent.ACTION_UP:
-                        mOpenAnimController.setSolver(AnimationController.createFlingSolver(500,0.24f));
+                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(40f,5f));
                         mOpenAnimController.animateToState("Start");
                         Log.i("TAG", "touched up");
                         break;

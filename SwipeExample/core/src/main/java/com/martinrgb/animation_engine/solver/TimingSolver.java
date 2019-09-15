@@ -29,6 +29,8 @@ public class TimingSolver extends AnimationSolver {
         timingSolver= this;
     }
 
+
+
     // ############################################
     // Getter & Setter
     // ############################################
@@ -67,6 +69,11 @@ public class TimingSolver extends AnimationSolver {
     @Override
     public Object getSolver(){
         return timingSolver;
+    }
+
+    @Override
+    public int getSolverMode() {
+        return 2;
     }
 }
 

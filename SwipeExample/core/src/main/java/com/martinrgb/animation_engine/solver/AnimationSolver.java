@@ -20,13 +20,12 @@ public abstract class AnimationSolver extends  Object{
     public AnimationSolver(){}
     public abstract void setSolver(AnimationSolver solver);
     public abstract Object getSolver();
+    public abstract int getSolverMode();
 
     public SolverListener mListener;
-
     public void setSolverListener(SolverListener listener) {
         mListener = listener;
     }
-
     public interface SolverListener {
         void onSolverUpdate(Object arg1, Object arg2);
     }

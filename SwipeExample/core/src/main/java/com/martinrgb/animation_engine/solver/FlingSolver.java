@@ -64,6 +64,12 @@ public class FlingSolver extends AnimationSolver {
     public Object getSolver(){
         return flingSolver;
     }
+
+    @Override
+    public int getSolverMode() {
+        return 0;
+    }
+
 }
 
 

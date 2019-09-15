@@ -6,8 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.graphics.Interpolator;
-import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
 import androidx.dynamicanimation.animation.DynamicAnimation;
@@ -16,17 +14,10 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-
-import com.martinrgb.animation_engine.overscroller.FlingCalculator;
 import com.martinrgb.animation_engine.solver.AnimationSolver;
 import com.martinrgb.animation_engine.solver.FlingSolver;
 import com.martinrgb.animation_engine.solver.SpringSolver;
 import com.martinrgb.animation_engine.solver.TimingSolver;
-import com.martinrgb.animation_engine.converter.DHOConverter;
-import com.martinrgb.animation_engine.converter.OrigamiPOPConverter;
-import com.martinrgb.animation_engine.converter.RK4Converter;
-import com.martinrgb.animation_engine.converter.UIViewSpringConverter;
 
 
 
@@ -49,13 +40,14 @@ public class AnimationController<T> {
     private float mTimingDuration = 500;
 
     private static AnimationSolver currentSolver;
-    private static int FLING_SOLVER_MODE = 0;
-    private static int SPRING_SOLVER_MODE = 1;
-    private static int TIMING_SOLVER_MODE = 2;
+    private static final SpringSolver springDefaultSolver = new SpringSolver(50,0.99f);
+    private static final int FLING_SOLVER_MODE = 0;
+    private static final int SPRING_SOLVER_MODE = 1;
+    private static final int TIMING_SOLVER_MODE = 2;
     private static int SOLVER_MODE = -1;
 
-    private int VALUE_ANIMATOR_MODE = 0;
-    private int OBJECT_ANIMAOTR_MODE = 1;
+    private static final int VALUE_ANIMATOR_MODE = 0;
+    private static final int OBJECT_ANIMAOTR_MODE = 1;
     private int ANIMATOR_MODE = -1;
 
     // ###########################################
@@ -68,7 +60,7 @@ public class AnimationController<T> {
         mProperty = null;
         mPhysicsState = new PhysicsState();
         ANIMATOR_MODE = VALUE_ANIMATOR_MODE;
-        setupAnimatorByCreator(mAnimatorObject);
+        setupByAnimator(mAnimatorObject);
     }
 
     public <K> AnimationController(T animatorObject,K target, FloatPropertyCompat<K> property) {
@@ -78,7 +70,7 @@ public class AnimationController<T> {
         float proertyValue = mProperty.getValue(mTarget);
         mPhysicsState = new PhysicsState(proertyValue);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
-        setupAnimatorByCreator(mAnimatorObject);
+        setupByAnimator(mAnimatorObject);
     }
 
     public <K> AnimationController(T animatorObject,K target, FloatPropertyCompat<K> property,float to) {
@@ -88,7 +80,7 @@ public class AnimationController<T> {
         float proertyValue = mProperty.getValue(mTarget);
         mPhysicsState = new PhysicsState(proertyValue,to);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
-        setupAnimatorByCreator(mAnimatorObject);
+        setupByAnimator(mAnimatorObject);
     }
 
     public <K> AnimationController(T animatorObject,K target, FloatPropertyCompat<K> property,float from,float to) {
@@ -97,7 +89,7 @@ public class AnimationController<T> {
         mProperty = property;
         mPhysicsState = new PhysicsState(from,to);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
-        setupAnimatorByCreator(animatorObject);
+        setupByAnimator(mAnimatorObject);
     }
 
     public <K> AnimationController(AnimationSolver solver, K target, FloatPropertyCompat<K> property, float from, float to) {
@@ -105,215 +97,205 @@ public class AnimationController<T> {
         mProperty = property;
         mPhysicsState = new PhysicsState(from,to);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
-        setupAnimatorBySolver(SOLVER_MODE);
+        currentSolver = solver;
+        setupBySolver(currentSolver);
     }
 
     // ############################################
     // Setup Solver
     // ############################################
 
-    public static final AnimationSolver createFlingSolver(float velocity,float friction){
-        SOLVER_MODE = FLING_SOLVER_MODE;
-        currentSolver = new FlingSolver(velocity,friction);
-        return currentSolver;
-    }
-
-    public static final AnimationSolver createSpringSolver(float stiffness,float dampingratio){
-        SOLVER_MODE = SPRING_SOLVER_MODE;
-        currentSolver = new SpringSolver(stiffness,dampingratio);
-        return currentSolver;
-    }
-
-    public static final AnimationSolver createTimingSolver(TimeInterpolator interpolator, long duration){
-        SOLVER_MODE = TIMING_SOLVER_MODE;
-        currentSolver = new TimingSolver(interpolator,duration);
-        return currentSolver;
-    }
-
+    // TODO:MORE Accuracy Setting
     public void setSolver(AnimationSolver solver){
         currentSolver = solver;
         cancelAllAnimation();
-        setupAnimatorBySolver(SOLVER_MODE);
-    }
-
-    public static SpringSolver getSpringSolver() {
-        return (SpringSolver) currentSolver;
-    }
-
-    public static FlingSolver getFlingSolver() {
-        return (FlingSolver) currentSolver;
-    }
-
-    public static TimingSolver getTimingSolver() {
-        return (TimingSolver) currentSolver;
+        setupByAnimator(currentSolver);
     }
 
     // ############################################
     // Setup Aniamtor
     // ############################################
 
-    private void setupAnimatorBySolver(int solver_mode) {
-        switch(solver_mode)
+    private void setupBySolver(AnimationSolver solver) {
+        SOLVER_MODE = solver.getSolverMode();
+        switch(solver.getSolverMode())
         {
-            case 0:
-                setupFlingAnimator();
+            case FLING_SOLVER_MODE:
+                setupFlingAnimator(solver);
                 break;
-            case 1:
-                setupSpringAnimator();
+            case SPRING_SOLVER_MODE:
+                setupSpringAnimator(solver);
                 break;
-            case 2:
-                setupTimingAnimator();
+            case TIMING_SOLVER_MODE:
+                setupTimingAnimator(solver);
                 break;
             default:
                 break;
         }
     }
 
-    private void setupAnimatorByCreator(Object animator){
+    private void setupByAnimator(Object animator){
         switch(animator.getClass().getSimpleName())
         {
             case "FlingAnimation":
-                currentSolver = createFlingSolver(mStartVelocity,mFriction);
+                currentSolver = new FlingSolver(mStartVelocity,mFriction);
                 break;
             case "SpringAnimation":
-                currentSolver = createSpringSolver(mStiffness,mDampingRatio);
+                currentSolver = new SpringSolver(mStiffness,mDampingRatio);
                 break;
             case "ValueAnimator":
-                currentSolver = createTimingSolver(mTimingInterpolator,(long)mTimingDuration);
+                currentSolver = new TimingSolver(mTimingInterpolator,(long)mTimingDuration);
                 break;
             default:
                 break;
         }
-        setupAnimatorBySolver(SOLVER_MODE);
+        setupBySolver(currentSolver);
     }
 
-    private void setupFlingAnimator(){
-        mFlingAnimation = new FlingAnimation(new FloatValueHolder());
-        mFlingAnimation.setStartVelocity(((FlingSolver)currentSolver).getVelocity());
-        mFlingAnimation.setFriction(((FlingSolver)currentSolver).getFriction());
+    private void setupFlingAnimator(AnimationSolver solver){
+        if(mFlingAnimation == null) {
+            mFlingAnimation = new FlingAnimation(new FloatValueHolder());
+            mFlingAnimation.setMinimumVisibleChange(0.001f);
+            mFlingAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+                @Override
+                public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
+                    mPhysicsState.updatePhysics(value, velocity);
 
-        currentSolver.setSolverListener(new AnimationSolver.SolverListener() {
+                    if (ANIMATOR_MODE != VALUE_ANIMATOR_MODE) {
+                        mProperty.setValue(mTarget, mPhysicsState.getPhysicsValue());
+                    }
+
+                    if (mListener != null) {
+                        mListener.onAnimationUpdate(value, velocity);
+                    }
+                }
+            });
+            mFlingAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
+                @Override
+                public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
+                    mPhysicsState.updatePhysics(value, velocity);
+                    if (mListener != null) {
+                        mListener.onAnimationEnd(canceled, value, velocity);
+                    }
+                }
+            });
+        }
+        attachSolverToFling(solver,mFlingAnimation);
+    }
+
+    private void attachSolverToFling(AnimationSolver solver,FlingAnimation flingAnimation){
+        final FlingAnimation flingAnim = flingAnimation;
+        flingAnim.setStartVelocity(((FlingSolver)solver).getVelocity());
+        flingAnim.setFriction(((FlingSolver)solver).getFriction());
+
+        solver.setSolverListener(new AnimationSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
-                mFlingAnimation.setStartVelocity((float) arg1);
-                mFlingAnimation.setFriction((float) arg2);
-            }
-        });
-
-        mFlingAnimation.setMinimumVisibleChange(0.001f);
-        mFlingAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
-            @Override
-            public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                mPhysicsState.updatePhysics(value,velocity);
-
-                if(ANIMATOR_MODE != VALUE_ANIMATOR_MODE){
-                    mProperty.setValue(mTarget,mPhysicsState.getPhysicsValue());
-                }
-
-                if(mListener !=null){
-                    mListener.onAnimationUpdate(value,velocity);
-                }
-            }
-        });
-        mFlingAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
-            @Override
-            public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                mPhysicsState.updatePhysics(value,velocity);
-                if(mListener !=null){
-                    mListener.onAnimationEnd(canceled,value,velocity);
-                }
+                flingAnim.setStartVelocity((float) arg1);
+                flingAnim.setFriction((float) arg2);
             }
         });
     }
 
-    private void setupSpringAnimator(){
-        mSpringAnimation = new SpringAnimation(new FloatValueHolder());
-        mSpringAnimation.setSpring(new SpringForce());
-        mSpringAnimation.getSpring().setStiffness(((SpringSolver)currentSolver).getStiffness());
-        mSpringAnimation.getSpring().setDampingRatio(((SpringSolver)currentSolver).getDampingRatio());
+    private void setupSpringAnimator(AnimationSolver solver){
+        if(mSpringAnimation == null) {
+            mSpringAnimation = new SpringAnimation(new FloatValueHolder());
+            mSpringAnimation.setSpring(new SpringForce());
+            mSpringAnimation.setMinimumVisibleChange(0.001f);
+            mSpringAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+                @Override
+                public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
+                    mPhysicsState.updatePhysics(value, velocity);
 
-        currentSolver.setSolverListener(new AnimationSolver.SolverListener() {
+                    if (ANIMATOR_MODE != VALUE_ANIMATOR_MODE) {
+                        mProperty.setValue(mTarget, mPhysicsState.getPhysicsValue());
+                    }
+
+                    if (mListener != null) {
+                        mListener.onAnimationUpdate(value, velocity);
+                    }
+                }
+            });
+            mSpringAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
+                @Override
+                public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
+                    mPhysicsState.updatePhysics(value, velocity);
+                    if (mListener != null) {
+                        mListener.onAnimationEnd(canceled, value, velocity);
+                    }
+                }
+            });
+        }
+        attachSolverToSpring(solver,mSpringAnimation);
+    }
+
+    private void attachSolverToSpring(AnimationSolver solver,SpringAnimation springAnimation){
+        final SpringAnimation springAnim = springAnimation;
+        springAnim.getSpring().setStiffness(((SpringSolver)solver).getStiffness());
+        springAnim.getSpring().setDampingRatio(((SpringSolver)solver).getDampingRatio());
+
+        solver.setSolverListener(new AnimationSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
-                mSpringAnimation.getSpring().setStiffness((float) arg1);
-                mSpringAnimation.getSpring().setDampingRatio((float) arg2);
-            }
-        });
-
-        mSpringAnimation.setMinimumVisibleChange(0.001f);
-        mSpringAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
-            @Override
-            public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                mPhysicsState.updatePhysics(value,velocity);
-
-                if(ANIMATOR_MODE != VALUE_ANIMATOR_MODE){
-                    mProperty.setValue(mTarget,mPhysicsState.getPhysicsValue());
-                }
-
-                if(mListener !=null){
-                    mListener.onAnimationUpdate(value,velocity);
-                }
-            }
-        });
-        mSpringAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
-            @Override
-            public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                mPhysicsState.updatePhysics(value,velocity);
-                if(mListener !=null){
-                    mListener.onAnimationEnd(canceled,value,velocity);
-                }
+                springAnim.getSpring().setStiffness((float) arg1);
+                springAnim.getSpring().setDampingRatio((float) arg2);
             }
         });
     }
 
-    private void setupTimingAnimator(){
-        mTimingAnimation = new ObjectAnimator();
-        mTimingAnimation.setInterpolator(((TimingSolver)currentSolver).getInterpolator());
-        mTimingAnimation.setDuration((long) ((TimingSolver)currentSolver).getDuration());
+    private void setupTimingAnimator(AnimationSolver solver){
+        if(mTimingAnimation == null) {
+            mTimingAnimation = new ObjectAnimator();
+            mTimingAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
 
-        currentSolver.setSolverListener(new AnimationSolver.SolverListener() {
+                    mPrevVelocity = mCurrentVelocity;
+                    mCurrentVelocity = (float) valueAnimator.getAnimatedValue();
+
+                    float value = mCurrentVelocity;
+                    float velocity = mCurrentVelocity - mPrevVelocity;
+
+                    mPhysicsState.updatePhysics(value, velocity);
+
+                    if (mListener != null) {
+                        mListener.onAnimationUpdate(value, velocity);
+                    }
+
+                    if (ANIMATOR_MODE != VALUE_ANIMATOR_MODE) {
+                        mProperty.setValue(mTarget, mPhysicsState.getPhysicsValue());
+                    }
+
+                }
+            });
+
+            mTimingAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mPhysicsState.updatePhysics(mPhysicsState.getPhysicsValue(), 0);
+                    if (mListener != null) {
+                        mListener.onAnimationEnd(true, mPhysicsState.getPhysicsValue(), 0);
+                    }
+                }
+            });
+        }
+        attachSolverToTiming(solver,mTimingAnimation);
+    }
+
+    private void attachSolverToTiming(AnimationSolver solver,ObjectAnimator timingAnimation){
+        final ObjectAnimator timingAnim = timingAnimation;
+        timingAnim.setInterpolator(((TimingSolver)solver).getInterpolator());
+        timingAnim.setDuration((long) ((TimingSolver)solver).getDuration());
+
+        solver.setSolverListener(new AnimationSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
-                mTimingAnimation.setInterpolator((TimeInterpolator) arg1);
-                mTimingAnimation.setDuration((long) arg2);
-            }
-        });
-
-        mTimingAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-
-                mPrevVelocity = mCurrentVelocity;
-                mCurrentVelocity = (float) valueAnimator.getAnimatedValue();
-
-                float value = mCurrentVelocity;
-                float velocity = mCurrentVelocity-mPrevVelocity;
-
-                mPhysicsState.updatePhysics(value,velocity);
-
-                if(mListener !=null){
-                    mListener.onAnimationUpdate(value,velocity);
-                }
-
-                if(ANIMATOR_MODE != VALUE_ANIMATOR_MODE){
-                    mProperty.setValue(mTarget,mPhysicsState.getPhysicsValue());
-                }
-
-            }
-        });
-
-        mTimingAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                mPhysicsState.updatePhysics(mPhysicsState.getPhysicsValue(),0);
-                if(mListener !=null){
-                    mListener.onAnimationEnd(true,mPhysicsState.getPhysicsValue(),0);
-                }
+                timingAnim.setInterpolator((TimeInterpolator) arg1);
+                timingAnim.setDuration((long) arg2);
             }
         });
     }
-
 
     // ############################################
     // Animation Control Interface
@@ -325,13 +307,13 @@ public class AnimationController<T> {
         mPhysicsState.setStateValue("Start",start);
         switch(SOLVER_MODE)
         {
-            case 0:
+            case FLING_SOLVER_MODE:
                 mFlingAnimation.setStartValue(mPhysicsState.getStateValue("Start"));
                 break;
-            case 1:
+            case SPRING_SOLVER_MODE:
                 mSpringAnimation.setStartValue(mPhysicsState.getStateValue("Start"));
                 break;
-            case 2:
+            case TIMING_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(mPhysicsState.getStateValue("Start"),mPhysicsState.getStateValue("End"));
                 break;
             default:
@@ -342,20 +324,15 @@ public class AnimationController<T> {
         mPhysicsState.setStateValue("End",end);
         switch(SOLVER_MODE)
         {
-            case 0:
-                if(mSpringAnimation == null){
-                    currentSolver = createSpringSolver(50,0.99f);
-                    setupSpringAnimator();
-                    mSpringAnimation.getSpring().setFinalPosition(mPhysicsState.getStateValue("End"));
-                }
-                else{
-                    mSpringAnimation.getSpring().setFinalPosition(mPhysicsState.getStateValue("End"));
-                }
-                break;
-            case 1:
+            case FLING_SOLVER_MODE:
+                currentSolver = springDefaultSolver;
+                setupSpringAnimator(currentSolver);
                 mSpringAnimation.getSpring().setFinalPosition(mPhysicsState.getStateValue("End"));
                 break;
-            case 2:
+            case SPRING_SOLVER_MODE:
+                mSpringAnimation.getSpring().setFinalPosition(mPhysicsState.getStateValue("End"));
+                break;
+            case TIMING_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(mPhysicsState.getStateValue("Start"),mPhysicsState.getStateValue("End"));
                 break;
             default:
@@ -363,7 +340,10 @@ public class AnimationController<T> {
         }
     }
     public void start(){
-        animateToState("End");
+        if(SOLVER_MODE == FLING_SOLVER_MODE)
+            mFlingAnimation.start();
+        else
+            animateToState("End");
     }
     public void cancel(){
         cancelAllAnimation();
@@ -389,30 +369,22 @@ public class AnimationController<T> {
 
         switch(SOLVER_MODE)
         {
-            case 0:
+            case FLING_SOLVER_MODE:
                 mFlingAnimation.cancel();
-                if(mSpringAnimation == null){
-                    currentSolver = createSpringSolver(50,0.99f);
-                    setupSpringAnimator();
-                    if(mSpringAnimation.canSkipToEnd()){
-                        mSpringAnimation.cancel();
-                        mSpringAnimation.skipToEnd();
-                    }
-                }
-                else{
-                    if(mSpringAnimation.canSkipToEnd()){
-                        mSpringAnimation.cancel();
-                        mSpringAnimation.skipToEnd();
-                    }
-                }
-                break;
-            case 1:
+                currentSolver = springDefaultSolver;
+                setupSpringAnimator(currentSolver);
                 if(mSpringAnimation.canSkipToEnd()){
                     mSpringAnimation.cancel();
                     mSpringAnimation.skipToEnd();
                 }
                 break;
-            case 2:
+            case SPRING_SOLVER_MODE:
+                if(mSpringAnimation.canSkipToEnd()){
+                    mSpringAnimation.cancel();
+                    mSpringAnimation.skipToEnd();
+                }
+                break;
+            case TIMING_SOLVER_MODE:
                 mTimingAnimation.end();
                 break;
             default:
@@ -437,28 +409,19 @@ public class AnimationController<T> {
         setCurrenetPhysicsValue(mPhysicsState.getPhysicsValue());
         switch(SOLVER_MODE)
         {
-            case 0:
-                if(mSpringAnimation == null){
-                    currentSolver = createSpringSolver(50,0.99f);
-                    setupSpringAnimator();
-                    mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
-                    mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
-                    mSpringAnimation.animateToFinalPosition(mPhysicsState.getStateValue(state));
-                }
-                else{
-                    mSpringAnimation.getSpring().setDampingRatio(0.99f);
-                    mSpringAnimation.getSpring().setStiffness(50);
-                    mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
-                    mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
-                    mSpringAnimation.animateToFinalPosition(mPhysicsState.getStateValue(state));
-                }
-                break;
-            case 1:
+            case FLING_SOLVER_MODE:
+                currentSolver = springDefaultSolver;
+                setupSpringAnimator(currentSolver);
                 mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
                 mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
                 mSpringAnimation.animateToFinalPosition(mPhysicsState.getStateValue(state));
                 break;
-            case 2:
+            case SPRING_SOLVER_MODE:
+                mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
+                mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
+                mSpringAnimation.animateToFinalPosition(mPhysicsState.getStateValue(state));
+                break;
+            case TIMING_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(mPhysicsState.getPhysicsValue(),mPhysicsState.getStateValue(state));
                 mTimingAnimation.start();
                 break;
@@ -474,28 +437,19 @@ public class AnimationController<T> {
     public void animateTo(float value){
         switch(SOLVER_MODE)
         {
-            case 0:
-                if(mSpringAnimation == null){
-                    currentSolver = createSpringSolver(50,0.99f);
-                    setupSpringAnimator();
-                    mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
-                    mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
-                    mSpringAnimation.animateToFinalPosition(value);
-                }
-                else{
-                    mSpringAnimation.getSpring().setDampingRatio(0.99f);
-                    mSpringAnimation.getSpring().setStiffness(50);
-                    mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
-                    mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
-                    mSpringAnimation.animateToFinalPosition(value);
-                }
-                break;
-            case 1:
+            case FLING_SOLVER_MODE:
+                currentSolver = springDefaultSolver;
+                setupSpringAnimator(currentSolver);
                 mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
                 mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
                 mSpringAnimation.animateToFinalPosition(value);
                 break;
-            case 2:
+            case SPRING_SOLVER_MODE:
+                mSpringAnimation.setStartValue(mPhysicsState.getPhysicsValue());
+                mSpringAnimation.setStartVelocity(mPhysicsState.getPhysicsVelocity());
+                mSpringAnimation.animateToFinalPosition(value);
+                break;
+            case TIMING_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(mPhysicsState.getPhysicsValue(),value);
                 mTimingAnimation.start();
                 break;

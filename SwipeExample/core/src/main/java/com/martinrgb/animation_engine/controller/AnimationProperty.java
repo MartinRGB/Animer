@@ -14,10 +14,6 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         mName= name;
     }
 
-    public String getPropertyName(){
-        return mName;
-    };
-
     public static final AnimationProperty TRANSLATION_X = new AnimationProperty("translationX") {
         @Override
         public void setValue(View view, float value) {

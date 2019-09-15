@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class SpringSolver extends AnimationSolver {
 
-    private float mStiffness,mDampingRatio;
+    private float mStiffness = 300.f,mDampingRatio = 0.6f;
     private Object springSolver;
 
     public SpringSolver() {

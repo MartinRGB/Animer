@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class FlingSolver extends AnimationSolver {
 
-    private float mStartVelocity,mFriction;
+    private float mStartVelocity = 1000.f,mFriction = 0.5f;
     private Object flingSolver;
 
     public FlingSolver(float velocity,float friction) {

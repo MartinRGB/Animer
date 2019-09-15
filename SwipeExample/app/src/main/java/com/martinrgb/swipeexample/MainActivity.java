@@ -8,11 +8,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.martinrgb.animation_engine.controller.AnimationProperty;
 import com.martinrgb.animation_engine.controller.AnimationController;
+import com.martinrgb.animation_engine.controller.AnimatorCreator;
+import com.martinrgb.animation_engine.solver.SpringSolver;
+import com.martinrgb.animation_engine.solver.TimingSolver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
         //SpringSolver springSolver = new SpringSolver(200,30);
 
-        //mOpenAnimController = new AnimationController(AnimationController.createSpringSolver(400,0.25f),card,AnimationProperty.TRANSLATION_Y, 0,700);
-
-        mOpenAnimController = new AnimationController(AnimationController.createSpringSolver(400,0.25f),card,AnimationProperty.TRANSLATION_Y, 0,700);
+        mOpenAnimController = new AnimationController(AnimatorCreator.createFlingAnimation(),card,AnimationProperty.TRANSLATION_Y,0,700);
 
         mOpenAnimController.setAnimationListener(new AnimationController.AnimationListener() {
             @Override
             public void onAnimationUpdate(float value, float velocity) {
+
+                Log.e("Canceled",String.valueOf(velocity));
             }
 
             @Override
@@ -58,25 +63,18 @@ public class MainActivity extends AppCompatActivity {
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                float startX = 0,startY = 0,transX = 0,transY = 0;
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         Log.i("TAG", "touched down");
-//                        mOpenAnimController.useOrigamiPOPSpring(30,10);
-                        mOpenAnimController.getSpringSolver().useAndroidSpring(1500,0.5f);
-                        mOpenAnimController.animateTo(700);
-                        startX = motionEvent.getX();
-                        startY = motionEvent.getY();
+                        mOpenAnimController.setSolver(AnimationController.createSpringSolver(500,0.5f));
+                        mOpenAnimController.animateToState("End");
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        transX = motionEvent.getX() - startX;
-                        transY = motionEvent.getY() - startY;
                         Log.i("TAG", "touched move");
                         break;
                     case MotionEvent.ACTION_UP:
-//                        mOpenAnimController.useOrigamiPOPSpring(5,10);
-                        mOpenAnimController.getSpringSolver().useOrigamiPOPSpring(30,10);
-                        mOpenAnimController.animateTo(0);
+                        mOpenAnimController.setSolver(AnimationController.createFlingSolver(500,0.24f));
+                        mOpenAnimController.animateToState("Start");
                         Log.i("TAG", "touched up");
                         break;
                     case MotionEvent.ACTION_CANCEL:
@@ -87,21 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-//        card.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                if(!isClicked){
-//                    mOpenAnimController.setEndValue(0.4f);
-//                }
-//                else{
-//                    mOpenAnimController.setEndValue(1);
-//                }
-//
-//                isClicked = !isClicked;
-//            }
-//        });
 
     }
 

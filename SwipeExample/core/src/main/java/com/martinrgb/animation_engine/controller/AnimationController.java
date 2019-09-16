@@ -63,7 +63,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(T animatorObject,K target, FloatPropertyCompat<K> property) {
+    public <K> AnimationController(K target, T animatorObject,FloatPropertyCompat<K> property) {
         mAnimatorObject = animatorObject;
         mTarget = target;
         mProperty = property;
@@ -73,7 +73,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(T animatorObject,K target, FloatPropertyCompat<K> property,float to) {
+    public <K> AnimationController(K target, T animatorObject,FloatPropertyCompat<K> property,float to) {
         mAnimatorObject = animatorObject;
         mTarget = target;
         mProperty = property;
@@ -83,7 +83,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(T animatorObject,K target, FloatPropertyCompat<K> property,float from,float to) {
+    public <K> AnimationController(K target,T animatorObject, FloatPropertyCompat<K> property,float from,float to) {
         mAnimatorObject = animatorObject;
         mTarget = target;
         mProperty = property;
@@ -92,7 +92,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(AnimationSolver solver, K target, FloatPropertyCompat<K> property, float from, float to) {
+    public <K> AnimationController(K target, AnimationSolver solver,FloatPropertyCompat<K> property, float from, float to) {
         mTarget = target;
         mProperty = property;
         mPhysicsState = new PhysicsState(from,to);
@@ -165,8 +165,8 @@ public class AnimationController<T> {
                         mProperty.setValue(mTarget, mPhysicsState.getPhysicsValue());
                     }
 
-                    if (mListener != null) {
-                        mListener.onAnimationUpdate(value, velocity);
+                    if (updateListener != null) {
+                        updateListener.onUpdate(value, velocity);
                     }
                 }
             });
@@ -174,8 +174,8 @@ public class AnimationController<T> {
                 @Override
                 public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                     mPhysicsState.updatePhysics(value, velocity);
-                    if (mListener != null) {
-                        mListener.onAnimationEnd(canceled, value, velocity);
+                    if (endListener != null) {
+                        endListener.onEnd(canceled, value, velocity);
                     }
                 }
             });
@@ -211,8 +211,8 @@ public class AnimationController<T> {
                         mProperty.setValue(mTarget, mPhysicsState.getPhysicsValue());
                     }
 
-                    if (mListener != null) {
-                        mListener.onAnimationUpdate(value, velocity);
+                    if (updateListener != null) {
+                        updateListener.onUpdate(value, velocity);
                     }
                 }
             });
@@ -220,8 +220,8 @@ public class AnimationController<T> {
                 @Override
                 public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                     mPhysicsState.updatePhysics(value, velocity);
-                    if (mListener != null) {
-                        mListener.onAnimationEnd(canceled, value, velocity);
+                    if (endListener != null) {
+                        endListener.onEnd(canceled, value, velocity);
                     }
                 }
             });
@@ -258,8 +258,8 @@ public class AnimationController<T> {
 
                     mPhysicsState.updatePhysics(value, velocity);
 
-                    if (mListener != null) {
-                        mListener.onAnimationUpdate(value, velocity);
+                    if (updateListener != null) {
+                        updateListener.onUpdate(value, velocity);
                     }
 
                     if (ANIMATOR_MODE != VALUE_ANIMATOR_MODE) {
@@ -274,8 +274,8 @@ public class AnimationController<T> {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     mPhysicsState.updatePhysics(mPhysicsState.getPhysicsValue(), 0);
-                    if (mListener != null) {
-                        mListener.onAnimationEnd(true, mPhysicsState.getPhysicsValue(), 0);
+                    if (endListener != null) {
+                        endListener.onEnd(true, mPhysicsState.getPhysicsValue(), 0);
                     }
                 }
             });
@@ -494,16 +494,23 @@ public class AnimationController<T> {
     // Animation Listener
     // ############################################
 
-    private AnimationListener mListener;
+    private UpdateListener updateListener;
+    private EndListener endListener;
 
-    public void setAnimationListener(AnimationListener listener) {
-        mListener = listener;
+    public void setUpdateListener(UpdateListener listener) {
+        updateListener = listener;
     }
 
-    public interface AnimationListener {
-        void onAnimationUpdate(float value, float velocity);
+    public void setEndListener(EndListener listener) {
+        endListener = listener;
+    }
 
-        void onAnimationEnd(boolean canceled, float value, float velocity);
+    public interface UpdateListener {
+        void onUpdate(float value, float velocity);
+    }
+    public interface EndListener{
+
+        void onEnd(boolean canceled, float value, float velocity);
     }
 
 }

@@ -47,17 +47,14 @@ public class MainActivity extends AppCompatActivity {
         // # Animation Solver
         AnimationSolver mTimingSolver = new TimingSolver(new DecelerateInterpolator(), 500);
         // # Init the AnimController
-        mOpenAnimController = new AnimationController(mTimingSolver,card,AnimationProperty.SCALE,1,0.5f);
+        mOpenAnimController = new AnimationController(card,mTimingSolver,AnimationProperty.SCALE,1,0.5f);
         // # Add a state into state Machine
         mOpenAnimController.setState("Bigger",3);
         // # Animation Listener;
-        mOpenAnimController.setAnimationListener(new AnimationController.AnimationListener() {
+        mOpenAnimController.setUpdateListener(new AnimationController.UpdateListener() {
             @Override
-            public void onAnimationUpdate(float value, float velocity) {Log.e("Velocity",String.valueOf(velocity));
-            }
-            @Override
-            public void onAnimationEnd(boolean canceled, float value, float velocity) {
-
+            public void onUpdate(float value, float velocity) {
+                Log.e("Velocity",String.valueOf(velocity));
             }
         });
 

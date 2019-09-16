@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mOpenAnimController.setUpdateListener(new AnimationController.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity) {
-                Log.e("Velocity",String.valueOf(velocity));
+                //Log.e("Velocity",String.valueOf(velocity));
             }
         });
 
@@ -64,15 +64,15 @@ public class MainActivity extends AppCompatActivity {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         // # Reset The Solver;
-                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(40,2));
+                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(5,2));
                         // # Start The Animation to End
                         mOpenAnimController.start();
                         break;
                     case MotionEvent.ACTION_UP:
                         // # Reset The Solver;
-                        mOpenAnimController.setSolver(new TimingSolver(new FastOutSlowInInterpolator(),1000));
+                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(20,2));
                         // # Animate to State "Bigger"
-                        mOpenAnimController.animateToState("Bigger");
+                        mOpenAnimController.animateTo(4);
                         break;
                 }
                 return true;

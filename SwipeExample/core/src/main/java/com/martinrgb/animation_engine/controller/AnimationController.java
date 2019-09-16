@@ -6,6 +6,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.util.Log;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import androidx.dynamicanimation.animation.DynamicAnimation;
@@ -50,6 +52,8 @@ public class AnimationController<T> {
     private static final int OBJECT_ANIMAOTR_MODE = 1;
     private int ANIMATOR_MODE = -1;
 
+    private View view;
+
     // ###########################################
     // Constructor
     // ###########################################
@@ -66,6 +70,7 @@ public class AnimationController<T> {
     public <K> AnimationController(K target, T animatorObject,FloatPropertyCompat<K> property) {
         mAnimatorObject = animatorObject;
         mTarget = target;
+        view = (View) target;
         mProperty = property;
         float proertyValue = mProperty.getValue(mTarget);
         mPhysicsState = new PhysicsState(proertyValue);
@@ -76,6 +81,7 @@ public class AnimationController<T> {
     public <K> AnimationController(K target, T animatorObject,FloatPropertyCompat<K> property,float to) {
         mAnimatorObject = animatorObject;
         mTarget = target;
+        view = (View) target;
         mProperty = property;
         float proertyValue = mProperty.getValue(mTarget);
         mPhysicsState = new PhysicsState(proertyValue,to);
@@ -86,6 +92,7 @@ public class AnimationController<T> {
     public <K> AnimationController(K target,T animatorObject, FloatPropertyCompat<K> property,float from,float to) {
         mAnimatorObject = animatorObject;
         mTarget = target;
+        view = (View) target;
         mProperty = property;
         mPhysicsState = new PhysicsState(from,to);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
@@ -94,6 +101,7 @@ public class AnimationController<T> {
 
     public <K> AnimationController(K target, AnimationSolver solver,FloatPropertyCompat<K> property, float from, float to) {
         mTarget = target;
+        view = (View) target;
         mProperty = property;
         mPhysicsState = new PhysicsState(from,to);
         ANIMATOR_MODE = OBJECT_ANIMAOTR_MODE;
@@ -174,6 +182,7 @@ public class AnimationController<T> {
                 @Override
                 public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                     mPhysicsState.updatePhysics(value, velocity);
+                    setHardwareAcceleration(false);
                     if (endListener != null) {
                         endListener.onEnd(canceled, value, velocity);
                     }
@@ -220,6 +229,7 @@ public class AnimationController<T> {
                 @Override
                 public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                     mPhysicsState.updatePhysics(value, velocity);
+                    setHardwareAcceleration(false);
                     if (endListener != null) {
                         endListener.onEnd(canceled, value, velocity);
                     }
@@ -274,6 +284,7 @@ public class AnimationController<T> {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     mPhysicsState.updatePhysics(mPhysicsState.getPhysicsValue(), 0);
+                    setHardwareAcceleration(false);
                     if (endListener != null) {
                         endListener.onEnd(true, mPhysicsState.getPhysicsValue(), 0);
                     }
@@ -340,6 +351,7 @@ public class AnimationController<T> {
         }
     }
     public void start(){
+        setHardwareAcceleration(true);
         if(SOLVER_MODE == FLING_SOLVER_MODE)
             mFlingAnimation.start();
         else
@@ -406,6 +418,7 @@ public class AnimationController<T> {
         setCurrenetPhysicsValue(mPhysicsState.getStateValue(state));
     }
     public void animateToState(String state){
+        setHardwareAcceleration(true);
         setCurrenetPhysicsValue(mPhysicsState.getPhysicsValue());
         switch(SOLVER_MODE)
         {
@@ -435,6 +448,9 @@ public class AnimationController<T> {
 
     // # Equal to [setEndVlaue]
     public void animateTo(float value){
+        setHardwareAcceleration(true);
+        // ##Need Ob
+        setCurrenetPhysicsValue(mPhysicsState.getPhysicsValue());
         switch(SOLVER_MODE)
         {
             case FLING_SOLVER_MODE:
@@ -493,6 +509,23 @@ public class AnimationController<T> {
     // ############################################
     // Animation Listener
     // ############################################
+
+    private void setHardwareAcceleration(boolean enable){
+
+        if(enable){
+            if(view.getLayerType() == View.LAYER_TYPE_NONE){
+                Log.e("Enabled","Enabled");
+                view.setLayerType(View.LAYER_TYPE_HARDWARE,null);
+            }
+        }
+        else{
+            if(view.getLayerType() == View.LAYER_TYPE_HARDWARE){
+                Log.e("Disabled","Disabled");
+                view.setLayerType(View.LAYER_TYPE_NONE,null);
+            }
+        }
+
+    }
 
     private UpdateListener updateListener;
     private EndListener endListener;

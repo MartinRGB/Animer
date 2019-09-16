@@ -1,7 +1,7 @@
-package com.martinrgb.animer.util;
+package com.martinrgb.animer.core.util;
 
 // From Facebook Rebound
-public class AnUtil {
+public class AnimerUtil {
 
     /**
      * Map a value within a given range to another range.

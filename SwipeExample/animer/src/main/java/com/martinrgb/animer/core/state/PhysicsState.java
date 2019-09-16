@@ -1,4 +1,4 @@
-package com.martinrgb.animer.controller;
+package com.martinrgb.animer.core.state;
 
 import android.util.Log;
 import java.util.HashMap;

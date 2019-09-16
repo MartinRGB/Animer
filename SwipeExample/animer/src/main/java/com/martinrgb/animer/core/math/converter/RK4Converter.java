@@ -1,23 +1,23 @@
-package com.martinrgb.animer.converter;
+package com.martinrgb.animer.core.math.converter;
 
-public class DHOConverter extends AnSpringConverter {
+public class RK4Converter extends AnSpringConverter {
 
     private boolean otherParaCalculation = false;
 
-    public DHOConverter(double stiffness,double damping) {
+    public RK4Converter(double tension,double friction) {
         super();
-        calculate(stiffness,damping,1,0);
+        calculate(tension,friction,1,0);
     }
 
-    public DHOConverter(double stiffness,double damping,double mass,double velocity) {
+    public RK4Converter(double tension,double friction,double mass,double velocity) {
         super();
-        calculate(stiffness,damping,mass,velocity);
+        calculate(tension,friction,mass,velocity);
     }
 
-    private void calculate(double s,double d,double m,double v){
+    private void calculate(double t,double f,double m,double v){
 
-        mStiffness = s;
-        mDamping = d;
+        mStiffness = t;
+        mDamping = f;
         mMass = m;
         mVelocity = v;
 

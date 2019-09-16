@@ -1,8 +1,6 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -17,12 +15,10 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.martinrgb.animer.controller.AnProperty;
-import com.martinrgb.animer.controller.Animer;
-import com.martinrgb.animer.solver.AnSolver;
-import com.martinrgb.animer.solver.SpringSolver;
-import com.martinrgb.animer.solver.TimingSolver;
-import com.martinrgb.animer.util.AnUtil;
+import com.martinrgb.animer.core.Animer;
+import com.martinrgb.animer.core.solver.SpringSolver;
+import com.martinrgb.animer.core.solver.TimingSolver;
+import com.martinrgb.animer.core.util.AnimerUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,33 +40,31 @@ public class MainActivity extends AppCompatActivity {
         drag_area = findViewById(R.id.drag_area);
         page2 = findViewById(R.id.page_2);
 
-        mOpenAnim = new Animer(page2,new SpringSolver(450,0.92f), AnProperty.TRANSLATION_X,1080,0f);
+        mOpenAnim = new Animer(page2,new SpringSolver(450,0.92f), Animer.TRANSLATION_X,1080,0f);
         mOpenAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity,float progress) {
-                float alphaValue = (float) AnUtil.mapClampedValueFromRangeToRange(progress,0,1,0,0.5f);
-                float transValue = (float) AnUtil.mapClampedValueFromRangeToRange(progress,0,1,0,-200);
+                float alphaValue = (float) AnimerUtil.mapClampedValueFromRangeToRange(progress,0,1,0,0.5f);
+                float transValue = (float) AnimerUtil.mapClampedValueFromRangeToRange(progress,0,1,0,-200);
                 findViewById(R.id.page_mask).setAlpha(alphaValue);
                 findViewById(R.id.page_1).setTranslationX(transValue);
 
                 if(progress > 0.5){
-                    float bottomTrans = (float) AnUtil.mapClampedValueFromRangeToRange(progress,0.5,1,240,0);
+                    float bottomTrans = (float) AnimerUtil.mapClampedValueFromRangeToRange(progress,0.5,1,240,0);
                     findViewById(R.id.page_2_bottom).setTranslationY(bottomTrans);
                 }
             }
         });
 
-        mClickAnim = new Animer(card_mask,SpringSolver.createOrigamiSpring(10,12), AnProperty.ALPHA,0,0.3f);
+        mClickAnim = new Animer(card_mask,SpringSolver.createOrigamiSpring(10,12), Animer.ALPHA,0,0.3f);
         mClickAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity,float progress) {
-                float scaleValue = (float) AnUtil.mapValueFromRangeToRange(progress,0,1,1,1.03);
+                float scaleValue = (float) AnimerUtil.mapValueFromRangeToRange(progress,0,1,1,1.03);
                 card.setScaleX(scaleValue);
                 card.setScaleY(scaleValue);
             }
         });
-
-
 
         card.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -1,4 +1,4 @@
-package com.martinrgb.animer.solver;
+package com.martinrgb.animer.core.solver;
 
 public class FlingSolver extends AnSolver {
 

@@ -1,9 +1,9 @@
-package com.martinrgb.animer.solver;
+package com.martinrgb.animer.core.solver;
 
-import com.martinrgb.animer.converter.DHOConverter;
-import com.martinrgb.animer.converter.OrigamiPOPConverter;
-import com.martinrgb.animer.converter.RK4Converter;
-import com.martinrgb.animer.converter.UIViewSpringConverter;
+import com.martinrgb.animer.core.math.converter.DHOConverter;
+import com.martinrgb.animer.core.math.converter.OrigamiPOPConverter;
+import com.martinrgb.animer.core.math.converter.RK4Converter;
+import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
 
 public class SpringSolver extends AnSolver {
 

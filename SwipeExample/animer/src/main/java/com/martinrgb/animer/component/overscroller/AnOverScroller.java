@@ -1,4 +1,4 @@
-package com.martinrgb.animer.overscroller;
+package com.martinrgb.animer.component.overscroller;
 
 //package com.example.martinrgb.scrollview_test_android.scrollview;
 

@@ -1,4 +1,4 @@
-package com.martinrgb.animer.interpolator;
+package com.martinrgb.animer.core.interpolator;
 
 // Interpolator Version of Android's SpringAnimation
 

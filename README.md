@@ -34,6 +34,7 @@ for a better Android Experience
 - Use android framework native DyanmicAniamtion And TimingInterpolator
 - Pre-save animation's data for less calculation
 - Hardware Acceleration
+- RenderThread
 
 **Design Component**
 

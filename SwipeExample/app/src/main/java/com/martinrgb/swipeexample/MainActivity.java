@@ -2,6 +2,7 @@ package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -43,27 +44,10 @@ public class MainActivity extends AppCompatActivity {
         drag_area = findViewById(R.id.drag_area);
         page2 = findViewById(R.id.page_2);
 
-        setupAnimer();
-
-        Animer animer = new Animer(new SpringSolver(200,0.5f));
-        animer.setUpdateListener(new Animer.UpdateListener() {
-            @Override
-            public void onUpdate(float value, float velocity, float progress) {
-                Log.e("Value",String.valueOf(value));
-            }
-        });
-        animer.start();
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void setupAnimer(){
         mOpenAnim = new Animer(page2,new SpringSolver(450,0.92f), AnProperty.TRANSLATION_X,1080,0f);
-
         mOpenAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity,float progress) {
-
-                //Log.e("Velocity",String.valueOf(velocity));
                 float alphaValue = (float) AnUtil.mapClampedValueFromRangeToRange(progress,0,1,0,0.5f);
                 float transValue = (float) AnUtil.mapClampedValueFromRangeToRange(progress,0,1,0,-200);
                 findViewById(R.id.page_mask).setAlpha(alphaValue);
@@ -80,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
         mClickAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity,float progress) {
-
-
                 float scaleValue = (float) AnUtil.mapValueFromRangeToRange(progress,0,1,1,1.03);
                 card.setScaleX(scaleValue);
                 card.setScaleY(scaleValue);
@@ -104,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-
                                 mOpenAnim.setSolver(new SpringSolver(450, 0.92f));
                                 mOpenAnim.start();
                             }
@@ -134,10 +115,8 @@ public class MainActivity extends AppCompatActivity {
                         mOpenAnim.setSolver(new TimingSolver(new LinearInterpolator(),0));
                         dX = view.getX() - motionEvent.getRawX();
                         if (velocityTracker == null) {
-                            // Retrieve a new VelocityTracker object to watch the velocity of a motion.
                             velocityTracker = VelocityTracker.obtain();
                         } else {
-                            // Reset the velocity tracker back to its initial state.
                             velocityTracker.clear();
                         }
                         velocityTracker.addMovement(motionEvent);
@@ -153,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case MotionEvent.ACTION_UP:
-
                         float initVelocity = initXVel / (mOpenAnim.getStateValue("Start") - initXPos);
                         Log.e("Val",String.valueOf(initXVel));
                         mOpenAnim.setSolver(new SpringSolver(450, 0.92f));
@@ -173,11 +151,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteBars() {
-        //Delete Title Bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        //Delete Action Bar
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getSupportActionBar().hide();
     }

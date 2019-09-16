@@ -33,12 +33,8 @@ public class Animer<T> {
     private SpringAnimation mSpringAnimation;
     private ObjectAnimator mTimingAnimation;
 
-    private static final float mStartVelocity = 1000,mFriction = 0.5f;
-    private static final float mStiffness = 300f,mDampingRatio = 0.6f;
 
     private float mPrevVelocity = 0,mCurrentVelocity = 0;
-    private static final TimeInterpolator mTimingInterpolator = new LinearInterpolator();
-    private static final float mTimingDuration = 500;
 
     private static AnSolver currentSolver;
     private static final SpringSolver springDefaultSolver = new SpringSolver(50,0.99f);
@@ -129,6 +125,7 @@ public class Animer<T> {
 
     private void setupBySolver(AnSolver solver) {
         SOLVER_MODE = solver.getSolverMode();
+
         switch(solver.getSolverMode())
         {
             case FLING_SOLVER_MODE:
@@ -217,6 +214,8 @@ public class Animer<T> {
     }
 
     private void setupTimingAnimator(AnSolver solver){
+
+
         if(mTimingAnimation == null) {
             mTimingAnimation = new ObjectAnimator();
             mTimingAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

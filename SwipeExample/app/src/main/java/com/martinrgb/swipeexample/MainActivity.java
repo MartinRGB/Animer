@@ -1,25 +1,20 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.martinrgb.animation_engine.controller.AnimationProperty;
-import com.martinrgb.animation_engine.controller.AnimationController;
-import com.martinrgb.animation_engine.solver.AnimationSolver;
-import com.martinrgb.animation_engine.solver.FlingSolver;
+import com.martinrgb.animation_engine.controller.AnimProperty;
+import com.martinrgb.animation_engine.controller.Animer;
+import com.martinrgb.animation_engine.solver.AnimSolver;
 import com.martinrgb.animation_engine.solver.SpringSolver;
 import com.martinrgb.animation_engine.solver.TimingSolver;
 
@@ -27,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RelativeLayout card;
     private ImageView card_mask;
-    private AnimationController mOpenAnimController;
+    private Animer mAnim;
     private boolean isClicked =false;
     private View view;
     private float mPrevVelocity = 0,mCurrentVelocity = 0;
@@ -45,13 +40,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         // # Animation Solver
-        AnimationSolver mTimingSolver = new TimingSolver(new DecelerateInterpolator(), 500);
-        // # Init the AnimController
-        mOpenAnimController = new AnimationController(card,mTimingSolver,AnimationProperty.SCALE,1,0.5f);
+        AnimSolver mTimingSolver = new TimingSolver(new DecelerateInterpolator(), 500);
+        // # Init the Animer
+        mAnim = new Animer(card,mTimingSolver, AnimProperty.SCALE,1,0.5f);
         // # Add a state into state Machine
-        mOpenAnimController.setState("Bigger",3);
+        mAnim.setState("Bigger",3);
         // # Animation Listener;
-        mOpenAnimController.setUpdateListener(new AnimationController.UpdateListener() {
+        mAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity) {
                 //Log.e("Velocity",String.valueOf(velocity));
@@ -64,15 +59,15 @@ public class MainActivity extends AppCompatActivity {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         // # Reset The Solver;
-                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(5,2));
+                        mAnim.setSolver(SpringSolver.createOrigamiSpring(5,2));
                         // # Start The Animation to End
-                        mOpenAnimController.start();
+                        mAnim.start();
                         break;
                     case MotionEvent.ACTION_UP:
                         // # Reset The Solver;
-                        mOpenAnimController.setSolver(SpringSolver.createOrigamiSpring(20,2));
+                        mAnim.setSolver(SpringSolver.createOrigamiSpring(20,2));
                         // # Animate to State "Bigger"
-                        mOpenAnimController.animateTo(4);
+                        mAnim.animateTo(4);
                         break;
                 }
                 return true;

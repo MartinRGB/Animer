@@ -16,14 +16,14 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-import com.martinrgb.animation_engine.solver.AnimationSolver;
+import com.martinrgb.animation_engine.solver.AnimSolver;
 import com.martinrgb.animation_engine.solver.FlingSolver;
 import com.martinrgb.animation_engine.solver.SpringSolver;
 import com.martinrgb.animation_engine.solver.TimingSolver;
 
 
 
-public class AnimationController<T> {
+public class Animer<T> {
 
     private T mAnimatorObject;
     final Object mTarget;
@@ -41,7 +41,7 @@ public class AnimationController<T> {
     private TimeInterpolator mTimingInterpolator = new LinearInterpolator();
     private float mTimingDuration = 500;
 
-    private static AnimationSolver currentSolver;
+    private static AnimSolver currentSolver;
     private static final SpringSolver springDefaultSolver = new SpringSolver(50,0.99f);
     private static final int FLING_SOLVER_MODE = 0;
     private static final int SPRING_SOLVER_MODE = 1;
@@ -58,7 +58,7 @@ public class AnimationController<T> {
     // Constructor
     // ###########################################
 
-    public AnimationController(T animatorObject) {
+    public Animer(T animatorObject) {
         mAnimatorObject = animatorObject;
         mTarget = null;
         mProperty = null;
@@ -67,7 +67,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(K target, T animatorObject,FloatPropertyCompat<K> property) {
+    public <K> Animer(K target, T animatorObject, FloatPropertyCompat<K> property) {
         mAnimatorObject = animatorObject;
         mTarget = target;
         view = (View) target;
@@ -78,7 +78,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(K target, T animatorObject,FloatPropertyCompat<K> property,float to) {
+    public <K> Animer(K target, T animatorObject, FloatPropertyCompat<K> property, float to) {
         mAnimatorObject = animatorObject;
         mTarget = target;
         view = (View) target;
@@ -89,7 +89,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(K target,T animatorObject, FloatPropertyCompat<K> property,float from,float to) {
+    public <K> Animer(K target, T animatorObject, FloatPropertyCompat<K> property, float from, float to) {
         mAnimatorObject = animatorObject;
         mTarget = target;
         view = (View) target;
@@ -99,7 +99,7 @@ public class AnimationController<T> {
         setupByAnimator(mAnimatorObject);
     }
 
-    public <K> AnimationController(K target, AnimationSolver solver,FloatPropertyCompat<K> property, float from, float to) {
+    public <K> Animer(K target, AnimSolver solver, FloatPropertyCompat<K> property, float from, float to) {
         mTarget = target;
         view = (View) target;
         mProperty = property;
@@ -114,7 +114,7 @@ public class AnimationController<T> {
     // ############################################
 
     // TODO:MORE Accuracy Setting
-    public void setSolver(AnimationSolver solver){
+    public void setSolver(AnimSolver solver){
         currentSolver = solver;
         cancelAllAnimation();
         setupByAnimator(currentSolver);
@@ -124,7 +124,7 @@ public class AnimationController<T> {
     // Setup Aniamtor
     // ############################################
 
-    private void setupBySolver(AnimationSolver solver) {
+    private void setupBySolver(AnimSolver solver) {
         SOLVER_MODE = solver.getSolverMode();
         switch(solver.getSolverMode())
         {
@@ -160,7 +160,7 @@ public class AnimationController<T> {
         setupBySolver(currentSolver);
     }
 
-    private void setupFlingAnimator(AnimationSolver solver){
+    private void setupFlingAnimator(AnimSolver solver){
         if(mFlingAnimation == null) {
             mFlingAnimation = new FlingAnimation(new FloatValueHolder());
             mFlingAnimation.setMinimumVisibleChange(0.001f);
@@ -192,12 +192,12 @@ public class AnimationController<T> {
         attachSolverToFling(solver,mFlingAnimation);
     }
 
-    private void attachSolverToFling(AnimationSolver solver,FlingAnimation flingAnimation){
+    private void attachSolverToFling(AnimSolver solver, FlingAnimation flingAnimation){
         final FlingAnimation flingAnim = flingAnimation;
         flingAnim.setStartVelocity(((FlingSolver)solver).getVelocity());
         flingAnim.setFriction(((FlingSolver)solver).getFriction());
 
-        solver.setSolverListener(new AnimationSolver.SolverListener() {
+        solver.setSolverListener(new AnimSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 flingAnim.setStartVelocity((float) arg1);
@@ -206,7 +206,7 @@ public class AnimationController<T> {
         });
     }
 
-    private void setupSpringAnimator(AnimationSolver solver){
+    private void setupSpringAnimator(AnimSolver solver){
         if(mSpringAnimation == null) {
             mSpringAnimation = new SpringAnimation(new FloatValueHolder());
             mSpringAnimation.setSpring(new SpringForce());
@@ -239,12 +239,12 @@ public class AnimationController<T> {
         attachSolverToSpring(solver,mSpringAnimation);
     }
 
-    private void attachSolverToSpring(AnimationSolver solver,SpringAnimation springAnimation){
+    private void attachSolverToSpring(AnimSolver solver, SpringAnimation springAnimation){
         final SpringAnimation springAnim = springAnimation;
         springAnim.getSpring().setStiffness(((SpringSolver)solver).getStiffness());
         springAnim.getSpring().setDampingRatio(((SpringSolver)solver).getDampingRatio());
 
-        solver.setSolverListener(new AnimationSolver.SolverListener() {
+        solver.setSolverListener(new AnimSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 springAnim.getSpring().setStiffness((float) arg1);
@@ -253,7 +253,7 @@ public class AnimationController<T> {
         });
     }
 
-    private void setupTimingAnimator(AnimationSolver solver){
+    private void setupTimingAnimator(AnimSolver solver){
         if(mTimingAnimation == null) {
             mTimingAnimation = new ObjectAnimator();
             mTimingAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -294,12 +294,12 @@ public class AnimationController<T> {
         attachSolverToTiming(solver,mTimingAnimation);
     }
 
-    private void attachSolverToTiming(AnimationSolver solver,ObjectAnimator timingAnimation){
+    private void attachSolverToTiming(AnimSolver solver, ObjectAnimator timingAnimation){
         final ObjectAnimator timingAnim = timingAnimation;
         timingAnim.setInterpolator(((TimingSolver)solver).getInterpolator());
         timingAnim.setDuration((long) ((TimingSolver)solver).getDuration());
 
-        solver.setSolverListener(new AnimationSolver.SolverListener() {
+        solver.setSolverListener(new AnimSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 timingAnim.setInterpolator((TimeInterpolator) arg1);

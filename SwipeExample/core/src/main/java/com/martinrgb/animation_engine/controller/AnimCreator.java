@@ -2,19 +2,17 @@ package com.martinrgb.animation_engine.controller;
 
 import android.util.Log;
 
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.FloatValueHolder;
-import androidx.dynamicanimation.animation.SpringAnimation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class AnimatorCreator extends  Object{
+public class AnimCreator extends  Object{
 
 
     private Object[] mArgs = null;
     private String mClassName = null;
-    private AnimatorCreator(String className,Object[] args) {
+    private AnimCreator(String className, Object[] args) {
         mClassName = className;
         mArgs = args;
     }
@@ -49,7 +47,7 @@ public class AnimatorCreator extends  Object{
 
 
     private static Object createAnimator(final String className,final Object[] args) {
-        return new AnimatorCreator(className,args).getAnimator();
+        return new AnimCreator(className,args).getAnimator();
     }
 
     public static Object createSpringAnimator(){

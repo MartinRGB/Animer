@@ -5,16 +5,16 @@ import android.view.View;
 import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 
-public abstract class AnimationProperty extends FloatPropertyCompat<View> {
+public abstract class AnimProperty extends FloatPropertyCompat<View> {
 
     private String mName;
 
-    private AnimationProperty(String name) {
+    private AnimProperty(String name) {
         super(name);
         mName= name;
     }
 
-    public static final AnimationProperty TRANSLATION_X = new AnimationProperty("translationX") {
+    public static final AnimProperty TRANSLATION_X = new AnimProperty("translationX") {
         @Override
         public void setValue(View view, float value) {
             view.setTranslationX(value);
@@ -26,7 +26,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty TRANSLATION_Y = new AnimationProperty("translationY") {
+    public static final AnimProperty TRANSLATION_Y = new AnimProperty("translationY") {
         @Override
         public void setValue(View view, float value) {
             view.setTranslationY(value);
@@ -38,7 +38,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty TRANSLATION_Z = new AnimationProperty("translationZ") {
+    public static final AnimProperty TRANSLATION_Z = new AnimProperty("translationZ") {
         @Override
         public void setValue(View view, float value) {
             ViewCompat.setTranslationZ(view, value);
@@ -50,7 +50,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty SCALE = new AnimationProperty("scale") {
+    public static final AnimProperty SCALE = new AnimProperty("scale") {
         @Override
         public void setValue(View view, float value) {
             view.setScaleX(value);
@@ -63,7 +63,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty SCALE_X = new AnimationProperty("scaleX") {
+    public static final AnimProperty SCALE_X = new AnimProperty("scaleX") {
         @Override
         public void setValue(View view, float value) {
             view.setScaleX(value);
@@ -75,7 +75,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty SCALE_Y = new AnimationProperty("scaleY") {
+    public static final AnimProperty SCALE_Y = new AnimProperty("scaleY") {
         @Override
         public void setValue(View view, float value) {
             view.setScaleY(value);
@@ -87,7 +87,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty ROTATION = new AnimationProperty("rotation") {
+    public static final AnimProperty ROTATION = new AnimProperty("rotation") {
         @Override
         public void setValue(View view, float value) {
             view.setRotation(value);
@@ -99,7 +99,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty ROTATION_X = new AnimationProperty("rotationX") {
+    public static final AnimProperty ROTATION_X = new AnimProperty("rotationX") {
         @Override
         public void setValue(View view, float value) {
             view.setRotationX(value);
@@ -111,7 +111,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty ROTATION_Y = new AnimationProperty("rotationY") {
+    public static final AnimProperty ROTATION_Y = new AnimProperty("rotationY") {
         @Override
         public void setValue(View view, float value) {
             view.setRotationY(value);
@@ -123,7 +123,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty X = new AnimationProperty("x") {
+    public static final AnimProperty X = new AnimProperty("x") {
         @Override
         public void setValue(View view, float value) {
             view.setX(value);
@@ -135,7 +135,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty Y = new AnimationProperty("y") {
+    public static final AnimProperty Y = new AnimProperty("y") {
         @Override
         public void setValue(View view, float value) {
             view.setY(value);
@@ -147,7 +147,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty Z = new AnimationProperty("z") {
+    public static final AnimProperty Z = new AnimProperty("z") {
         @Override
         public void setValue(View view, float value) {
             ViewCompat.setZ(view, value);
@@ -159,7 +159,7 @@ public abstract class AnimationProperty extends FloatPropertyCompat<View> {
         }
     };
 
-    public static final AnimationProperty ALPHA = new AnimationProperty("alpha") {
+    public static final AnimProperty ALPHA = new AnimProperty("alpha") {
         @Override
         public void setValue(View view, float value) {
             view.setAlpha(value);

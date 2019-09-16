@@ -1,8 +1,5 @@
 package com.martinrgb.animer.component.overscroller;
 
-//package com.example.martinrgb.scrollview_test_android.scrollview;
-
-
 import android.content.Context;
 import android.util.Log;
 import android.view.animation.Interpolator;

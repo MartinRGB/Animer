@@ -14,10 +14,13 @@ public class PhysicsState {
   // ############################################
   public PhysicsState() {
     updatePhysics(0,0);
+    setStateValue("Start",0);
+    setStateValue("End",1);
   }
   public PhysicsState(float start) {
     updatePhysics(start,0);
     setStateValue("Start",start);
+    setStateValue("End",0);
   }
 
   public PhysicsState(float start,float end) {

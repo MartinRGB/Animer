@@ -24,9 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         iv = findViewById(R.id.iv);
-
-        animer = new Animer(iv, SpringSolver.createOrigamiSpring(10,10),Animer.SCALE,1,3);
-
+        animer = new Animer(iv ,SpringSolver.createOrigamiSpring(5,10),Animer.SCALE_Y,1,2);
         animer.setActionerAndListener(iv, new Animer.ActionTouchListener() {
             @Override
             public void onDown(View view, MotionEvent event) {

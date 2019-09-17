@@ -1,4 +1,3 @@
-# Animer
 <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png" width="264" height="100" />
 for a better Android Experience,see project in:
 

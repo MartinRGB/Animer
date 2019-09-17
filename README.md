@@ -2,10 +2,11 @@
 <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png" width="264" height="100" />
 for a better Android Experience,see project in:
 
+[demo branch](https://github.com/MartinRGB/Animer/tree/demo)
 
 [ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.4.1) ](https://bintray.com/martinrgb/animer/animer/0.1.4.1/link)
 
-[demo branch](https://github.com/MartinRGB/Animer/tree/demo)
+
 
 ## Core concpet:
 

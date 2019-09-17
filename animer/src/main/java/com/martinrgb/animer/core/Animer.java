@@ -192,10 +192,7 @@ public class Animer<T> {
         }
     };
 
-
-
     private Object mTarget;
-    private Object mActioner;
     private AnimerProperty mProperty;
     private PhysicsState mPhysicsState;
 
@@ -214,10 +211,8 @@ public class Animer<T> {
     private static final int OBJECT_ANIMAOTR_MODE = 1;
     private int ANIMATOR_MODE = -1;
 
-    private String TAG = "2132314;";
-
     private boolean HARDWAREACCELERATION_IS_ENABLED = false;
-    private boolean ENABLE_ACTIONER_POSTION_VELOCITY = false;
+    private float velocityFactor = 1.0f;
 
     // ###########################################
     // Constructor
@@ -438,7 +433,7 @@ public class Animer<T> {
     // ############################################
 
     // ## Android Style Animaton Interface,driven by PhysicsState's State Machine
-    public void setStartValue(float start){
+    public void setFrom(float start){
         setStateValue("Start",start);
         switch(SOLVER_MODE)
         {
@@ -455,7 +450,7 @@ public class Animer<T> {
                 break;
         }
     }
-    public void setEndValue(float end){
+    public void setTo(float end){
         setStateValue("End",end);
         switch(SOLVER_MODE)
         {
@@ -589,14 +584,15 @@ public class Animer<T> {
     // ## Origami-POP-Rebound Style Animation Interface,driven by PhysicsState's Value
 
     // # Equal to [setCurrentValue]
-    public void switchTo(float value){
-        cancel();
+    public void setCurrentValue(float value){
+        float velocity = value - getCurrentPhysicsValue();
         float progress = (value - getStateValue("Start"))/(getStateValue("End") - getStateValue("Start"));
-        updateCurrentPhysicsState(value,getCurrentPhysicsVelocity(),progress);
+        updateCurrentPhysicsState(value,velocity*velocityFactor,progress);
+
     }
 
     // # Equal to [setEndVlaue]
-    public void animateTo(float value){
+    public void setEndvalue(float value){
         setHardwareAcceleration(true);
         switch(SOLVER_MODE)
         {
@@ -623,13 +619,23 @@ public class Animer<T> {
     }
 
     // ############################################
-    // PhysicsState's Getter & Setter
+    // Setup Velocity
     // ############################################
 
     // ## State
     public void setVelocity(float velocity){
         setCurrentPhysicsVelocity(velocity);
     }
+
+    public void setVelocityInfluence(float factor){
+        velocityFactor = factor;
+    }
+
+    // ############################################
+    // PhysicsState's Getter & Setter
+    // ############################################
+
+
 
     public void setStateValue(String key,float value){
         mPhysicsState.setStateValue(key,value);
@@ -709,8 +715,11 @@ public class Animer<T> {
     }
 
     // ############################################
-    // Actioner
+    // TODO: Optim Actioner
     // ############################################
+
+    private boolean ENABLE_ACTIONER_POSTION_VELOCITY = false;
+    private Object mActioner;
 
     public void enableActionerInfluenceOnVelocity(boolean boo){
         ENABLE_ACTIONER_POSTION_VELOCITY =  boo;
@@ -722,9 +731,6 @@ public class Animer<T> {
 
     public <K> void setActionerAndListener(K actioner,ActionTouchListener listener){
         mActioner = actioner;
-
-
-
 
         setActionTouchListener(listener);
 

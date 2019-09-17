@@ -68,7 +68,7 @@ public class PhysicsState {
       return kvMap.get(key);
     } catch (Exception e) {
       e.printStackTrace();
-      Log.e("The State is not exsit in HashMap,you must setStateValue first!!!", Log.getStackTraceString(e));
+      Log.e("setStateValue first", Log.getStackTraceString(e));
     }
 
     return -1;

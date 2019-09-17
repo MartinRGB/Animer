@@ -6,7 +6,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
@@ -192,15 +197,13 @@ public class Animer<T> {
 
 
     private Object mTarget;
+    private Object mActioner;
     private FloatPropertyCompat mProperty;
     private PhysicsState mPhysicsState;
 
     private FlingAnimation mFlingAnimation;
     private SpringAnimation mSpringAnimation;
     private ObjectAnimator mTimingAnimation;
-
-
-    private float mPrevVelocity = 0,mCurrentVelocity = 0;
 
     private static AnSolver currentSolver;
     private static final SpringSolver springDefaultSolver = new SpringSolver(50,0.99f);
@@ -213,7 +216,10 @@ public class Animer<T> {
     private static final int OBJECT_ANIMAOTR_MODE = 1;
     private int ANIMATOR_MODE = -1;
 
-    private  boolean HARDWAREACCELERATION_IS_ENABLED = true;
+    private String TAG = "2132314;";
+
+    private boolean HARDWAREACCELERATION_IS_ENABLED = false;
+    private boolean ENABLE_ACTIONER_POSTION_VELOCITY = false;
 
     // ###########################################
     // Constructor
@@ -266,8 +272,9 @@ public class Animer<T> {
         setupBySolver(currentSolver);
     }
 
-    public void setTarget(Object mTarget) {
-        this.mTarget = mTarget;
+
+    public void setTarget(Object target) {
+        this.mTarget = target;
     }
 
     public void setProperty(FloatPropertyCompat mProperty) {
@@ -385,11 +392,12 @@ public class Animer<T> {
         if(mTimingAnimation == null) {
             mTimingAnimation = new ObjectAnimator();
             mTimingAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                float mCurrentVelocity,mPrevVelocity;
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
 
                     //#1
-                    mPrevVelocity = mCurrentVelocity;
+
                     mCurrentVelocity = (float) valueAnimator.getAnimatedValue();
 
                     float value = mCurrentVelocity;
@@ -398,6 +406,7 @@ public class Animer<T> {
 
                     updateCurrentPhysicsState(value,velocity,progress);
 
+                    mPrevVelocity = (float) valueAnimator.getAnimatedValue();
                 }
             });
 
@@ -702,11 +711,84 @@ public class Animer<T> {
     }
 
     // ############################################
+    // Actioner
+    // ############################################
+
+    public void enableActionerInfluenceOnVelocity(boolean boo){
+        ENABLE_ACTIONER_POSTION_VELOCITY =  boo;
+    }
+
+    private boolean getActionerInfluenceOnVelocity(){
+        return ENABLE_ACTIONER_POSTION_VELOCITY;
+    }
+
+    public <K> void setActionerAndListener(K actioner,ActionTouchListener listener){
+        mActioner = actioner;
+
+
+
+
+        setActionTouchListener(listener);
+
+        ((View)mActioner).setOnTouchListener(new View.OnTouchListener() {
+            VelocityTracker velocityTracker;
+            float initX = 0,initY = 0;
+            float startX,startY,posX = 0,posY = 0,velX = 0,velY = 0;
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+
+                        if (velocityTracker == null) {
+                            velocityTracker = VelocityTracker.obtain();
+                        } else {
+                            velocityTracker.clear();
+                        }
+                        velocityTracker.addMovement(motionEvent);
+
+                        startX = view.getX() - motionEvent.getRawX();
+                        startY = view.getY() - motionEvent.getRawY();
+
+                        actionListener.onDown(view,motionEvent);
+                        break;
+                    }
+                    case MotionEvent.ACTION_MOVE: {
+
+                        velocityTracker.addMovement(motionEvent);
+                        velocityTracker.computeCurrentVelocity(1000);
+
+                        velX = velocityTracker.getXVelocity();
+                        velY = velocityTracker.getYVelocity();
+                        posX = motionEvent.getRawX() + startX;
+                        posY = motionEvent.getRawY() + startY;
+
+                        actionListener.onMove(view,motionEvent,velX,velY);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        Log.e("velX",String.valueOf(velX));
+                        if(getActionerInfluenceOnVelocity()){
+                            setVelocity(velX);
+                        }
+                        actionListener.onUp(view,motionEvent);
+                        break;
+                    }
+                    case MotionEvent.ACTION_CANCEL: {
+                        actionListener.onCancel(view,motionEvent);
+                        break;
+                    }
+                }
+                return  true;
+            }
+        });
+    }
+    // ############################################
     // Animation Listener
     // ############################################
 
     private UpdateListener updateListener;
     private EndListener endListener;
+    private ActionTouchListener actionListener;
 
     public void setUpdateListener(UpdateListener listener) {
         updateListener = listener;
@@ -716,11 +798,22 @@ public class Animer<T> {
         endListener = listener;
     }
 
+    public void setActionTouchListener(ActionTouchListener listener) {
+        actionListener = listener;
+    }
+
     public interface UpdateListener {
         void onUpdate(float value, float velocity,float progress);
     }
     public interface EndListener{
         void onEnd(float value, float velocity,boolean canceled);
+    }
+
+    public interface ActionTouchListener{
+        void onDown(View view,MotionEvent event);
+        void onMove(View view,MotionEvent event,float velocityX,float velocityY);
+        void onUp(View view,MotionEvent event);
+        abstract void onCancel(View view,MotionEvent event);
     }
 
 }

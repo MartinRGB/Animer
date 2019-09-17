@@ -1,6 +1,7 @@
 package com.martinrgb.swipeexample;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,6 +21,7 @@ import com.martinrgb.animer.core.Animer;
 import com.martinrgb.animer.core.solver.SpringSolver;
 import com.martinrgb.animer.core.solver.TimingSolver;
 import com.martinrgb.animer.core.util.AnimerUtil;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         drag_area = findViewById(R.id.drag_area);
         page2 = findViewById(R.id.page_2);
 
+
         mOpenAnim = new Animer(page2,new SpringSolver(450,0.92f), Animer.TRANSLATION_X,1080,0f);
         mOpenAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mClickAnim = new Animer(card_mask,SpringSolver.createOrigamiSpring(10,12), Animer.ALPHA,0,0.3f);
+        mClickAnim = new Animer(card_mask, SpringSolver.createOrigamiSpring(10,12), Animer.ALPHA,0,0.3f);
         mClickAnim.setUpdateListener(new Animer.UpdateListener() {
             @Override
             public void onUpdate(float value, float velocity,float progress) {
@@ -100,46 +104,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        drag_area.setOnTouchListener(new View.OnTouchListener() {
-            float dX = 0,initXVel = 0.f,initXPos,isBack;
+        mOpenAnim.setActionerAndListener(drag_area, new Animer.ActionTouchListener() {
+            float dX = 0,initXPos;
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mOpenAnim.setSolver(new TimingSolver(new LinearInterpolator(),0));
-                        dX = view.getX() - motionEvent.getRawX();
-                        if (velocityTracker == null) {
-                            velocityTracker = VelocityTracker.obtain();
-                        } else {
-                            velocityTracker.clear();
-                        }
-                        velocityTracker.addMovement(motionEvent);
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        velocityTracker.addMovement(motionEvent);
-                        velocityTracker.computeCurrentVelocity(1000);
-                        initXVel = velocityTracker.getXVelocity();
-                        initXPos = motionEvent.getRawX() + dX;
-
-                        if(initXPos > 0)
-                            mOpenAnim.switchTo(motionEvent.getRawX() + dX);
-
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        float initVelocity = initXVel / (mOpenAnim.getStateValue("Start") - initXPos);
-                        Log.e("Val",String.valueOf(initXVel));
-                        mOpenAnim.setSolver(new SpringSolver(450, 0.92f));
-                        mOpenAnim.setVelocity(initXVel);
-                        if(initXPos > 350) {
-                            mClickAnim.reverse();
-                            mOpenAnim.reverse();
-                        }
-                        else{
-                            mOpenAnim.start();
-                        }
-                        break;
+            public void onDown(View view, MotionEvent event) {
+                mOpenAnim.setSolver(new TimingSolver(new LinearInterpolator(),0));
+                dX = view.getX() - event.getRawX();
+            }
+            @Override
+            public void onMove(View view, MotionEvent event,float velocityX,float velocityY) {
+                initXPos = event.getRawX() + dX;
+                if(initXPos > 0)
+                    mOpenAnim.switchTo(event.getRawX() + dX);
+            }
+            @Override
+            public void onUp(View view, MotionEvent event) {
+                mOpenAnim.setSolver(new SpringSolver(450, 0.92f));
+                if(initXPos > 350) {
+                    mClickAnim.reverse();
+                    mOpenAnim.reverse();
                 }
-                return true;
+                else{
+                    mOpenAnim.start();
+                }
+            }
+            @Override
+            public void onCancel(View view, MotionEvent event) {
+                mOpenAnim.setSolver(new SpringSolver(450, 0.92f));
+                if(initXPos > 350) {
+                    mClickAnim.reverse();
+                    mOpenAnim.reverse();
+                }
+                else{
+                    mOpenAnim.start();
+                }
             }
         });
     }

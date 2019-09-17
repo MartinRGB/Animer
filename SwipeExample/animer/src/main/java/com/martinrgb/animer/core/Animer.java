@@ -7,16 +7,13 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 
 import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.FlingAnimation;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
@@ -26,11 +23,12 @@ import com.martinrgb.animer.core.solver.FlingSolver;
 import com.martinrgb.animer.core.solver.SpringSolver;
 import com.martinrgb.animer.core.solver.TimingSolver;
 import com.martinrgb.animer.core.state.PhysicsState;
+import com.martinrgb.animer.core.util.AnimerProperty;
 
 
 public class Animer<T> {
 
-    public abstract static class AnProperty extends FloatPropertyCompat<View> {
+    public abstract static class AnProperty extends AnimerProperty<View> {
         private AnProperty(String name) {
             super(name);
         }
@@ -198,7 +196,7 @@ public class Animer<T> {
 
     private Object mTarget;
     private Object mActioner;
-    private FloatPropertyCompat mProperty;
+    private AnimerProperty mProperty;
     private PhysicsState mPhysicsState;
 
     private FlingAnimation mFlingAnimation;
@@ -243,7 +241,7 @@ public class Animer<T> {
         setupBySolver(currentSolver);
     }
 
-    public <K> Animer(K target, AnSolver solver, FloatPropertyCompat<K> property) {
+    public <K> Animer(K target, AnSolver solver, AnimerProperty<K> property) {
         mTarget = target;
         mProperty = property;
         float proertyValue = mProperty.getValue(mTarget);
@@ -253,7 +251,7 @@ public class Animer<T> {
         setupBySolver(currentSolver);
     }
 
-    public <K> Animer(K target, AnSolver solver, FloatPropertyCompat<K> property, float end) {
+    public <K> Animer(K target, AnSolver solver, AnimerProperty<K> property, float end) {
         mTarget = target;
         mProperty = property;
         float proertyValue = mProperty.getValue(mTarget);
@@ -263,7 +261,7 @@ public class Animer<T> {
         setupBySolver(currentSolver);
     }
 
-    public <K> Animer(K target, AnSolver solver, FloatPropertyCompat<K> property, float start, float end) {
+    public <K> Animer(K target, AnSolver solver, AnimerProperty<K> property, float start, float end) {
         mTarget = target;
         mProperty = property;
         mPhysicsState = new PhysicsState(start,end);
@@ -277,7 +275,7 @@ public class Animer<T> {
         this.mTarget = target;
     }
 
-    public void setProperty(FloatPropertyCompat mProperty) {
+    public void setProperty(AnimerProperty mProperty) {
         this.mProperty = mProperty;
     }
 

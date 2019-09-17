@@ -1,4 +1,4 @@
-package com.martinrgb.swipeexample;
+package com.martinrgb.animerexample;
 
 import android.content.Context;
 

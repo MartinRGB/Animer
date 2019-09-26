@@ -26,7 +26,18 @@ public class MainActivity extends AppCompatActivity {
 
         iv = findViewById(R.id.iv);
         animer = new Animer(iv ,SpringSolver.createOrigamiSpring(5,10),Animer.TRANSLATION_X,0,500);
-        animer.start();
+
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(iv.getTranslationX() != 500){
+                    animer.setEndvalue(500);
+                }
+                else{
+                    animer.setEndvalue(0);
+                }
+            }
+        });
     }
 
     private void deleteBars() {

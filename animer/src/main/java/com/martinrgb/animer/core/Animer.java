@@ -214,6 +214,8 @@ public class Animer<T> {
     private boolean HARDWAREACCELERATION_IS_ENABLED = false;
     private float velocityFactor = 1.0f;
 
+    private float minimumVisValue = 0.001f;
+
     // ###########################################
     // Constructor
     // ###########################################
@@ -311,7 +313,7 @@ public class Animer<T> {
     private void setupFlingAnimator(AnSolver solver){
         if(mFlingAnimation == null) {
             mFlingAnimation = new FlingAnimation(new FloatValueHolder());
-            mFlingAnimation.setMinimumVisibleChange(0.001f);
+            mFlingAnimation.setMinimumVisibleChange(minimumVisValue);
             mFlingAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
                 @Override
                 public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
@@ -347,7 +349,7 @@ public class Animer<T> {
         if(mSpringAnimation == null) {
             mSpringAnimation = new SpringAnimation(new FloatValueHolder());
             mSpringAnimation.setSpring(new SpringForce());
-            mSpringAnimation.setMinimumVisibleChange(0.001f);
+            mSpringAnimation.setMinimumVisibleChange(minimumVisValue);
             mSpringAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
                 @Override
                 public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
@@ -629,6 +631,30 @@ public class Animer<T> {
 
     public void setVelocityInfluence(float factor){
         velocityFactor = factor;
+    }
+
+
+    // ############################################
+    // minVisChange
+    // ############################################
+
+
+    public void setMinimumVisibleChange(float minimumVisValue) {
+        this.minimumVisValue = minimumVisValue;
+        switch(SOLVER_MODE)
+        {
+            case FLING_SOLVER_MODE:
+                mFlingAnimation.setMinimumVisibleChange(minimumVisValue);
+                break;
+            case SPRING_SOLVER_MODE:
+                mSpringAnimation.setMinimumVisibleChange(minimumVisValue);
+                break;
+            case TIMING_SOLVER_MODE:
+                break;
+            default:
+                break;
+        }
+
     }
 
     // ############################################

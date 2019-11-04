@@ -3,7 +3,7 @@ for a better Android Animation Experience,see project in:
 
 [demo branch](https://github.com/MartinRGB/Animer/tree/demo)
 
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.4.1) ](https://bintray.com/martinrgb/animer/animer/0.1.4.1/link)
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.4.2) ](https://bintray.com/martinrgb/animer/animer/0.1.4.2/link)
 
 
 

@@ -44,7 +44,7 @@ publish {
     groupId = 'com.martinrgb'//jcenter上的路径
     repoName = 'animer'
     artifactId = 'animer'//项目名称
-    publishVersion = '0.1.4.3'//版本号
+    publishVersion = '0.1.4.4'//版本号
     desc = 'An animation controller for better Android Experience'//描述，不重要
     website = "https://github.com/MartinRGB/Animer"
 }

@@ -18,15 +18,24 @@ import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.martinrgb.animer.solver.AnSolver;
-import com.martinrgb.animer.solver.FlingSolver;
-import com.martinrgb.animer.solver.SpringSolver;
-import com.martinrgb.animer.solver.InterpolatorSolver;
-import com.martinrgb.animer.state.PhysicsState;
-import com.martinrgb.animer.util.AnimerProperty;
+//import com.martinrgb.animer.core.solver.AnSolver;
+//import com.martinrgb.animer.core.solver.FlingSolver;
+//import com.martinrgb.animer.core.solver.SpringSolver;
+//import com.martinrgb.animer.core.solver.InterpolatorSolver;
+import com.martinrgb.animer.core.math.converter.DHOConverter;
+import com.martinrgb.animer.core.math.converter.OrigamiPOPConverter;
+import com.martinrgb.animer.core.math.converter.RK4Converter;
+import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
+import com.martinrgb.animer.core.solver.AnSolver;
+import com.martinrgb.animer.core.state.PhysicsState;
+import com.martinrgb.animer.core.util.AnimerProperty;
 
 
 public class Animer<T> {
+
+    // ###########################################
+    // Property
+    // ###########################################
 
     public abstract static class AnProperty extends AnimerProperty<View> {
         private AnProperty(String name) {
@@ -192,6 +201,97 @@ public class Animer<T> {
         }
     };
 
+    // ###########################################
+    // Solver
+    // ###########################################
+
+    public static AnSolver.InterpolatorSolver createAndroidInterpolator(TimeInterpolator interpolator, long duration){
+        SOLVER_MODE = INTERPOLATOR_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        AnSolver.InterpolatorSolver currSolver = new AnSolver.InterpolatorSolver(interpolator,duration);
+        Log.e("SOlver_MODEs",String.valueOf(SOLVER_MODE));
+        return currSolver;
+    }
+
+    public static AnSolver.FlingSolver createAndroidFling(float velocity,float friction){
+        SOLVER_MODE = FLING_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        AnSolver.FlingSolver currSolver = new AnSolver.FlingSolver(velocity,friction);
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createAndroidSpring(float stiffness,float dampingratio){
+        SOLVER_MODE = SPRING_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        AnSolver.SpringSolver currSolver = new AnSolver.SpringSolver(stiffness,dampingratio);
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createRK4Spring(float tension,float friction){
+        SOLVER_MODE = SPRING_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        RK4Converter rk4Converter = new RK4Converter(tension,friction);
+        AnSolver.SpringSolver currSolver = new AnSolver.SpringSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio());
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createDHOSpring(float stiffness,float damping){
+        SOLVER_MODE = SPRING_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
+        AnSolver.SpringSolver currSolver = new AnSolver.SpringSolver(dhoConverter.getStiffness(),dhoConverter.getDampingRatio());
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createOrigamiSpring(float bounciness,float speed){
+        SOLVER_MODE = SPRING_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(bounciness,speed);
+        AnSolver.SpringSolver currSolver = new AnSolver.SpringSolver(origamiPOPConverter.getStiffness(),origamiPOPConverter.getDampingRatio());
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createUIViewSpring(float dampingratio,float duration){
+        SOLVER_MODE = SPRING_SOLVER_MODE;
+        if(currentSolver !=null){
+            currentSolver.unBindSolverListener();
+        }
+        UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
+        AnSolver.SpringSolver currSolver = new AnSolver.SpringSolver(uiViewSpringConverter.getStiffness(),uiViewSpringConverter.getDampingRatio());
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createCASpring(float stiffness,float damping){
+        AnSolver.SpringSolver currSolver = createDHOSpring(stiffness,damping);
+        return currSolver;
+    }
+
+    public AnSolver.SpringSolver createProtopieSpring(float tension,float friction){
+        AnSolver.SpringSolver currSolver = createRK4Spring(tension,friction);
+        return currSolver;
+    }
+
+    public static AnSolver.SpringSolver createPrincipleSpring(float tension,float friction){
+        AnSolver.SpringSolver currSolver = createRK4Spring(tension,friction);
+        return currSolver;
+    }
+
+    // ###########################################
+    // Object
+    // ###########################################
+
     private Object mTarget;
     private AnimerProperty mProperty;
     private PhysicsState mPhysicsState;
@@ -200,11 +300,11 @@ public class Animer<T> {
     private SpringAnimation mSpringAnimation;
     private ObjectAnimator mTimingAnimation;
 
-    private static AnSolver currentSolver;
-    private static final AnSolver springDefaultSolver = SpringSolver.createAndroidSpring(50,0.99f);
+    private static AnSolver currentSolver;;
+    private static final AnSolver springDefaultSolver = createAndroidSpring(50,0.99f);
     private static final int FLING_SOLVER_MODE = 0;
     private static final int SPRING_SOLVER_MODE = 1;
-    private static final int TIMING_SOLVER_MODE = 2;
+    private static final int INTERPOLATOR_SOLVER_MODE = 2;
     private static int SOLVER_MODE = -1;
 
     private static final int VALUE_ANIMATOR_MODE = 0;
@@ -292,9 +392,8 @@ public class Animer<T> {
     // ############################################
 
     private void setupBySolver(AnSolver solver) {
-        SOLVER_MODE = solver.getSolverMode();
 
-        switch(solver.getSolverMode())
+        switch(SOLVER_MODE)
         {
             case FLING_SOLVER_MODE:
                 setupFlingAnimator(solver);
@@ -302,7 +401,7 @@ public class Animer<T> {
             case SPRING_SOLVER_MODE:
                 setupSpringAnimator(solver);
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 setupTimingAnimator(solver);
                 break;
             default:
@@ -333,10 +432,11 @@ public class Animer<T> {
 
     private void attachSolverToFling(AnSolver solver, FlingAnimation flingAnimation){
         final FlingAnimation flingAnim = flingAnimation;
-        flingAnim.setStartVelocity(((FlingSolver)solver).getVelocity());
-        flingAnim.setFriction(((FlingSolver)solver).getFriction());
+        AnSolver.FlingSolver flingSolver = (AnSolver.FlingSolver) solver;
+        flingAnim.setStartVelocity(flingSolver.getStartVelocity());
+        flingAnim.setFriction(flingSolver.getFriction());
 
-        solver.setSolverListener(new AnSolver.SolverListener() {
+        flingSolver.bindSolverListener(new AnSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 flingAnim.setStartVelocity((float) arg1);
@@ -369,10 +469,12 @@ public class Animer<T> {
 
     private void attachSolverToSpring(AnSolver solver, SpringAnimation springAnimation){
         final SpringAnimation springAnim = springAnimation;
-        springAnim.getSpring().setStiffness(((SpringSolver)solver).getStiffness());
-        springAnim.getSpring().setDampingRatio(((SpringSolver)solver).getDampingRatio());
+        AnSolver.SpringSolver springSolver = (AnSolver.SpringSolver) solver;
+        springAnim.getSpring().setStiffness(springSolver.getStiffness());
+        springAnim.getSpring().setDampingRatio(springSolver.getDampingRatio());
 
-        solver.setSolverListener(new AnSolver.SolverListener() {
+        Log.e("SolverMode",String.valueOf(SOLVER_MODE));
+        springSolver.bindSolverListener(new AnSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 springAnim.getSpring().setStiffness((float) arg1);
@@ -418,10 +520,11 @@ public class Animer<T> {
 
     private void attachSolverToTiming(AnSolver solver, ObjectAnimator timingAnimation){
         final ObjectAnimator timingAnim = timingAnimation;
-        timingAnim.setInterpolator(((InterpolatorSolver)solver).getInterpolator());
-        timingAnim.setDuration((long) ((InterpolatorSolver)solver).getDuration());
+        AnSolver.InterpolatorSolver interpolatorSolver = (AnSolver.InterpolatorSolver) solver;
+        timingAnim.setInterpolator(interpolatorSolver.getInterpolator());
+        timingAnim.setDuration(interpolatorSolver.getDuration());
 
-        solver.setSolverListener(new AnSolver.SolverListener() {
+        interpolatorSolver.bindSolverListener(new AnSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 timingAnim.setInterpolator((TimeInterpolator) arg1);
@@ -445,7 +548,7 @@ public class Animer<T> {
             case SPRING_SOLVER_MODE:
                 mSpringAnimation.setStartValue(getStateValue("Start"));
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(getStateValue("Start"),getStateValue("End"));
                 break;
             default:
@@ -465,7 +568,7 @@ public class Animer<T> {
             case SPRING_SOLVER_MODE:
                 mSpringAnimation.getSpring().setFinalPosition(getStateValue("End"));
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(getStateValue("Start"),getStateValue("End"));
                 break;
             default:
@@ -508,7 +611,7 @@ public class Animer<T> {
                 if(mSpringAnimation !=null)
                     isRunning = mSpringAnimation.isRunning();
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 if(mTimingAnimation !=null)
                     isRunning = mTimingAnimation.isRunning();
                 break;
@@ -536,7 +639,7 @@ public class Animer<T> {
                     mSpringAnimation.skipToEnd();
                 }
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 mTimingAnimation.end();
                 break;
             default:
@@ -573,7 +676,7 @@ public class Animer<T> {
                 mSpringAnimation.setStartVelocity(getCurrentPhysicsVelocity());
                 mSpringAnimation.animateToFinalPosition(getStateValue(state));
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(getCurrentPhysicsValue(),getStateValue(state));
                 mTimingAnimation.start();
                 break;
@@ -611,7 +714,7 @@ public class Animer<T> {
                 mSpringAnimation.setStartVelocity(getCurrentPhysicsVelocity());
                 mSpringAnimation.animateToFinalPosition(value);
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 mTimingAnimation.setFloatValues(getCurrentPhysicsValue(),value);
                 mTimingAnimation.start();
                 break;
@@ -649,7 +752,7 @@ public class Animer<T> {
             case SPRING_SOLVER_MODE:
                 mSpringAnimation.setMinimumVisibleChange(minimumVisValue);
                 break;
-            case TIMING_SOLVER_MODE:
+            case INTERPOLATOR_SOLVER_MODE:
                 break;
             default:
                 break;

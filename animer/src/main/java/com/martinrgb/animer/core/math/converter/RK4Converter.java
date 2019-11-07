@@ -1,4 +1,4 @@
-package com.martinrgb.animer.math.converter;
+package com.martinrgb.animer.core.math.converter;
 
 public class RK4Converter extends AnSpringConverter {
 

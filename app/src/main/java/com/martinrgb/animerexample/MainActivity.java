@@ -9,14 +9,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.martinrgb.animer.Animer;
-import com.martinrgb.animer.solver.AnSolver;
-import com.martinrgb.animer.solver.FlingSolver;
-import com.martinrgb.animer.solver.SpringSolver;
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageView iv;
     private  Animer animer;
+    private boolean isOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +25,23 @@ public class MainActivity extends AppCompatActivity {
         iv = findViewById(R.id.iv);
         //animer = new Animer(iv , SpringSolver.createAndroidSpring(500,0.5f),Animer.TRANSLATION_X,0,500);
 
-        animer = new Animer(iv , FlingSolver.createAndroidFling(1500,0.9f),Animer.TRANSLATION_X);
+        animer = new Animer(iv , Animer.createAndroidFling(500,0.5f),Animer.TRANSLATION_X);
+
+
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(iv.getTranslationX() != 800){
-                    animer.setEndvalue(800);
+
+                if(!isOpen){
+                    animer.setSolver(Animer.createAndroidFling(1000,0.5f));
+                    animer.start();
                 }
                 else{
+                    animer.setSolver(Animer.createAndroidSpring(1500,0.5f));
                     animer.setEndvalue(0);
                 }
+                isOpen = !isOpen;
             }
         });
 

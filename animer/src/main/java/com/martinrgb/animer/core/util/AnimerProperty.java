@@ -1,4 +1,4 @@
-package com.martinrgb.animer.util;
+package com.martinrgb.animer.core.util;
 
 public abstract class AnimerProperty<T> {
     final String mPropertyName;

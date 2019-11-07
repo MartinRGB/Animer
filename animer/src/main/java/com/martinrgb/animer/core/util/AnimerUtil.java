@@ -1,4 +1,4 @@
-package com.martinrgb.animer.util;
+package com.martinrgb.animer.core.util;
 
 // From Facebook Rebound
 public class AnimerUtil {

@@ -1,8 +1,8 @@
-package com.martinrgb.animer.interpolator;
+package com.martinrgb.animer.core.interpolator;
 
 import android.view.animation.Interpolator;
 
-public class CustomBounceInterpolator implements Interpolator{
+public class CustomDampingInterpolator implements Interpolator{
 
     //Parameters
     private static final float maxStifness = 50.f;
@@ -38,15 +38,17 @@ public class CustomBounceInterpolator implements Interpolator{
         computeFriction();
     }
 
-    public CustomBounceInterpolator( float tension, float friction) {
+    public CustomDampingInterpolator( float tension, float friction) {
 
-        this.mTension = Math.min(Math.max(tension,0.f),100.f) * (maxStifness- originalStiffness)/100.f;
-        this.mFriction = Math.min(Math.max(friction,0.f),100.f) * (maxFrictionMultipler - originalFrictionMultipler)/100.f;
+        //this.mTension = Math.min(Math.max(tension,0.f),100.f) * (maxStifness- originalStiffness)/100.f;
+        //this.mFriction = Math.min(Math.max(friction,0.f),100.f) * (maxFrictionMultipler - originalFrictionMultipler)/100.f;
+        this.mFriction = friction;
+        this.mTension = tension;
 
         computeInternalParameters();
     }
 
-    public CustomBounceInterpolator() {
+    public CustomDampingInterpolator() {
         computeInternalParameters();
     }
 
@@ -57,7 +59,7 @@ public class CustomBounceInterpolator implements Interpolator{
         else {
             float value = amplitude * (float) Math.exp(-friction * ratio) *
                     (float) Math.cos(pulsation * ratio + phase) ;
-            return -Math.abs(value)+1.f;
+            return -value+1;
         }
     }
 }

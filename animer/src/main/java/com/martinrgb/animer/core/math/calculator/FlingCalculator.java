@@ -1,4 +1,4 @@
-package com.martinrgb.animer.math.calculator;
+package com.martinrgb.animer.core.math.calculator;
 
 public class FlingCalculator {
 

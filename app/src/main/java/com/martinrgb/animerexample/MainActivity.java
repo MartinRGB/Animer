@@ -3,15 +3,15 @@ package com.martinrgb.animerexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.martinrgb.animer.core.Animer;
-import com.martinrgb.animer.core.solver.SpringSolver;
+import com.martinrgb.animer.Animer;
+import com.martinrgb.animer.solver.AnSolver;
+import com.martinrgb.animer.solver.FlingSolver;
+import com.martinrgb.animer.solver.SpringSolver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,19 +25,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         iv = findViewById(R.id.iv);
-        animer = new Animer(iv ,SpringSolver.createOrigamiSpring(5,10),Animer.TRANSLATION_X,0,500);
+        //animer = new Animer(iv , SpringSolver.createAndroidSpring(500,0.5f),Animer.TRANSLATION_X,0,500);
+
+        animer = new Animer(iv , FlingSolver.createAndroidFling(1500,0.9f),Animer.TRANSLATION_X);
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(iv.getTranslationX() != 500){
-                    animer.setEndvalue(500);
+                if(iv.getTranslationX() != 800){
+                    animer.setEndvalue(800);
                 }
                 else{
                     animer.setEndvalue(0);
                 }
             }
         });
+
     }
 
     private void deleteBars() {

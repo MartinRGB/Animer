@@ -1,6 +1,8 @@
 package com.martinrgb.animer.core.solver;
 
 import android.animation.TimeInterpolator;
+import android.util.Log;
+import android.view.animation.LinearInterpolator;
 
 
 public class AnSolver extends Object{
@@ -32,12 +34,11 @@ public class AnSolver extends Object{
 
     public static class FlingSolver extends AnSolver {
 
-        private float mStartVelocity,mFriction;
+        private float mStartVelocity = 1000,mFriction = 0.5f;
 
         public FlingSolver(float velocity,float friction) {
             setStartVelocity(velocity);
             setFriction(friction);
-            //setSolverMode(0);
         }
 
         // ############################################
@@ -74,7 +75,7 @@ public class AnSolver extends Object{
 
     public static class SpringSolver extends AnSolver {
 
-        private float mStiffness,mDampingRatio;
+        private float mStiffness = 1500,mDampingRatio = 0.5f;
 
         public SpringSolver(float stiffness,float dampingratio) {
             setStiffness(stiffness);
@@ -115,8 +116,8 @@ public class AnSolver extends Object{
 
     public static class InterpolatorSolver extends AnSolver {
 
-        private TimeInterpolator mInterpolator;
-        private long mDuration;
+        private TimeInterpolator mInterpolator = new LinearInterpolator();
+        private long mDuration = 500;
 
         public InterpolatorSolver(TimeInterpolator interpolator, long duration) {
             setInerpolator(interpolator);

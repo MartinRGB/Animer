@@ -1,6 +1,7 @@
 package com.martinrgb.animerexample;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +11,11 @@ import android.widget.ImageView;
 
 import com.martinrgb.animer.Animer;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private ImageView iv;
-    private  Animer animer;
+    private Animer animer;
     private boolean isOpen = false;
 
     @Override
@@ -23,23 +25,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         iv = findViewById(R.id.iv);
-        //animer = new Animer(iv , SpringSolver.createAndroidSpring(500,0.5f),Animer.TRANSLATION_X,0,500);
 
-        animer = new Animer(iv , Animer.createAndroidFling(500,0.5f),Animer.TRANSLATION_X);
-
-
+        animer = new com.martinrgb.animer.Animer(iv , com.martinrgb.animer.Animer.createInterpolatorAndroid(new FastOutSlowInInterpolator(),500),com.martinrgb.animer.Animer.TRANSLATION_X,0,900);
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if(!isOpen){
-                    animer.setSolver(Animer.createAndroidFling(1000,0.5f));
-                    animer.start();
+                    animer.setSolver(com.martinrgb.animer.Animer.createInterpolatorAndroid(new FastOutSlowInInterpolator(),500));
+                    animer.animateToState("End");
                 }
                 else{
-                    animer.setSolver(Animer.createAndroidSpring(1500,0.5f));
-                    animer.setEndvalue(0);
+                    animer.setSolver(com.martinrgb.animer.Animer.createSpringAndroid(500,0.5f));
+                    animer.setEndvalue(40);
                 }
                 isOpen = !isOpen;
             }

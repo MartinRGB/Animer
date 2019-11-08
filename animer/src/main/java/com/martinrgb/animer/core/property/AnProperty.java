@@ -1,8 +1,8 @@
-package com.martinrgb.animer.core.util;
+package com.martinrgb.animer.core.property;
 
-public abstract class AnimerProperty<T> {
+public abstract class AnProperty<T> {
     final String mPropertyName;
-    public AnimerProperty(String name) {
+    public AnProperty(String name) {
         mPropertyName = name;
     }
 

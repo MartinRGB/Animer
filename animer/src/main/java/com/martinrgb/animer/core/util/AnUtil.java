@@ -12,27 +12,27 @@ public class AnUtil {
      * @param toHigh the high end of the range to map to
      * @return the mapped value
      */
-    public static double mapValueFromRangeToRange(
-            double value,
-            double fromLow,
-            double fromHigh,
-            double toLow,
-            double toHigh) {
-        double fromRangeSize = fromHigh - fromLow;
-        double toRangeSize = toHigh - toLow;
-        double valueScale = (value - fromLow) / fromRangeSize;
+    public static float mapValueFromRangeToRange(
+            float value,
+            float fromLow,
+            float fromHigh,
+            float toLow,
+            float toHigh) {
+        float fromRangeSize = fromHigh - fromLow;
+        float toRangeSize = toHigh - toLow;
+        float valueScale = (value - fromLow) / fromRangeSize;
         return toLow + (valueScale * toRangeSize);
     }
 
-    public static double mapClampedValueFromRangeToRange(
-            double value,
-            double fromLow,
-            double fromHigh,
-            double toLow,
-            double toHigh) {
-        double fromRangeSize = fromHigh - fromLow;
-        double toRangeSize = toHigh - toLow;
-        double valueScale = (value - fromLow) / fromRangeSize;
+    public static float mapClampedValueFromRangeToRange(
+            float value,
+            float fromLow,
+            float fromHigh,
+            float toLow,
+            float toHigh) {
+        float fromRangeSize = fromHigh - fromLow;
+        float toRangeSize = toHigh - toLow;
+        float valueScale = (value - fromLow) / fromRangeSize;
         return toLow + (Math.max(0,Math.min(1,valueScale)) * toRangeSize);
     }
 

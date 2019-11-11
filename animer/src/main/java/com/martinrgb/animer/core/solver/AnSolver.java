@@ -1,7 +1,6 @@
 package com.martinrgb.animer.core.solver;
 
 import android.animation.TimeInterpolator;
-import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
 
@@ -11,11 +10,17 @@ public class AnSolver extends Object{
     // Construct
     // ############################################
 
-    public AnSolver(){
+    private static Object arg1,arg2;
+    private static SolverListener mListener = null;
+    private static int SOLVER_MODE = -1;
 
+    public AnSolver(Object val1,Object val2,int mode){
+        unBindSolverListener();
+        setSolverMode(mode);
+        setArg1(val1);
+        setArg2(val2);
     }
 
-    private static SolverListener mListener = null;
     public interface SolverListener {
         void onSolverUpdate(Object arg1, Object arg2);
     }
@@ -28,129 +33,37 @@ public class AnSolver extends Object{
         }
     }
 
-    // ############################################
-    // Fling Solver
-    // ############################################
-
-    public static class FlingSolver extends AnSolver {
-
-        private float mStartVelocity = 1000,mFriction = 0.5f;
-
-        public FlingSolver(float velocity,float friction) {
-            setStartVelocity(velocity);
-            setFriction(friction);
-        }
-
-        // ############################################
-        // Getter & Setter
-        // ############################################
-
-        public float getStartVelocity() {
-            return mStartVelocity;
-        }
-
-        public float getFriction() {
-            return mFriction;
-        }
-
-        public void setStartVelocity(float velocity){
-            mStartVelocity = velocity;
-            if(mListener !=null){
-                mListener.onSolverUpdate(mStartVelocity,mFriction);
-            }
-        }
-
-        public void setFriction(float friction){
-            mFriction = friction;
-            if(mListener !=null){
-                mListener.onSolverUpdate(mStartVelocity,mFriction);
-            }
-        }
-
-    }
-
-    // ############################################
-    // Spring Solver
-    // ############################################
-
-    public static class SpringSolver extends AnSolver {
-
-        private float mStiffness = 1500,mDampingRatio = 0.5f;
-
-        public SpringSolver(float stiffness,float dampingratio) {
-            setStiffness(stiffness);
-            setDampingRatio(dampingratio);
-            //setSolverMode(1);
-        }
-
-        // ############################################
-        // Getter & Setter
-        // ############################################
-
-        public float getStiffness() {
-            return mStiffness;
-        }
-
-        public float getDampingRatio() {
-            return mDampingRatio;
-        }
-
-        public void setStiffness(float stiffness){
-            mStiffness = stiffness;
-            if(mListener !=null){
-                mListener.onSolverUpdate(mStiffness,mDampingRatio);
-            }
-        }
-
-        public void setDampingRatio(float dampingratio){
-            mDampingRatio = dampingratio;
-            if(mListener !=null){
-                mListener.onSolverUpdate(mStiffness,mDampingRatio);
-            }
+    public void setArg1(Object val){
+        arg1 = val;
+        if(mListener !=null){
+            mListener.onSolverUpdate(arg1,arg2);
         }
     }
 
-    // ############################################
-    // Interpolator Solver
-    // ############################################
+    public Object getArg1(){
+        return arg1;
+    }
 
-    public static class InterpolatorSolver extends AnSolver {
-
-        private TimeInterpolator mInterpolator = new LinearInterpolator();
-        private long mDuration = 500;
-
-        public InterpolatorSolver(TimeInterpolator interpolator, long duration) {
-            setInerpolator(interpolator);
-            setDuration(duration);
-            //setSolverMode(2);
+    public void setArg2(Object val){
+        arg2 = val;
+        if(mListener !=null){
+            mListener.onSolverUpdate(arg1,arg2);
         }
+    }
 
-        // ############################################
-        // Getter & Setter
-        // ############################################
+    public Object getArg2(){
+        return arg2;
+    }
 
-        public TimeInterpolator getInterpolator() {
-            return mInterpolator;
+    public int getSolverMode() {
+        return SOLVER_MODE;
+    }
+
+    public void setSolverMode(int solverMode) {
+        if(getSolverMode() != solverMode){
+            unBindSolverListener();
+            SOLVER_MODE = solverMode;
         }
-
-        public long getDuration() {
-            return mDuration;
-        }
-
-        public void setInerpolator(TimeInterpolator interpolator){
-            mInterpolator = interpolator;
-            if(mListener !=null){
-                mListener.onSolverUpdate(mInterpolator,mDuration);
-            }
-        }
-
-        public void setDuration(long duration){
-            mDuration = duration;
-            if(mListener !=null){
-                mListener.onSolverUpdate(mInterpolator,mDuration);
-            }
-        }
-
     }
 }
 

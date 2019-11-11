@@ -1,6 +1,6 @@
 package com.martinrgb.animer.core.math.converter;
 
-public abstract class AnSpringConverter {
+abstract class AnSpringConverter {
 
     public double mMass = 1;
     public double mStiffness;

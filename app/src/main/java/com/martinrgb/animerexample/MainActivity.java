@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.martinrgb.animer.Animer;
+import com.martinrgb.animer.core.util.AnUtil;
+import com.martinrgb.animer.monitor.AnConfigRegistry;
+import com.martinrgb.animer.monitor.AnConfigView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView iv;
     private Animer animer;
     private boolean isOpen = false;
+    private  AnConfigView mSpringConfiguratorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,22 +29,23 @@ public class MainActivity extends AppCompatActivity {
 
         iv = findViewById(R.id.iv);
 
-        animer = new com.martinrgb.animer.Animer(iv , com.martinrgb.animer.Animer.createInterpolatorAndroid(new FastOutSlowInInterpolator(),500),com.martinrgb.animer.Animer.TRANSLATION_X,0,900);
+        animer = new Animer(iv,Animer.springDroid(1500,0.99f),Animer.TRANSLATION_X,0,500);
 
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
+        AnConfigRegistry.getInstance().addAnimer(animer, "origami animation spring");
+        mSpringConfiguratorView.refreshAnConfigs();
 
-                if(!isOpen){
-                    animer.setSolver(com.martinrgb.animer.Animer.createInterpolatorAndroid(new FastOutSlowInInterpolator(),500));
-                    animer.animateToState("End");
-                }
-                else{
-                    animer.setSolver(com.martinrgb.animer.Animer.createSpringAndroid(500,0.5f));
-                    animer.setEndvalue(40);
-                }
-                isOpen = !isOpen;
+        iv.setOnClickListener(view -> {
+
+            if(!isOpen){
+                //animer.setSolver(Animer.flingDroid(1500,0.25f));
+                animer.setEndvalue(600);
             }
+            else{
+                //animer.setSolver(Animer.interpolatorDroid(new FastOutSlowInInterpolator(),300));
+                animer.setEndvalue(0);
+            }
+            isOpen = !isOpen;
         });
 
     }

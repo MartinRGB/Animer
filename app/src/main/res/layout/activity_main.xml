@@ -13,4 +13,13 @@
         android:layout_height="50dp"
         android:background="#FF0000"/>
 
+    <com.martinrgb.animer.monitor.AnConfigView
+        android:id="@+id/an_configurator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        />
+
 </RelativeLayout>

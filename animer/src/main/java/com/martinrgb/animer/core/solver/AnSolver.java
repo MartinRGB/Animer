@@ -1,6 +1,7 @@
 package com.martinrgb.animer.core.solver;
 
 import android.animation.TimeInterpolator;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
 

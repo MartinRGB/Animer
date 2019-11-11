@@ -21,8 +21,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.martinrgb.animer.Animer;
-import com.martinrgb.animer.core.solver.AnSolver;
-import com.martinrgb.animer.core.util.AnUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -91,9 +89,11 @@ public class AnConfigView extends FrameLayout {
 
         SeekbarListener seekbarListener = new SeekbarListener();
         mArgument1SeekBar.setMax(MAX_SEEKBAR_VAL);
+        mArgument1SeekBar.setMin(1);
         mArgument1SeekBar.setOnSeekBarChangeListener(seekbarListener);
 
         mArgument2SeekBar.setMax(MAX_SEEKBAR_VAL);
+        mArgument1SeekBar.setMin(1);
         mArgument2SeekBar.setOnSeekBarChangeListener(seekbarListener);
 
         mSpringSelectorSpinner.setAdapter(spinnerAdapter);
@@ -159,7 +159,7 @@ public class AnConfigView extends FrameLayout {
         mArgument1SeekLabel = new TextView(getContext());
         mArgument1SeekLabel.setTextColor(mTextColor);
         params = createLayoutParams(
-                dpToPx(50, resources),
+                dpToPx(100, resources),
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mArgument1SeekLabel.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         mArgument1SeekLabel.setLayoutParams(params);
@@ -180,7 +180,7 @@ public class AnConfigView extends FrameLayout {
 
         mArgument2SeekLabel = new TextView(getContext());
         mArgument2SeekLabel.setTextColor(mTextColor);
-        params = createLayoutParams(dpToPx(50, resources), ViewGroup.LayoutParams.MATCH_PARENT);
+        params = createLayoutParams(dpToPx(100, resources), ViewGroup.LayoutParams.MATCH_PARENT);
         mArgument2SeekLabel.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         mArgument2SeekLabel.setLayoutParams(params);
         mArgument2SeekLabel.setMaxLines(1);
@@ -227,7 +227,7 @@ public class AnConfigView extends FrameLayout {
         }
     }
 
-    private static final int MAX_SEEKBAR_VAL = 100000;
+    private static final int MAX_SEEKBAR_VAL = 3000;
     private static final float MIN_TENSION = 0;
     private static final float MAX_TENSION = 200;
     private static final float MIN_FRICTION = 0;
@@ -242,8 +242,6 @@ public class AnConfigView extends FrameLayout {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int val, boolean b) {
-            float tensionRange = MAX_TENSION - MIN_TENSION;
-            float frictionRange = MAX_FRICTION - MIN_FRICTION;
 
             if (seekBar == mArgument1SeekBar) {
                 //float scaledTension = ((val) * tensionRange) / MAX_SEEKBAR_VAL + MIN_TENSION;

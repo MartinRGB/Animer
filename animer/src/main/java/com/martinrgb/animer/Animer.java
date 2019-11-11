@@ -196,6 +196,22 @@ public class Animer<T> {
         }
     };
 
+    public Object getArgument1(){
+        return getCurrentSolver().getArg1();
+    }
+
+    public void setArgument1(Object val){
+        getCurrentSolver().setArg1(val);
+    }
+
+    public Object getArgument2(){
+        return getCurrentSolver().getArg2();
+    }
+
+    public void setArgument2(Object val){
+        getCurrentSolver().setArg2(val);
+    }
+
     // ###########################################
     // Object
     // ###########################################
@@ -432,7 +448,6 @@ public class Animer<T> {
         final SpringAnimation springAnim = springAnimation;
         springAnim.getSpring().setStiffness( (float) solver.getArg1());
         springAnim.getSpring().setDampingRatio( (float) solver.getArg2());
-
         solver.bindSolverListener(new AnimerSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
@@ -651,6 +666,7 @@ public class Animer<T> {
     }
 
     // # Equal to [setEndValue]
+
     public void setEndvalue(float value){
         setHardwareAcceleration(true);
         switch(currentSolver.getSolverMode())
@@ -715,23 +731,6 @@ public class Animer<T> {
     // ############################################
     // PhysicsState's Getter & Setter
     // ############################################
-
-
-    public Object getArgument1(){
-        return getCurrentSolver().getArg1();
-    }
-
-    public void setArgument1(Object val){
-        getCurrentSolver().setArg1(val);
-    }
-
-    public Object getArgument2(){
-        return getCurrentSolver().getArg2();
-    }
-
-    public void setArgument2(Object val){
-        getCurrentSolver().setArg2(val);
-    }
 
     public void setStateValue(String key,float value){
         mPhysicsState.setStateValue(key,value);

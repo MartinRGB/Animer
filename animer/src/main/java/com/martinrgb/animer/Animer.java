@@ -25,6 +25,7 @@ import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
 import com.martinrgb.animer.core.property.AnProperty;
 import com.martinrgb.animer.core.solver.AnSolver;
 import com.martinrgb.animer.core.state.PhysicsState;
+import com.martinrgb.animer.monitor.AnConfigData;
 
 
 public class Animer<T> {
@@ -196,6 +197,10 @@ public class Animer<T> {
         }
     };
 
+    // ###########################################
+    // Arugment
+    // ###########################################
+
     public Object getArgument1(){
         return getCurrentSolver().getArg1();
     }
@@ -210,6 +215,10 @@ public class Animer<T> {
 
     public void setArgument2(Object val){
         getCurrentSolver().setArg2(val);
+    }
+
+    public AnConfigData getCurrentSolverData(){
+        return getCurrentSolver().getConfigData();
     }
 
     // ###########################################
@@ -227,12 +236,13 @@ public class Animer<T> {
     private static final int FLING_SOLVER_MODE = 0;
     private static final int SPRING_SOLVER_MODE = 1;
     private static final int INTERPOLATOR_SOLVER_MODE = 2;
-    private static AnimerSolver currentSolver = new AnimerSolver(50f,0.99f,1);
+    private static AnimerSolver defaultSpringSolver = springDroid(50f,0.99f);
+    private AnimerSolver currentSolver = springDroid(50f,0.99f);
 
-    public static AnimerSolver getCurrentSolver() {
+    public AnimerSolver getCurrentSolver() {
         return currentSolver;
     }
-    public static void setCurrentSolver(AnimerSolver solver) {
+    public void setCurrentSolver(AnimerSolver solver) {
         currentSolver.unBindSolverListener();
         currentSolver = solver;
     }
@@ -245,49 +255,82 @@ public class Animer<T> {
     private float velocityFactor = 1.0f;
     private float minimumVisValue = 0.001f;
 
+
     // ###########################################
     // Solver
     // ###########################################
 
+
     private static class AnimerSolver extends AnSolver {
-        private AnimerSolver(Object val1,Object val2,int mode) {
+
+        private AnConfigData anConfigData;
+
+        private AnimerSolver(Object val1,Object val2,int mode,AnConfigData data) {
             super(val1,val2,mode);
+            setConfigData(data);
+        }
+
+        public AnConfigData getConfigData(){
+            return anConfigData;
+        }
+
+        private void setConfigData(AnConfigData data){
+            anConfigData = data;
         }
     }
 
+
     public static AnimerSolver flingDroid(float velocity,float friction){
-        return new AnimerSolver(velocity,friction,0);
+        AnConfigData configData = new AnConfigData(velocity,friction,0);
+        configData.setConfig("velocity",5000);
+        configData.setConfig("friction",10);
+        return new AnimerSolver(velocity,friction,0,configData);
     }
 
     public static AnimerSolver springDroid(float stiffness,float dampingratio){
-        return new AnimerSolver(stiffness,dampingratio,1);
+        AnConfigData configData = new AnConfigData(stiffness,dampingratio,1);
+        configData.setConfig("stiffness",3000);
+        configData.setConfig("dampingratio",1);
+        return new AnimerSolver(stiffness,dampingratio,1,configData);
     }
 
     public static AnimerSolver springRK4(float tension,float friction){
+        AnConfigData configData = new AnConfigData(tension,friction,1);
+        configData.setConfig("tension",3000);
+        configData.setConfig("friction",100);
         RK4Converter rk4Converter = new RK4Converter(tension,friction);
-        return new AnimerSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio(),1);
+        return new AnimerSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springDHO(float stiffness,float damping){
+        AnConfigData configData = new AnConfigData(stiffness,damping,1);
+        configData.setConfig("stiffness",3000);
+        configData.setConfig("damping",100);
         DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
-        return new AnimerSolver(dhoConverter.getStiffness(),dhoConverter.getDampingRatio(),1);
+        return new AnimerSolver(dhoConverter.getStiffness(),dhoConverter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springOrigami(float bounciness,float speed){
+        AnConfigData configData = new AnConfigData(bounciness,speed,1);
+        configData.setConfig("bounciness",100);
+        configData.setConfig("speed",100);
         OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(bounciness,speed);
-        return new AnimerSolver(origamiPOPConverter.getStiffness(),origamiPOPConverter.getDampingRatio(),1);
+        return new AnimerSolver(origamiPOPConverter.getStiffness(),origamiPOPConverter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springiOSUIView(float dampingratio,float duration){
+        AnConfigData configData = new AnConfigData(dampingratio,duration,1);
+        configData.setConfig("dampingratio",1);
+        configData.setConfig("duration",5);
         UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
-        return new AnimerSolver(uiViewSpringConverter.getStiffness(),uiViewSpringConverter.getDampingRatio(),1);
+        return new AnimerSolver(uiViewSpringConverter.getStiffness(),uiViewSpringConverter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springiOSCoreAnimation(float stiffness,float damping){
         return springDHO(stiffness,damping);
     }
 
-    public AnimerSolver springProtopie(float tension,float friction){
+    public static AnimerSolver springProtopie(float tension,float friction){
         return springRK4(tension,friction);
     }
 
@@ -296,7 +339,10 @@ public class Animer<T> {
     }
 
     public static AnimerSolver interpolatorDroid(TimeInterpolator interpolator, long duration){
-        return new AnimerSolver(interpolator,duration,2);
+        AnConfigData configData = new AnConfigData(interpolator,duration,2);
+        configData.setConfig("interpolator",1);
+        configData.setConfig("duration",5);
+        return new AnimerSolver(interpolator,duration,2,configData);
     }
 
     // ###########################################
@@ -369,7 +415,7 @@ public class Animer<T> {
     // ############################################
 
     private void setupBySolver(AnimerSolver solver) {
-        switch(currentSolver.getSolverMode())
+        switch(solver.getSolverMode())
         {
             case FLING_SOLVER_MODE:
                 setupFlingAnimator(solver);
@@ -532,7 +578,7 @@ public class Animer<T> {
         switch(currentSolver.getSolverMode())
         {
             case FLING_SOLVER_MODE:
-                setupSpringAnimator(new AnimerSolver(50f,0.99f,1));
+                setupSpringAnimator(defaultSpringSolver);
                 mSpringAnimation.getSpring().setFinalPosition(getStateValue("End"));
                 break;
             case SPRING_SOLVER_MODE:
@@ -600,7 +646,7 @@ public class Animer<T> {
         switch(currentSolver.getSolverMode())
         {
             case FLING_SOLVER_MODE:
-                setupSpringAnimator(new AnimerSolver(50f,0.99f,1));
+                setupSpringAnimator(defaultSpringSolver);
                 if(mSpringAnimation.canSkipToEnd()){
                     mSpringAnimation.skipToEnd();
                 }
@@ -635,7 +681,7 @@ public class Animer<T> {
         switch(currentSolver.getSolverMode())
         {
             case FLING_SOLVER_MODE:
-                setupSpringAnimator(new AnimerSolver(50f,0.99f,1));
+                setupSpringAnimator(defaultSpringSolver);
                 mSpringAnimation.setStartValue(getCurrentPhysicsValue());
                 mSpringAnimation.setStartVelocity(getCurrentPhysicsVelocity());
                 mSpringAnimation.animateToFinalPosition(getStateValue(state));
@@ -672,7 +718,7 @@ public class Animer<T> {
         switch(currentSolver.getSolverMode())
         {
             case FLING_SOLVER_MODE:
-                setupSpringAnimator(new AnimerSolver(50f,0.99f,1));
+                setupSpringAnimator(defaultSpringSolver);
                 mSpringAnimation.setStartValue(getCurrentPhysicsValue());
                 mSpringAnimation.setStartVelocity(getCurrentPhysicsVelocity());
                 mSpringAnimation.animateToFinalPosition(value);

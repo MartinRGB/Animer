@@ -11,9 +11,9 @@ public class AnSolver extends Object{
     // Construct
     // ############################################
 
-    private static Object arg1,arg2;
-    private static SolverListener mListener = null;
-    private static int SOLVER_MODE = -1;
+    private Object arg1,arg2;
+    private SolverListener mListener = null;
+    private int SOLVER_MODE = -1;
 
     public AnSolver(Object val1,Object val2,int mode){
         unBindSolverListener();
@@ -25,10 +25,10 @@ public class AnSolver extends Object{
     public interface SolverListener {
         void onSolverUpdate(Object arg1, Object arg2);
     }
-    public static void bindSolverListener(SolverListener listener) {
+    public void bindSolverListener(SolverListener listener) {
         mListener = listener;
     }
-    public static void unBindSolverListener(){
+    public void unBindSolverListener(){
         if(mListener !=null){
             mListener = null;
         }

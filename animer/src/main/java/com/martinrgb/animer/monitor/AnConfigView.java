@@ -35,13 +35,11 @@ import java.util.Map;
  */
 public class AnConfigView extends FrameLayout {
 
-
-
     private final SpinnerAdapter spinnerAdapter;
     private final List<Animer> mAnimers = new ArrayList<Animer>();
     private final float mStashPx;
     private final float mRevealPx;
-    private final AnConfigRegistry anConfigRegistry;
+    private AnConfigRegistry anConfigRegistry;
     private final int mTextColor = Color.argb(255, 225, 225, 225);
 
     private Spinner mSpringSelectorSpinner;
@@ -278,7 +276,15 @@ public class AnConfigView extends FrameLayout {
 //        float frictionRange = MAX_FRICTION - MIN_FRICTION;
 //        int scaledFriction = Math.round(((friction - MIN_FRICTION) * MAX_SEEKBAR_VAL) / frictionRange);
 
+//        Log.e("Animer Config",String.valueOf(animer.getCurrentSolverData().getConfig("Arg1")));
+//        Log.e("Animer Config",String.valueOf(animer.getCurrentSolverData().getConfig("Arg2")));
+
+        animer.getCurrentSolverData().getConfigByIndex(0);
+        animer.getCurrentSolverData().getConfigByIndex(1);
+        animer.getCurrentSolverData().getConfigByIndex(2);
+        animer.getCurrentSolverData().getConfigByIndex(3);
         mArgument1SeekBar.setProgress((int)value1);
+        //mArgument1SeekBar.setMax(animer.getAnConfigData().getConfig(""));
         mArgument2SeekBar.setProgress((int)value2);
     }
 

@@ -1,4 +1,6 @@
 package com.martinrgb.animer.monitor;
+import android.util.Log;
+
 import com.martinrgb.animer.Animer;
 
 import java.util.Collections;

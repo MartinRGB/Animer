@@ -3,8 +3,11 @@ import android.util.Log;
 
 import com.martinrgb.animer.Animer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AnConfigRegistry {
@@ -15,14 +18,14 @@ public class AnConfigRegistry {
         return INSTANCE;
     }
 
-    private final Map<Animer.AnimerSolver, String> mAnimerMap;
+    private final LinkedHashMap<String,Animer.AnimerSolver> mAnimerMap;
 
     AnConfigRegistry() {
-        mAnimerMap = new HashMap<Animer.AnimerSolver, String>();
+        mAnimerMap = new LinkedHashMap<String,Animer.AnimerSolver>();
 
     }
 
-    public boolean addSolver(Animer.AnimerSolver animerSolver, String configName) {
+    public boolean addSolver(String configName,Animer.AnimerSolver animerSolver) {
         if (animerSolver == null) {
             throw new IllegalArgumentException("animer is required");
         }
@@ -32,9 +35,10 @@ public class AnConfigRegistry {
         if (mAnimerMap.containsKey(animerSolver)) {
             return false;
         }
-        mAnimerMap.put(animerSolver, configName);
+        mAnimerMap.put(configName,animerSolver);
         return true;
     }
+
 
     public boolean removeSpringConfig(Animer.AnimerSolver animerSolver) {
         if (animerSolver == null) {
@@ -43,7 +47,7 @@ public class AnConfigRegistry {
         return mAnimerMap.remove(animerSolver) != null;
     }
 
-    public Map<Animer.AnimerSolver, String> getAllAnimer() {
+    public Map<String,Animer.AnimerSolver> getAllAnimer() {
         return Collections.unmodifiableMap(mAnimerMap);
     }
 

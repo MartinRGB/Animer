@@ -31,11 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
         iv = findViewById(R.id.iv);
 
-        solverA = Animer.springDroid(500,0.4f);
+        solverA = Animer.springDroid(1500f,0.95f);
         solverB = Animer.springRK4(1000,25f);
-        solverC = Animer.springRK4(500,25);
-        solverD = Animer.springDroid(1500,0.25f);
-        solverE = Animer.flingDroid(1500,0.99f);
+        solverC = Animer.springDHO(500,25);
 
         animer = new Animer(iv,solverA,Animer.TRANSLATION_Y,0,500);
         animer2 = new Animer(iv,solverB,Animer.TRANSLATION_X,0,500);
@@ -44,31 +42,28 @@ public class MainActivity extends AppCompatActivity {
 //        Log.e("DefaultSolver",String.valueOf(animer.getDefaultSolveArg2()));
 
         mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addSolver(solverA, "Y");
-        AnConfigRegistry.getInstance().addSolver(solverB, "X");
-        AnConfigRegistry.getInstance().addSolver(solverC, "R");
-        AnConfigRegistry.getInstance().addSolver(solverD, "Go");
-        AnConfigRegistry.getInstance().addSolver(solverE, "Back");
-
-        Log.e("Animer1",String.valueOf(animer.getArgument1()));
-        Log.e("Animer2",String.valueOf(animer.getArgument2()));
+        AnConfigRegistry.getInstance().addSolver("Y",solverA);
+        AnConfigRegistry.getInstance().addSolver("X",solverB);
+        AnConfigRegistry.getInstance().addSolver("R",solverC);
+//        AnConfigRegistry.getInstance().addSolver(solverD, "Go");
+//        AnConfigRegistry.getInstance().addSolver(solverE, "Back");
 
         mSpringConfiguratorView.refreshAnConfigs();
 
         iv.setOnClickListener(view -> {
 
             if(!isOpen){
-                animer.setSolver(solverD);
-                animer.setEndvalue(-200);
-                animer2.setEndvalue(600);
-                animer3.setEndvalue(720);
+                //animer.setSolver(solverD);
+                animer.setEndvalue(-400);
+//                animer2.setEndvalue(600);
+//                animer3.setEndvalue(720);
 
             }
             else{
-                animer.setSolver(solverE);
+                //animer.setSolver(solverE);
                 animer.setEndvalue(0);
-                animer2.setEndvalue(0);
-                animer3.setEndvalue(0);
+//                animer2.setEndvalue(0);
+//                animer3.setEndvalue(0);
             }
             isOpen = !isOpen;
         });

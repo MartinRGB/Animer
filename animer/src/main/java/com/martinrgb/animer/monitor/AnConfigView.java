@@ -29,6 +29,7 @@ import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,20 +41,27 @@ import java.util.Map;
  */
 public class AnConfigView extends FrameLayout {
 
-    private final SpinnerAdapter spinnerAdapter;
-    private final List<Animer.AnimerSolver> mAnimers = new ArrayList<Animer.AnimerSolver>();
+    private final SpinnerAdapter solverObjectSpinnerAdapter;
+    private final SpinnerAdapter solverTypeSpinnerAdapter;
+    private final List<Animer.AnimerSolver> mSolverObjects = new ArrayList<Animer.AnimerSolver>();
+    private final List<Animer.AnimerSolver> mSolverTypes = new ArrayList<Animer.AnimerSolver>();
+
     private AnConfigRegistry anConfigRegistry;
     private final int mTextColor = Color.argb(255, 225, 225, 225);
 
-    private Spinner mSpringSelectorSpinner;
-    private Animer.AnimerSolver mSelectedAnimerSolver;
+    private Spinner mSolverObjectSelectorSpinner;
+    private Spinner mSolverTypeSelectorSpinner;
+    private Animer.AnimerSolver mSelectedSolverObject,mSelectedSolverType;
     private Animer mRevealAnimer;
 
     private FrameLayout root;
     private LinearLayout listLayout;
+    private TextView animatorType;
     private  SeekbarListener seekbarListener;
 
     int PX_5,PX_10,PX_20,PX_120;
+    private static LinkedHashMap<String, Animer.AnimerSolver> solverTypesMap = new LinkedHashMap<>();
+    private Map<String,Animer.AnimerSolver> mAnimerMap;
 
     public AnConfigView(Context context) {
         this(context, null);
@@ -67,10 +75,11 @@ public class AnConfigView extends FrameLayout {
         super(context, attrs, defStyle);
 
         anConfigRegistry = AnConfigRegistry.getInstance();
-        spinnerAdapter = new SpinnerAdapter(context);
+        initSolverMap();
+        solverObjectSpinnerAdapter = new SpinnerAdapter(context);
+        solverTypeSpinnerAdapter = new SpinnerAdapter(context);
 
         Resources resources = getResources();
-
         PX_5 = dpToPx(5, resources);
         PX_10 = dpToPx(10, resources);
         PX_20 = dpToPx(20, resources);
@@ -78,13 +87,13 @@ public class AnConfigView extends FrameLayout {
 
         addView(generateHierarchy(context));
 
+
+
         ViewTreeObserver vto = root.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 // Put your code here.
-                Log.e("Root",String.valueOf(root.getMeasuredHeight()));
-                Log.e("Root",String.valueOf(root.getHeight()));
                 mRevealAnimer = new Animer();
                 mRevealAnimer.setSolver(Animer.springDroid(500,0.95f));
                 mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
@@ -99,23 +108,31 @@ public class AnConfigView extends FrameLayout {
                     }
                 });
 
-                mRevealAnimer.setCurrentValue(1);
+                //mRevealAnimer.setCurrentValue(1);
             }
         });
 
     }
 
+    private void initSolverMap(){
+        solverTypesMap.put("AndroidSpring",Animer.springDroid(1500,0.5f));
+        solverTypesMap.put("AndroidFling",Animer.flingDroid(4000,0.8f));
+        solverTypesMap.put("iOSUIViewSpring",Animer.springiOSUIView(0.5f,0.5f));
+        solverTypesMap.put("iOSCoreAnimationSpring",Animer.springiOSCoreAnimation(100,10));
+        solverTypesMap.put("OrigamiPOPSpring",Animer.springOrigami(50,10));
+        solverTypesMap.put("RK4Spring",Animer.springRK4(200,25));
+        solverTypesMap.put("DHOSpring",Animer.springDHO(50,2f));
+        solverTypesMap.put("ProtopieSpring",Animer.springProtopie(300,15f));
+        solverTypesMap.put("PrincipleSpring",Animer.springPrinciple(380,20f));
+    }
 
 
     private View generateHierarchy(Context context) {
         Resources resources = getResources();
 
         FrameLayout.LayoutParams params;
-        int fivePx = dpToPx(5, resources);
-        int tenPx = dpToPx(10, resources);
-        int twentyPx = dpToPx(20, resources);
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1f);
-        tableLayoutParams.setMargins(0, 0, fivePx, 0);
+        tableLayoutParams.setMargins(0, 0, PX_5, 0);
         LinearLayout seekWrapper;
 
         // Root
@@ -129,7 +146,7 @@ public class AnConfigView extends FrameLayout {
 
         LinearLayout container = new LinearLayout(context);
         params = createMatchParams();
-        params.setMargins(0, twentyPx, 0, 0);
+        params.setMargins(0, PX_20, 0, 0);
         container.setOrientation(LinearLayout.VERTICAL);
         container.setLayoutParams(params);
         container.setBackgroundColor(Color.argb(100, 0, 0, 0));
@@ -138,21 +155,46 @@ public class AnConfigView extends FrameLayout {
         // ## Spinner
         seekWrapper = new LinearLayout(context);
         params = createMatchWrapParams();
-        params.setMargins(tenPx, tenPx, tenPx, twentyPx);
-        seekWrapper.setPadding(tenPx, tenPx, tenPx, tenPx);
+        params.setMargins(PX_10, PX_10, PX_10, PX_10);
+        seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_20);
         seekWrapper.setLayoutParams(params);
         seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
         container.addView(seekWrapper);
 
-        mSpringSelectorSpinner = new Spinner(context, Spinner.MODE_DIALOG);
+        mSolverObjectSelectorSpinner = new Spinner(context, Spinner.MODE_DIALOG);
         params = createMatchWrapParams();
-        params.setMargins(tenPx, tenPx, tenPx, tenPx);
-        mSpringSelectorSpinner.setLayoutParams(tableLayoutParams);
-        seekWrapper.addView(mSpringSelectorSpinner);
+        params.setMargins(PX_10, PX_10, PX_10, PX_10);
+        mSolverObjectSelectorSpinner.setLayoutParams(tableLayoutParams);
+        seekWrapper.addView(mSolverObjectSelectorSpinner);
 
-        mSpringSelectorSpinner.setAdapter(spinnerAdapter);
-        mSpringSelectorSpinner.setOnItemSelectedListener(new SpringSelectedListener());
+        mSolverObjectSelectorSpinner.setAdapter(solverObjectSpinnerAdapter);
         refreshAnConfigs();
+        mSolverObjectSelectorSpinner.setOnItemSelectedListener(new SoverObjectSelectedListener());
+
+
+        seekWrapper = new LinearLayout(context);
+        params = createMatchWrapParams();
+        params.setMargins(PX_10, PX_10, PX_10, PX_10);
+        seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_20);
+        seekWrapper.setLayoutParams(params);
+        seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+        container.addView(seekWrapper);
+
+        mSolverTypeSelectorSpinner = new Spinner(context, Spinner.MODE_DIALOG);
+        params = createMatchWrapParams();
+        params.setMargins(PX_10, PX_10, PX_10, PX_10);
+        mSolverTypeSelectorSpinner.setLayoutParams(tableLayoutParams);
+        seekWrapper.addView(mSolverTypeSelectorSpinner);
+
+        mSolverTypeSelectorSpinner.setAdapter(solverTypeSpinnerAdapter);
+        //TODO
+        //refreshTypeConfigs();
+        //mSolverTypeSelectorSpinner.setOnItemSelectedListener(new SoverTypeSelectedListener());
+
+
+
+
+
 
         // ## List LinearLayout
         listLayout = new LinearLayout(context);
@@ -161,6 +203,28 @@ public class AnConfigView extends FrameLayout {
         listLayout.setLayoutParams(params);
         listLayout.setOrientation(LinearLayout.VERTICAL);
         container.addView(listLayout);
+
+        // ### Animator TypeTextView
+
+        seekWrapper = new LinearLayout(context);
+        params = createMatchWrapParams();
+        params.setMargins(PX_10, PX_10, PX_10, 0);
+        seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_10);
+        seekWrapper.setLayoutParams(params);
+        seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+        listLayout.addView(seekWrapper);
+
+        animatorType = new TextView(getContext());
+        animatorType.setTextColor(mTextColor);
+        params = createMatchWrapParams();
+        animatorType.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        animatorType.setPadding(PX_10, PX_10, PX_10, PX_10);
+        animatorType.setLayoutParams(params);
+        animatorType.setMaxLines(1);
+        animatorType.setText("Animator Type");
+        seekWrapper.addView(animatorType);
+
+        // ### Seekbar
 
         seekbarListener = new SeekbarListener();
 
@@ -202,7 +266,7 @@ public class AnConfigView extends FrameLayout {
 
         seekWrapper = new LinearLayout(context);
         params = createMatchWrapParams();
-        params.setMargins(PX_10, PX_10, PX_10, PX_20);
+        params.setMargins(PX_10, PX_10, PX_10, PX_10);
         seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_10);
         seekWrapper.setLayoutParams(params);
         seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
@@ -228,19 +292,53 @@ public class AnConfigView extends FrameLayout {
     }
 
     public void refreshAnConfigs() {
-        Map<Animer.AnimerSolver, String> mAnimerMap = anConfigRegistry.getAllAnimer();
+        mAnimerMap = anConfigRegistry.getAllAnimer();
 
-        spinnerAdapter.clear();
-        mAnimers.clear();
+        solverObjectSpinnerAdapter.clear();
+        mSolverObjects.clear();
 
-        for (Map.Entry<Animer.AnimerSolver, String> entry : mAnimerMap.entrySet()) {
-            mAnimers.add(entry.getKey());
-            spinnerAdapter.add(entry.getValue());
+        for (Map.Entry<String,Animer.AnimerSolver> entry : mAnimerMap.entrySet()) {
+            mSolverObjects.add(entry.getValue());
+            solverObjectSpinnerAdapter.add(entry.getKey());
+            Log.e("aa","aaa");
         }
         // Add the default config in last.
-        spinnerAdapter.notifyDataSetChanged();
-        if (mAnimers.size() > 0) {
-            mSpringSelectorSpinner.setSelection(0);
+        solverObjectSpinnerAdapter.notifyDataSetChanged();
+        if (mSolverObjects.size() > 0) {
+            mSolverObjectSelectorSpinner.setSelection(0);
+
+            int typeIndex = getIndexByConfigString(String.valueOf(((Animer.AnimerSolver)mAnimerMap.get(mAnimerMap.keySet().toArray()[0])).getConfigData().getConfig("converter_type")));
+            //TODO
+            refreshTypeConfigs(typeIndex);
+            mSolverTypeSelectorSpinner.setOnItemSelectedListener(new SoverTypeSelectedListener());
+        }
+    }
+
+    public int getIndexByConfigString(String string){
+        for(int i = 0;i< solverTypesMap.size();i++){
+            Object key = solverTypesMap.keySet().toArray()[i];
+            Object value = solverTypesMap.get(key);
+
+            if(string == key){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void refreshTypeConfigs(int index) {
+        solverTypeSpinnerAdapter.clear();
+        mSolverTypes.clear();
+
+        for (Map.Entry<String,Animer.AnimerSolver> entry : solverTypesMap.entrySet()) {
+            mSolverTypes.add(entry.getValue());
+            solverTypeSpinnerAdapter.add(entry.getKey());
+            Log.e("bb","bbb");
+        }
+        // Add the default config in last.
+        solverTypeSpinnerAdapter.notifyDataSetChanged();
+        if (mSolverTypes.size() > 0) {
+            mSolverTypeSelectorSpinner.setSelection(index,false);
         }
     }
 
@@ -250,19 +348,53 @@ public class AnConfigView extends FrameLayout {
     private float[] RANGE_VALUES = new float[]{RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4};
     private float[] SEEKBAR_VALUES = new float[]{seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4};
 
-    private class SpringSelectedListener implements AdapterView.OnItemSelectedListener {
+    private int objectSelectedIndex = 0;
+    private class SoverObjectSelectedListener implements AdapterView.OnItemSelectedListener {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            mSelectedAnimerSolver = mAnimers.get(i);
+            mSelectedSolverObject = mSolverObjects.get(i);
+            objectSelectedIndex = i;
+
+            Log.e("!1","213");
+            for (int index = 0;index<listSize;index++){
+                MAX_VALUES[index] = (float) Float.valueOf(mSelectedSolverObject.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_max").toString());
+                MIN_VALUES[index] = (float) Float.valueOf(mSelectedSolverObject.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_min").toString());
+                RANGE_VALUES[index] = MAX_VALUES[index] - MIN_VALUES[index];
+
+            }
+
+            updateSeekBarsForAnimer(mSelectedSolverObject);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    }
+
+    private class SoverTypeSelectedListener implements AdapterView.OnItemSelectedListener {
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            mSelectedSolverType = mSolverTypes.get(i);
 
             for (int index = 0;index<listSize;index++){
-                MAX_VALUES[index] = (float) Float.valueOf(mSelectedAnimerSolver.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_max").toString());
-                MIN_VALUES[index] = (float) Float.valueOf(mSelectedAnimerSolver.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_min").toString());
+                MAX_VALUES[index] = (float) Float.valueOf(mSelectedSolverType.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_max").toString());
+                MIN_VALUES[index] = (float) Float.valueOf(mSelectedSolverType.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_min").toString());
                 RANGE_VALUES[index] = MAX_VALUES[index] - MIN_VALUES[index];
             }
 
-            updateSeekBarsForAnimer(mSelectedAnimerSolver);
+
+
+            mSolverObjects.set(mSolverObjectSelectorSpinner.getSelectedItemPosition(),mSelectedSolverType);
+            mSelectedSolverObject = mSolverObjects.get(mSolverObjectSelectorSpinner.getSelectedItemPosition());
+            //TODO
+            updateSeekBarsForAnimer(mSelectedSolverObject);
+
+            mAnimerMap.get(mAnimerMap.keySet().toArray()[mSolverObjectSelectorSpinner.getSelectedItemPosition()]).setArg1(getConvertValueByIndex(0));
+            mAnimerMap.get(mAnimerMap.keySet().toArray()[mSolverObjectSelectorSpinner.getSelectedItemPosition()]).setArg2(getConvertValueByIndex(1));
+
+
         }
 
         @Override
@@ -275,22 +407,26 @@ public class AnConfigView extends FrameLayout {
         @Override
         public void onProgressChanged(SeekBar seekBar, int val, boolean b) {
 
-
             for(int i = 0;i<listSize;i++){
                 if (seekBar == SEEKBARS[i]) {
                     SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL))*RANGE_VALUES[i] + MIN_VALUES[i];
 
                     if(i == 0){
                         String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[i]);
-                        SEEKBAR_LABElS[i].setText((String) mSelectedAnimerSolver.getConfigData().getConfig("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
-                        mSelectedAnimerSolver.getConfigData().setConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
-                        mSelectedAnimerSolver.setArg1(getConvertValueByIndex(i));
+                        SEEKBAR_LABElS[i].setText((String) mSelectedSolverObject.getConfigData().getConfig("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
+                        mSelectedSolverObject.getConfigData().setConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+
                     }
                     else if(i == 1){
                         String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
-                        SEEKBAR_LABElS[i].setText((String) mSelectedAnimerSolver.getConfigData().getConfig("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
-                        mSelectedAnimerSolver.getConfigData().setConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
-                        mSelectedAnimerSolver.setArg2(getConvertValueByIndex(i));
+                        SEEKBAR_LABElS[i].setText((String) mSelectedSolverObject.getConfigData().getConfig("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
+                        mSelectedSolverObject.getConfigData().setConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+
+                        //TODO
+                        mSelectedSolverObject.setArg1(getConvertValueByIndex(i-1));
+                        mSelectedSolverObject.setArg2(getConvertValueByIndex(i));
+                        mAnimerMap.get(mAnimerMap.keySet().toArray()[mSolverObjectSelectorSpinner.getSelectedItemPosition()]).setArg1(getConvertValueByIndex(0));
+                        mAnimerMap.get(mAnimerMap.keySet().toArray()[mSolverObjectSelectorSpinner.getSelectedItemPosition()]).setArg2(getConvertValueByIndex(1));
                     }
 
                 }
@@ -306,14 +442,14 @@ public class AnConfigView extends FrameLayout {
         }
     }
     private Object getConvertValueByIndex(int i){
-        Log.e("CONVERTER_TYPE",String.valueOf(CONVERTER_TYPE));
-        Log.e("CONVERTER_TYPE_i",String.valueOf(i));
         switch (CONVERTER_TYPE) {
             case "NULL":
                 return SEEKBAR_VALUES[i];
+            case "AndroidFling":
+                return SEEKBAR_VALUES[i];
             case "AndroidSpring":
                 return SEEKBAR_VALUES[i];
-            case "DHO":
+            case "DHOSpring":
                 if( i == 0) {
                     DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
                     return dhoConverter.getStiffness();
@@ -325,7 +461,19 @@ public class AnConfigView extends FrameLayout {
                 else{
                     return SEEKBAR_VALUES[i];
                 }
-            case "RK4":
+            case "iOSCoreAnimationSpring":
+                if( i == 0) {
+                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return dhoConverter.getStiffness();
+                }
+                else if(i == 1){
+                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return dhoConverter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            case "RK4Spring":
                 if( i == 0) {
                     RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
                     return rk4Converter.getStiffness();
@@ -337,7 +485,31 @@ public class AnConfigView extends FrameLayout {
                 else{
                     return SEEKBAR_VALUES[i];
                 }
-            case "UIVIEW":
+            case "ProtopieSpring":
+                if( i == 0) {
+                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return rk4Converter.getStiffness();
+                }
+                else if(i == 1) {
+                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return rk4Converter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            case "PrincipleSpring":
+                if( i == 0) {
+                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return rk4Converter.getStiffness();
+                }
+                else if(i == 1) {
+                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return rk4Converter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            case "iOSUIViewSpring":
                 if( i == 0) {
                     UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
                     return uiViewSpringConverter.getStiffness();
@@ -349,7 +521,7 @@ public class AnConfigView extends FrameLayout {
                 else{
                     return SEEKBAR_VALUES[i];
                 }
-            case "ORIGAMI":
+            case "OrigamiPOPSpring":
                 if( i == 0) {
                     OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
                     return origamiPOPConverter.getStiffness();
@@ -376,6 +548,12 @@ public class AnConfigView extends FrameLayout {
 
         if((animerSolver.getConfigData().getConfig("converter_type")) !=null){
             CONVERTER_TYPE = animerSolver.getConfigData().getConfig("converter_type").toString();
+            animatorType.setText(CONVERTER_TYPE);
+
+            // TODO SHOULD DELTE
+            int typeIndex = getIndexByConfigString(CONVERTER_TYPE);
+            mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
+
         }
 
         for(int i = 0;i<listSize;i++){
@@ -384,7 +562,11 @@ public class AnConfigView extends FrameLayout {
             float progress = (SEEKBAR_VALUES[i] - MIN_VALUES[i])/RANGE_VALUES[i] *(MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
             SEEKBARS[i].setProgress((int) progress);
             SEEKBAR_LABElS[i].setText((String) animerSolver.getConfigData().getConfig("arg" + String.valueOf(i+1) +"_name") + ": " + (String) animerSolver.getConfigData().getConfig("arg" + String.valueOf(i+1)).toString());
+
         }
+
+
+
     }
 
     /**
@@ -479,19 +661,6 @@ public class AnConfigView extends FrameLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
     }
-
-    public static FrameLayout.LayoutParams createWrapParams() {
-        return createLayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-    }
-
-    public static FrameLayout.LayoutParams createWrapMatchParams() {
-        return createLayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-    }
-
     public static FrameLayout.LayoutParams createMatchWrapParams() {
         return createLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

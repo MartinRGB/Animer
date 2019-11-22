@@ -15,35 +15,35 @@ public class AnConfigRegistry {
         return INSTANCE;
     }
 
-    private final Map<Animer, String> mAnimerMap;
+    private final Map<Animer.AnimerSolver, String> mAnimerMap;
 
     AnConfigRegistry() {
-        mAnimerMap = new HashMap<Animer, String>();
+        mAnimerMap = new HashMap<Animer.AnimerSolver, String>();
 
     }
 
-    public boolean addAnimer(Animer animer, String configName) {
-        if (animer == null) {
+    public boolean addSolver(Animer.AnimerSolver animerSolver, String configName) {
+        if (animerSolver == null) {
             throw new IllegalArgumentException("animer is required");
         }
         if (configName == null) {
             throw new IllegalArgumentException("configName is required");
         }
-        if (mAnimerMap.containsKey(animer)) {
+        if (mAnimerMap.containsKey(animerSolver)) {
             return false;
         }
-        mAnimerMap.put(animer, configName);
+        mAnimerMap.put(animerSolver, configName);
         return true;
     }
 
-    public boolean removeSpringConfig(Animer animer) {
-        if (animer == null) {
+    public boolean removeSpringConfig(Animer.AnimerSolver animerSolver) {
+        if (animerSolver == null) {
             throw new IllegalArgumentException("animer is required");
         }
-        return mAnimerMap.remove(animer) != null;
+        return mAnimerMap.remove(animerSolver) != null;
     }
 
-    public Map<Animer, String> getAllAnimer() {
+    public Map<Animer.AnimerSolver, String> getAllAnimer() {
         return Collections.unmodifiableMap(mAnimerMap);
     }
 

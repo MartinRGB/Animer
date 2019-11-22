@@ -13,13 +13,13 @@ public class AnConfigData {
 
     public AnConfigData(Object o1,Object o2,int mode) {
         setMode(mode);
-        setConfig("Arg1",o1);
-        setConfig("Arg2",o2);
+        setConfig("arg1",o1);
+        setConfig("arg2",o2);
     }
 
     public AnConfigData(Object o1,Object o2) {
-        setConfig("Arg1",o1);
-        setConfig("Arg2",o2);
+        setConfig("arg1",o1);
+        setConfig("arg2",o2);
     }
 
     // ############################################
@@ -42,12 +42,15 @@ public class AnConfigData {
         return -1;
     }
 
-    public void getConfigByIndex(int index){
-        Object firstKey = configMap.keySet().toArray()[index];
-        Object valueForFirstKey = configMap.get(firstKey);
-        Log.e("key: ",String.valueOf(firstKey));
-        Log.e("value: ",String.valueOf(valueForFirstKey));
+    // TODO:Cannot use this,only String works
+    public Object[] getConfigByIndex(int index){
+        Object key = configMap.keySet().toArray()[index];
+        Object value = configMap.get(key);
+        Log.e("index: ",String.valueOf(index));
+        Log.e("key: ",String.valueOf(key));
+        Log.e("value: ",String.valueOf(value));
         //return valueForFirstKey;
+        return new Object[]{key,value};
     }
 
     public int getMode() {

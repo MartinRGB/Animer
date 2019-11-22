@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -21,6 +22,10 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.martinrgb.animer.Animer;
+import com.martinrgb.animer.core.math.converter.DHOConverter;
+import com.martinrgb.animer.core.math.converter.OrigamiPOPConverter;
+import com.martinrgb.animer.core.math.converter.RK4Converter;
+import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -36,15 +41,19 @@ import java.util.Map;
 public class AnConfigView extends FrameLayout {
 
     private final SpinnerAdapter spinnerAdapter;
-    private final List<Animer> mAnimers = new ArrayList<Animer>();
-    private final float mStashPx;
-    private final float mRevealPx;
+    private final List<Animer.AnimerSolver> mAnimers = new ArrayList<Animer.AnimerSolver>();
     private AnConfigRegistry anConfigRegistry;
     private final int mTextColor = Color.argb(255, 225, 225, 225);
 
     private Spinner mSpringSelectorSpinner;
-    private Animer mSelectedAnimer;
+    private Animer.AnimerSolver mSelectedAnimerSolver;
     private Animer mRevealAnimer;
+
+    private FrameLayout root;
+    private LinearLayout listLayout;
+    private  SeekbarListener seekbarListener;
+
+    int PX_5,PX_10,PX_20,PX_120;
 
     public AnConfigView(Context context) {
         this(context, null);
@@ -61,46 +70,42 @@ public class AnConfigView extends FrameLayout {
         spinnerAdapter = new SpinnerAdapter(context);
 
         Resources resources = getResources();
-        mRevealPx = dpToPx(40, resources);
-        mStashPx = dpToPx(280, resources);
 
-        mRevealAnimer = new Animer();
-        mRevealAnimer.setSolver(Animer.springDroid(500,0.95f));
-        mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
-            @Override
-            public void onUpdate(float value, float velocity, float progress) {
-                float val = (float) value;
-                float minTranslate = mRevealPx;
-                float maxTranslate = mStashPx;
-                float range = maxTranslate - minTranslate;
-                float yTranslate = (val * range) + minTranslate;
-
-                //float yTranslate = AnUtil.mapValueFromRangeToRange(value,0.f,1.f,0.f,600.f);
-
-                AnConfigView.this.setTranslationY(yTranslate);
-            }
-        });
-
-
+        PX_5 = dpToPx(5, resources);
+        PX_10 = dpToPx(10, resources);
+        PX_20 = dpToPx(20, resources);
+        PX_120 = dpToPx(120, resources);
 
         addView(generateHierarchy(context));
 
-        SeekbarListener seekbarListener = new SeekbarListener();
-        mArgument1SeekBar.setMax(MAX_SEEKBAR_VAL);
-        mArgument1SeekBar.setMin(1);
-        mArgument1SeekBar.setOnSeekBarChangeListener(seekbarListener);
+        ViewTreeObserver vto = root.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Put your code here.
+                Log.e("Root",String.valueOf(root.getMeasuredHeight()));
+                Log.e("Root",String.valueOf(root.getHeight()));
+                mRevealAnimer = new Animer();
+                mRevealAnimer.setSolver(Animer.springDroid(500,0.95f));
+                mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
+                    @Override
+                    public void onUpdate(float value, float velocity, float progress) {
+                        float val = (float) value;
+                        float minTranslate = 0;
+                        float maxTranslate = root.getMeasuredHeight() - dpToPx(40/2, resources);
+                        float range = maxTranslate - minTranslate;
+                        float yTranslate = (val * range) + minTranslate;
+                        AnConfigView.this.setTranslationY(yTranslate);
+                    }
+                });
 
-        mArgument2SeekBar.setMax(MAX_SEEKBAR_VAL);
-        mArgument1SeekBar.setMin(1);
-        mArgument2SeekBar.setOnSeekBarChangeListener(seekbarListener);
+                mRevealAnimer.setCurrentValue(1);
+            }
+        });
 
-        mSpringSelectorSpinner.setAdapter(spinnerAdapter);
-        mSpringSelectorSpinner.setOnItemSelectedListener(new SpringSelectedListener());
-        refreshAnConfigs();
-
-        mRevealAnimer.setCurrentValue(1);
-        //this.setTranslationY(mStashPx);
     }
+
+
 
     private View generateHierarchy(Context context) {
         Resources resources = getResources();
@@ -109,80 +114,59 @@ public class AnConfigView extends FrameLayout {
         int fivePx = dpToPx(5, resources);
         int tenPx = dpToPx(10, resources);
         int twentyPx = dpToPx(20, resources);
-        TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f);
+        TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1f);
         tableLayoutParams.setMargins(0, 0, fivePx, 0);
         LinearLayout seekWrapper;
 
-        FrameLayout root = new FrameLayout(context);
-        params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(300, resources));
+        // Root
+
+        root = new FrameLayout(context);
+        params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         root.setLayoutParams(params);
 
-        FrameLayout container = new FrameLayout(context);
+
+        // # Container
+
+        LinearLayout container = new LinearLayout(context);
         params = createMatchParams();
         params.setMargins(0, twentyPx, 0, 0);
+        container.setOrientation(LinearLayout.VERTICAL);
         container.setLayoutParams(params);
         container.setBackgroundColor(Color.argb(100, 0, 0, 0));
         root.addView(container);
 
+        // ## Spinner
+        seekWrapper = new LinearLayout(context);
+        params = createMatchWrapParams();
+        params.setMargins(tenPx, tenPx, tenPx, twentyPx);
+        seekWrapper.setPadding(tenPx, tenPx, tenPx, tenPx);
+        seekWrapper.setLayoutParams(params);
+        seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+        container.addView(seekWrapper);
+
         mSpringSelectorSpinner = new Spinner(context, Spinner.MODE_DIALOG);
         params = createMatchWrapParams();
-        params.gravity = Gravity.TOP;
-        params.setMargins(tenPx, tenPx, tenPx, 0);
-        mSpringSelectorSpinner.setLayoutParams(params);
-        container.addView(mSpringSelectorSpinner);
+        params.setMargins(tenPx, tenPx, tenPx, tenPx);
+        mSpringSelectorSpinner.setLayoutParams(tableLayoutParams);
+        seekWrapper.addView(mSpringSelectorSpinner);
 
-        LinearLayout linearLayout = new LinearLayout(context);
+        mSpringSelectorSpinner.setAdapter(spinnerAdapter);
+        mSpringSelectorSpinner.setOnItemSelectedListener(new SpringSelectedListener());
+        refreshAnConfigs();
+
+        // ## List LinearLayout
+        listLayout = new LinearLayout(context);
         params = createMatchWrapParams();
-        params.setMargins(0, 0, 0, dpToPx(80, resources));
-        params.gravity = Gravity.BOTTOM;
-        linearLayout.setLayoutParams(params);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        container.addView(linearLayout);
+        params.setMargins(0, 0, 0, dpToPx(40, resources));
+        listLayout.setLayoutParams(params);
+        listLayout.setOrientation(LinearLayout.VERTICAL);
+        container.addView(listLayout);
 
-        seekWrapper = new LinearLayout(context);
-        params = createMatchWrapParams();
-        params.setMargins(tenPx, tenPx, tenPx, twentyPx);
-        seekWrapper.setPadding(tenPx, tenPx, tenPx, tenPx);
-        seekWrapper.setLayoutParams(params);
-        seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.addView(seekWrapper);
+        seekbarListener = new SeekbarListener();
 
-        mArgument1SeekBar = new SeekBar(context);
-        mArgument1SeekBar.setLayoutParams(tableLayoutParams);
-        seekWrapper.addView(mArgument1SeekBar);
-
-        mArgument1SeekLabel = new TextView(getContext());
-        mArgument1SeekLabel.setTextColor(mTextColor);
-        params = createLayoutParams(
-                dpToPx(100, resources),
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mArgument1SeekLabel.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-        mArgument1SeekLabel.setLayoutParams(params);
-        mArgument1SeekLabel.setMaxLines(1);
-        seekWrapper.addView(mArgument1SeekLabel);
-
-        seekWrapper = new LinearLayout(context);
-        params = createMatchWrapParams();
-        params.setMargins(tenPx, tenPx, tenPx, twentyPx);
-        seekWrapper.setPadding(tenPx, tenPx, tenPx, tenPx);
-        seekWrapper.setLayoutParams(params);
-        seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.addView(seekWrapper);
-
-        mArgument2SeekBar = new SeekBar(context);
-        mArgument2SeekBar.setLayoutParams(tableLayoutParams);
-        seekWrapper.addView(mArgument2SeekBar);
-
-        mArgument2SeekLabel = new TextView(getContext());
-        mArgument2SeekLabel.setTextColor(mTextColor);
-        params = createLayoutParams(dpToPx(100, resources), ViewGroup.LayoutParams.MATCH_PARENT);
-        mArgument2SeekLabel.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-        mArgument2SeekLabel.setLayoutParams(params);
-        mArgument2SeekLabel.setMaxLines(1);
-        seekWrapper.addView(mArgument2SeekLabel);
+        for (int i = 0;i<listSize;i++){
+            createListByIndex(i,context);
+        }
 
         View nub = new View(context);
         params = createLayoutParams(dpToPx(60, resources), dpToPx(40, resources));
@@ -195,13 +179,61 @@ public class AnConfigView extends FrameLayout {
         return root;
     }
 
+    private int listSize = 2;
+    private static int SEEKBAR_START_ID = 15000;
+    private static int SEEKLABEL_START_ID_START_ID = 20000;
+    private static final int MAX_SEEKBAR_VAL = 100000;
+    private static final int MIN_SEEKBAR_VAL = 1;
+
+    private SeekBar mArgument1SeekBar,mArgument2SeekBar,mArgument3SeekBar,mArgument4SeekBar;
+    private TextView mArgument1SeekLabel,mArgument2SeekLabel,mArgument3SeekLabel,mArgument4SeekLabel;
+    private SeekBar[] SEEKBARS = new SeekBar[]{mArgument1SeekBar,mArgument2SeekBar,mArgument3SeekBar,mArgument4SeekBar};
+    private TextView[] SEEKBAR_LABElS = new TextView[]{mArgument1SeekLabel,mArgument2SeekLabel,mArgument3SeekLabel,mArgument4SeekLabel};
+
+    private String CONVERTER_TYPE = "NULL";
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+    private static final DecimalFormat DECIMAL_FORMAT_1 = new DecimalFormat("#.#");
+
+    private void createListByIndex(int i,Context context){
+        LinearLayout seekWrapper;
+        FrameLayout.LayoutParams params;
+        TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1f);
+        tableLayoutParams.setMargins(0, 0, PX_5, 0);
+
+        seekWrapper = new LinearLayout(context);
+        params = createMatchWrapParams();
+        params.setMargins(PX_10, PX_10, PX_10, PX_20);
+        seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_10);
+        seekWrapper.setLayoutParams(params);
+        seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+        listLayout.addView(seekWrapper);
+
+        SEEKBARS[i] = new SeekBar(context);
+        SEEKBARS[i].setLayoutParams(tableLayoutParams);
+        SEEKBARS[i].setId(SEEKBAR_START_ID + i);
+        seekWrapper.addView(SEEKBARS[i]);
+
+        SEEKBAR_LABElS[i] = new TextView(getContext());
+        SEEKBAR_LABElS[i].setTextColor(mTextColor);
+        params = createLayoutParams(PX_120, ViewGroup.LayoutParams.MATCH_PARENT);
+        SEEKBAR_LABElS[i].setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        SEEKBAR_LABElS[i].setLayoutParams(params);
+        SEEKBAR_LABElS[i].setMaxLines(1);
+        SEEKBAR_LABElS[i].setId(SEEKLABEL_START_ID_START_ID + i);
+        seekWrapper.addView(SEEKBAR_LABElS[i]);
+
+        SEEKBARS[i].setMax(MAX_SEEKBAR_VAL);
+        SEEKBARS[i].setMin(MIN_SEEKBAR_VAL);
+        SEEKBARS[i].setOnSeekBarChangeListener(seekbarListener);
+    }
+
     public void refreshAnConfigs() {
-        Map<Animer, String> mAnimerMap = anConfigRegistry.getAllAnimer();
+        Map<Animer.AnimerSolver, String> mAnimerMap = anConfigRegistry.getAllAnimer();
 
         spinnerAdapter.clear();
         mAnimers.clear();
 
-        for (Map.Entry<Animer, String> entry : mAnimerMap.entrySet()) {
+        for (Map.Entry<Animer.AnimerSolver, String> entry : mAnimerMap.entrySet()) {
             mAnimers.add(entry.getKey());
             spinnerAdapter.add(entry.getValue());
         }
@@ -212,12 +244,25 @@ public class AnConfigView extends FrameLayout {
         }
     }
 
+    private float MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4,RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4,seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4;
+    private float[] MAX_VALUES = new float[]{MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4};
+    private float[] MIN_VALUES = new float[]{MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4};
+    private float[] RANGE_VALUES = new float[]{RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4};
+    private float[] SEEKBAR_VALUES = new float[]{seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4};
+
     private class SpringSelectedListener implements AdapterView.OnItemSelectedListener {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            mSelectedAnimer = mAnimers.get(i);
-            updateSeekBarsForAnimer(mSelectedAnimer);
+            mSelectedAnimerSolver = mAnimers.get(i);
+
+            for (int index = 0;index<listSize;index++){
+                MAX_VALUES[index] = (float) Float.valueOf(mSelectedAnimerSolver.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_max").toString());
+                MIN_VALUES[index] = (float) Float.valueOf(mSelectedAnimerSolver.getConfigData().getConfig("arg" + String.valueOf(index+1) +"_min").toString());
+                RANGE_VALUES[index] = MAX_VALUES[index] - MIN_VALUES[index];
+            }
+
+            updateSeekBarsForAnimer(mSelectedAnimerSolver);
         }
 
         @Override
@@ -225,36 +270,30 @@ public class AnConfigView extends FrameLayout {
         }
     }
 
-    private static final int MAX_SEEKBAR_VAL = 3000;
-    private static final float MIN_TENSION = 0;
-    private static final float MAX_TENSION = 200;
-    private static final float MIN_FRICTION = 0;
-    private static final float MAX_FRICTION = 50;
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
-    private SeekBar mArgument1SeekBar;
-    private SeekBar mArgument2SeekBar;
-    private TextView mArgument1SeekLabel;
-    private TextView mArgument2SeekLabel;
-
     private class SeekbarListener implements SeekBar.OnSeekBarChangeListener {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int val, boolean b) {
 
-            if (seekBar == mArgument1SeekBar) {
-                //float scaledTension = ((val) * tensionRange) / MAX_SEEKBAR_VAL + MIN_TENSION;
-                float value1 = val;
-                mSelectedAnimer.setArgument1(value1);
-                String roundedTensionLabel = DECIMAL_FORMAT.format(value1);
-                mArgument1SeekLabel.setText("Arg1:" + roundedTensionLabel);
-            }
 
-            if (seekBar == mArgument2SeekBar) {
-                //float scaledFriction = ((val) * frictionRange) / MAX_SEEKBAR_VAL + MIN_FRICTION;
-                float value2 = val;
-                mSelectedAnimer.setArgument2(value2);
-                String roundedFrictionLabel = DECIMAL_FORMAT.format(value2);
-                mArgument2SeekLabel.setText("Arg2:" + roundedFrictionLabel);
+            for(int i = 0;i<listSize;i++){
+                if (seekBar == SEEKBARS[i]) {
+                    SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL))*RANGE_VALUES[i] + MIN_VALUES[i];
+
+                    if(i == 0){
+                        String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[i]);
+                        SEEKBAR_LABElS[i].setText((String) mSelectedAnimerSolver.getConfigData().getConfig("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
+                        mSelectedAnimerSolver.getConfigData().setConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+                        mSelectedAnimerSolver.setArg1(getConvertValueByIndex(i));
+                    }
+                    else if(i == 1){
+                        String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
+                        SEEKBAR_LABElS[i].setText((String) mSelectedAnimerSolver.getConfigData().getConfig("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
+                        mSelectedAnimerSolver.getConfigData().setConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+                        mSelectedAnimerSolver.setArg2(getConvertValueByIndex(i));
+                    }
+
+                }
             }
         }
 
@@ -266,26 +305,86 @@ public class AnConfigView extends FrameLayout {
         public void onStopTrackingTouch(SeekBar seekBar) {
         }
     }
+    private Object getConvertValueByIndex(int i){
+        Log.e("CONVERTER_TYPE",String.valueOf(CONVERTER_TYPE));
+        Log.e("CONVERTER_TYPE_i",String.valueOf(i));
+        switch (CONVERTER_TYPE) {
+            case "NULL":
+                return SEEKBAR_VALUES[i];
+            case "AndroidSpring":
+                return SEEKBAR_VALUES[i];
+            case "DHO":
+                if( i == 0) {
+                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return dhoConverter.getStiffness();
+                }
+                else if(i == 1){
+                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return dhoConverter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            case "RK4":
+                if( i == 0) {
+                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return rk4Converter.getStiffness();
+                }
+                else if(i == 1) {
+                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return rk4Converter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            case "UIVIEW":
+                if( i == 0) {
+                    UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return uiViewSpringConverter.getStiffness();
+                }
+                else if(i == 1) {
+                    UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return uiViewSpringConverter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            case "ORIGAMI":
+                if( i == 0) {
+                    OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return origamiPOPConverter.getStiffness();
+                }
+                else if(i == 1) {
+                    OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                    return origamiPOPConverter.getDampingRatio();
+                }
+                else{
+                    return SEEKBAR_VALUES[i];
+                }
+            default:
+                return SEEKBAR_VALUES[i];
+        }
+    }
 
-    private void updateSeekBarsForAnimer(Animer animer) {
-        float value1 = (float) animer.getArgument1();
-//        float tensionRange = MAX_TENSION - MIN_TENSION;
-//        int scaledTension = Math.round(((tension - MIN_TENSION) * MAX_SEEKBAR_VAL) / tensionRange);
 
-        float value2 = (float) animer.getArgument2();
-//        float frictionRange = MAX_FRICTION - MIN_FRICTION;
-//        int scaledFriction = Math.round(((friction - MIN_FRICTION) * MAX_SEEKBAR_VAL) / frictionRange);
+    private void updateSeekBarsForAnimer(Animer.AnimerSolver animerSolver) {
+//        seekBarValue1 = (float) Float.valueOf(animerSolver.getConfigData().getConfig("arg1").toString());
+//        seekBarValue2 = (float) Float.valueOf(animerSolver.getConfigData().getConfig("arg2").toString());
 
-//        Log.e("Animer Config",String.valueOf(animer.getCurrentSolverData().getConfig("Arg1")));
-//        Log.e("Animer Config",String.valueOf(animer.getCurrentSolverData().getConfig("Arg2")));
+//        float value1 = (float) animer.getArgument1();
+//        float value2 = (float) animer.getArgument2();
 
-        animer.getCurrentSolverData().getConfigByIndex(0);
-        animer.getCurrentSolverData().getConfigByIndex(1);
-        animer.getCurrentSolverData().getConfigByIndex(2);
-        animer.getCurrentSolverData().getConfigByIndex(3);
-        mArgument1SeekBar.setProgress((int)value1);
-        //mArgument1SeekBar.setMax(animer.getAnConfigData().getConfig(""));
-        mArgument2SeekBar.setProgress((int)value2);
+        if((animerSolver.getConfigData().getConfig("converter_type")) !=null){
+            CONVERTER_TYPE = animerSolver.getConfigData().getConfig("converter_type").toString();
+        }
+
+        for(int i = 0;i<listSize;i++){
+
+            SEEKBAR_VALUES[i] = Float.valueOf(animerSolver.getConfigData().getConfig("arg" + String.valueOf(i+1)).toString());
+            float progress = (SEEKBAR_VALUES[i] - MIN_VALUES[i])/RANGE_VALUES[i] *(MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
+            SEEKBARS[i].setProgress((int) progress);
+            SEEKBAR_LABElS[i].setText((String) animerSolver.getConfigData().getConfig("arg" + String.valueOf(i+1) +"_name") + ": " + (String) animerSolver.getConfigData().getConfig("arg" + String.valueOf(i+1)).toString());
+        }
     }
 
     /**

@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private Animer animer,animer2,animer3;
     private boolean isOpen = false;
     private  AnConfigView mSpringConfiguratorView;
+    private Animer.AnimerSolver solverA,solverB,solverC,solverD,solverE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,34 +31,41 @@ public class MainActivity extends AppCompatActivity {
 
         iv = findViewById(R.id.iv);
 
-        animer = new Animer(iv,Animer.springDroid(500,0.4f),Animer.TRANSLATION_X,0,500);
-        animer2 = new Animer(iv,Animer.springDroid(1000,0.25f),Animer.TRANSLATION_X,0,500);
-        animer3 = new Animer(iv,Animer.interpolatorDroid(new FastOutSlowInInterpolator(),(long)25),Animer.ROTATION,0,500);
+        solverA = Animer.springDroid(500,0.4f);
+        solverB = Animer.springRK4(1000,25f);
+        solverC = Animer.springRK4(500,25);
+        solverD = Animer.springDroid(1500,0.25f);
+        solverE = Animer.flingDroid(1500,0.99f);
+
+        animer = new Animer(iv,solverA,Animer.TRANSLATION_Y,0,500);
+        animer2 = new Animer(iv,solverB,Animer.TRANSLATION_X,0,500);
+        animer3 = new Animer(iv,solverC,Animer.ROTATION,0,500);
 //        Log.e("DefaultSolver",String.valueOf(animer.getDefaultSolveArg1()));
 //        Log.e("DefaultSolver",String.valueOf(animer.getDefaultSolveArg2()));
 
         mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addAnimer(animer, "origami animation spring 1");
-        AnConfigRegistry.getInstance().addAnimer(animer2, "origami animation spring 2");
-        AnConfigRegistry.getInstance().addAnimer(animer3, "origami animation spring 3");
+        AnConfigRegistry.getInstance().addSolver(solverA, "Y");
+        AnConfigRegistry.getInstance().addSolver(solverB, "X");
+        AnConfigRegistry.getInstance().addSolver(solverC, "R");
+        AnConfigRegistry.getInstance().addSolver(solverD, "Go");
+        AnConfigRegistry.getInstance().addSolver(solverE, "Back");
 
         Log.e("Animer1",String.valueOf(animer.getArgument1()));
         Log.e("Animer2",String.valueOf(animer.getArgument2()));
-
 
         mSpringConfiguratorView.refreshAnConfigs();
 
         iv.setOnClickListener(view -> {
 
             if(!isOpen){
-                animer.setSolver(Animer.springDroid(1500,0.25f));
-                animer.setEndvalue(600);
+                animer.setSolver(solverD);
+                animer.setEndvalue(-200);
                 animer2.setEndvalue(600);
                 animer3.setEndvalue(720);
 
             }
             else{
-                animer.setSolver(Animer.flingDroid(1500,0.99f));
+                animer.setSolver(solverE);
                 animer.setEndvalue(0);
                 animer2.setEndvalue(0);
                 animer3.setEndvalue(0);

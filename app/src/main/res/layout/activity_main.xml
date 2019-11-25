@@ -11,7 +11,18 @@
         android:layout_centerVertical="true"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:translationX="200px"
+        android:translationY="-400px"
         android:background="#FF0000"/>
+
+    <ImageView
+        android:id="@+id/iv2"
+        android:layout_centerVertical="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:translationX="800px"
+        android:translationY="-400px"
+        android:background="#0000FF"/>
 
     <com.martinrgb.animer.monitor.AnConfigView
         android:id="@+id/an_configurator"

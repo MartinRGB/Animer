@@ -17,9 +17,9 @@ import com.martinrgb.animer.monitor.AnConfigView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView iv;
-    private Animer animer,animer2,animer3;
-    private boolean isOpen = false;
+    private ImageView iv,iv2;
+    private Animer animer,animer2,animer3,animer4,animer5;
+    private boolean isOpen,isOpen2 = false;
     private  AnConfigView mSpringConfiguratorView;
     private Animer.AnimerSolver solverA,solverB,solverC,solverD,solverE;
 
@@ -30,42 +30,63 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         iv = findViewById(R.id.iv);
+        iv2 = findViewById(R.id.iv2);;
 
-        solverA = Animer.springDroid(1500f,0.95f);
-        solverB = Animer.springRK4(1000,25f);
-        solverC = Animer.springDHO(500,25);
+        solverA = Animer.springDroid(10,0.95f);
+        solverB = Animer.springPrinciple(1000,25f);
+        solverC = Animer.springProtopie(500,25);
+        solverD = Animer.springiOSCoreAnimation(200,1.95f);
+        solverE = Animer.springOrigami(20,10);
 
-        animer = new Animer(iv,solverA,Animer.TRANSLATION_Y,0,500);
-        animer2 = new Animer(iv,solverB,Animer.TRANSLATION_X,0,500);
-        animer3 = new Animer(iv,solverC,Animer.ROTATION,0,500);
-//        Log.e("DefaultSolver",String.valueOf(animer.getDefaultSolveArg1()));
-//        Log.e("DefaultSolver",String.valueOf(animer.getDefaultSolveArg2()));
+        animer = new Animer(iv,solverA,Animer.TRANSLATION_X,0,600);
+        animer.setCurrentValue(200);
+        animer2 = new Animer(iv,solverB,Animer.TRANSLATION_Y,0,500);
+        animer2.setCurrentValue(-400);
+        animer3 = new Animer(iv,solverC,Animer.ROTATION,0,720);
+        animer4 = new Animer(iv2,solverD,Animer.SCALE,1,1.2f);
+        animer5 = new Animer(iv2,solverE,Animer.ROTATION_X,0,720);
 
         mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addSolver("Y",solverA);
-        AnConfigRegistry.getInstance().addSolver("X",solverB);
-        AnConfigRegistry.getInstance().addSolver("R",solverC);
-//        AnConfigRegistry.getInstance().addSolver(solverD, "Go");
-//        AnConfigRegistry.getInstance().addSolver(solverE, "Back");
-
-        mSpringConfiguratorView.refreshAnConfigs();
+        AnConfigRegistry.getInstance().addSolver("红色 - X",solverA);
+        AnConfigRegistry.getInstance().addSolver("红色 - Y",solverB);
+        AnConfigRegistry.getInstance().addSolver("红色 - R",solverC);
+        AnConfigRegistry.getInstance().addSolver("蓝色 - S",solverD);
+        AnConfigRegistry.getInstance().addSolver("蓝色 - R_x",solverE);
+        mSpringConfiguratorView.refreshAnimerConfigs();
 
         iv.setOnClickListener(view -> {
 
             if(!isOpen){
                 //animer.setSolver(solverD);
-                animer.setEndvalue(-400);
-//                animer2.setEndvalue(600);
-//                animer3.setEndvalue(720);
+                animer.setEndvalue(600);
+                animer2.setEndvalue(-1200);
+                animer3.setEndvalue(720);
 
             }
             else{
                 //animer.setSolver(solverE);
-                animer.setEndvalue(0);
-//                animer2.setEndvalue(0);
-//                animer3.setEndvalue(0);
+                animer.setEndvalue(200);
+                animer2.setEndvalue(-600);
+                animer3.setEndvalue(0);
+
             }
             isOpen = !isOpen;
+        });
+
+        iv2.setOnClickListener(view -> {
+
+            if(!isOpen2){
+                //animer.setSolver(solverD);
+                animer4.setEndvalue(1.2f);
+                animer5.setEndvalue(360);
+
+            }
+            else{
+                //animer.setSolver(solverE);
+                animer4.setEndvalue(1f);
+                animer5.setEndvalue(0);
+            }
+            isOpen2 = !isOpen2;
         });
 
     }

@@ -218,7 +218,7 @@ public class Animer<T> {
     }
 
     public AnConfigData getCurrentSolverData(){
-        return getCurrentSolver().getConfigData();
+        return getCurrentSolver().getConfigSet();
     }
 
     // ###########################################
@@ -267,14 +267,14 @@ public class Animer<T> {
 
         private AnimerSolver(Object val1,Object val2,int mode,AnConfigData data) {
             super(val1,val2,mode);
-            setConfigData(data);
+            setConfigSet(data);
         }
 
-        public AnConfigData getConfigData(){
+        public AnConfigData getConfigSet(){
             return anConfigData;
         }
 
-        private void setConfigData(AnConfigData data){
+        private void setConfigSet(AnConfigData data){
             anConfigData = data;
         }
     }
@@ -282,89 +282,89 @@ public class Animer<T> {
 
     public static AnimerSolver flingDroid(float velocity,float friction){
         AnConfigData configData = new AnConfigData(velocity,friction);
-        configData.setConfig("arg1_name","velocity");
-        configData.setConfig("arg2_name","friction");
-        configData.setConfig("arg1_max",5000);
-        configData.setConfig("arg2_max",10);
-        configData.setConfig("arg1_min",-5000);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","AndroidFling");
+        configData.addConfig("arg1_name","velocity");
+        configData.addConfig("arg2_name","friction");
+        configData.addConfig("arg1_max",5000);
+        configData.addConfig("arg2_max",10);
+        configData.addConfig("arg1_min",-5000);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","AndroidFling");
         return new AnimerSolver(velocity,friction,0,configData);
     }
 
     public static AnimerSolver springDroid(float stiffness,float dampingratio){
         AnConfigData configData = new AnConfigData(stiffness,dampingratio);
-        configData.setConfig("arg1_name","stiffness");
-        configData.setConfig("arg2_name","dampingratio");
-        configData.setConfig("arg1_max",3000);
-        configData.setConfig("arg2_max",1);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","AndroidSpring");
+        configData.addConfig("arg1_name","stiffness");
+        configData.addConfig("arg2_name","dampingratio");
+        configData.addConfig("arg1_max",3000);
+        configData.addConfig("arg2_max",1);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","AndroidSpring");
         return new AnimerSolver(stiffness,dampingratio,1,configData);
     }
 
     public static AnimerSolver springRK4(float tension,float friction){
         AnConfigData configData = new AnConfigData(tension,friction);
-        configData.setConfig("arg1_name","tension");
-        configData.setConfig("arg2_name","friction");
-        configData.setConfig("arg1_max",3000);
-        configData.setConfig("arg2_max",100);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","RK4Spring");
+        configData.addConfig("arg1_name","tension");
+        configData.addConfig("arg2_name","friction");
+        configData.addConfig("arg1_max",3000);
+        configData.addConfig("arg2_max",100);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","RK4Spring");
         RK4Converter rk4Converter = new RK4Converter(tension,friction);
         return new AnimerSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springDHO(float stiffness,float damping){
         AnConfigData configData = new AnConfigData(stiffness,damping);
-        configData.setConfig("arg1_name","stiffness");
-        configData.setConfig("arg2_name","damping");
-        configData.setConfig("arg1_max",3000);
-        configData.setConfig("arg2_max",100);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","DHOSpring");
+        configData.addConfig("arg1_name","stiffness");
+        configData.addConfig("arg2_name","damping");
+        configData.addConfig("arg1_max",3000);
+        configData.addConfig("arg2_max",100);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","DHOSpring");
         DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
         return new AnimerSolver(dhoConverter.getStiffness(),dhoConverter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springOrigami(float bounciness,float speed){
         AnConfigData configData = new AnConfigData(bounciness,speed);
-        configData.setConfig("arg1_name","bounciness");
-        configData.setConfig("arg2_name","speed");
-        configData.setConfig("arg1_max",100);
-        configData.setConfig("arg2_max",100);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","OrigamiPOPSpring");
+        configData.addConfig("arg1_name","bounciness");
+        configData.addConfig("arg2_name","speed");
+        configData.addConfig("arg1_max",100);
+        configData.addConfig("arg2_max",100);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","OrigamiPOPSpring");
         OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(bounciness,speed);
         return new AnimerSolver(origamiPOPConverter.getStiffness(),origamiPOPConverter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springiOSUIView(float dampingratio,float duration){
         AnConfigData configData = new AnConfigData(dampingratio,duration);
-        configData.setConfig("arg1_name","dampingratio");
-        configData.setConfig("arg2_name","duration");
-        configData.setConfig("arg1_max",1);
-        configData.setConfig("arg2_max",5);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","iOSUIViewSpring");
+        configData.addConfig("arg1_name","dampingratio");
+        configData.addConfig("arg2_name","duration");
+        configData.addConfig("arg1_max",1);
+        configData.addConfig("arg2_max",5);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","iOSUIViewSpring");
         UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
         return new AnimerSolver(uiViewSpringConverter.getStiffness(),uiViewSpringConverter.getDampingRatio(),1,configData);
     }
 
     public static AnimerSolver springiOSCoreAnimation(float stiffness,float damping){
         AnConfigData configData = new AnConfigData(stiffness,damping);
-        configData.setConfig("arg1_name","stiffness");
-        configData.setConfig("arg2_name","damping");
-        configData.setConfig("arg1_max",3000);
-        configData.setConfig("arg2_max",100);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","iOSCoreAnimationSpring");
+        configData.addConfig("arg1_name","stiffness");
+        configData.addConfig("arg2_name","damping");
+        configData.addConfig("arg1_max",3000);
+        configData.addConfig("arg2_max",100);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","iOSCoreAnimationSpring");
         DHOConverter dhoConverter = new DHOConverter(stiffness,damping);
         return new AnimerSolver(dhoConverter.getStiffness(),dhoConverter.getDampingRatio(),1,configData);
         //return springDHO(stiffness,damping);
@@ -372,13 +372,13 @@ public class Animer<T> {
 
     public static AnimerSolver springProtopie(float tension,float friction){
         AnConfigData configData = new AnConfigData(tension,friction);
-        configData.setConfig("arg1_name","tension");
-        configData.setConfig("arg2_name","friction");
-        configData.setConfig("arg1_max",3000);
-        configData.setConfig("arg2_max",100);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","ProtopieSpring");
+        configData.addConfig("arg1_name","tension");
+        configData.addConfig("arg2_name","friction");
+        configData.addConfig("arg1_max",3000);
+        configData.addConfig("arg2_max",100);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","ProtopieSpring");
         RK4Converter rk4Converter = new RK4Converter(tension,friction);
         return new AnimerSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio(),1,configData);
         //return springRK4(tension,friction);
@@ -386,13 +386,13 @@ public class Animer<T> {
 
     public static AnimerSolver springPrinciple(float tension,float friction){
         AnConfigData configData = new AnConfigData(tension,friction);
-        configData.setConfig("arg1_name","tension");
-        configData.setConfig("arg2_name","friction");
-        configData.setConfig("arg1_max",3000);
-        configData.setConfig("arg2_max",100);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","PrincipleSpring");
+        configData.addConfig("arg1_name","tension");
+        configData.addConfig("arg2_name","friction");
+        configData.addConfig("arg1_max",3000);
+        configData.addConfig("arg2_max",100);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","PrincipleSpring");
         RK4Converter rk4Converter = new RK4Converter(tension,friction);
         return new AnimerSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio(),1,configData);
         //return springRK4(tension,friction);
@@ -400,13 +400,14 @@ public class Animer<T> {
 
     public static AnimerSolver interpolatorDroid(TimeInterpolator interpolator, long duration){
         AnConfigData configData = new AnConfigData(interpolator,duration);
-        configData.setConfig("arg1_name","interpolator");
-        configData.setConfig("arg2_name","duration");
-        configData.setConfig("arg1_max",1);
-        configData.setConfig("arg2_max",5);
-        configData.setConfig("arg1_min",0.01);
-        configData.setConfig("arg2_min",0.01);
-        configData.setConfig("converter_type","AndroidInterpolator");
+        //TODO Simplify this
+        configData.addConfig("arg1_name","interpolator");
+        configData.addConfig("arg2_name","duration");
+        configData.addConfig("arg1_max",1);
+        configData.addConfig("arg2_max",5);
+        configData.addConfig("arg1_min",0.01);
+        configData.addConfig("arg2_min",0.01);
+        configData.addConfig("converter_type","AndroidInterpolator");
         return new AnimerSolver(interpolator,duration,2,configData);
     }
 

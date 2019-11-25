@@ -2,35 +2,52 @@ package com.martinrgb.animer.monitor;
 
 import android.util.Log;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class AnConfigData {
 
     private int DATA_MODE = 0;
-    Map<String,Object> configMap = new HashMap<>();
+    LinkedHashMap<String,Object> configMap = new LinkedHashMap<String,Object>();
 
 
     public AnConfigData(Object o1,Object o2,int mode) {
         setMode(mode);
-        setConfig("arg1",o1);
-        setConfig("arg2",o2);
+        addConfig("arg1",o1);
+        addConfig("arg2",o2);
     }
 
     public AnConfigData(Object o1,Object o2) {
-        setConfig("arg1",o1);
-        setConfig("arg2",o2);
+        addConfig("arg1",o1);
+        addConfig("arg2",o2);
     }
 
     // ############################################
     // PhysicsState State's Getter & Setter
     // ############################################
 
-    public void setConfig(String key,Object value){
+    public void addConfig(String key, Object value){
         configMap.put(key,value);
     }
 
-    public Object getConfig(String key){
+    public LinkedHashMap getConfig(){
+        return configMap;
+    }
+
+    public void clearConfig(){
+        configMap.clear();
+    }
+
+    public void cloneConfigFrom(LinkedHashMap<String,Object> targetMap){
+        if(targetMap instanceof LinkedHashMap){
+            configMap.clear();
+            configMap =  (LinkedHashMap) targetMap.clone();
+        }
+        else{
+        }
+
+    }
+
+    public Object getKeyByString(String key){
 
         try {
             return configMap.get(key);

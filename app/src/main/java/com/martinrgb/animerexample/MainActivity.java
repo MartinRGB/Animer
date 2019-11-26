@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
 import com.martinrgb.animer.Animer;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         iv2 = findViewById(R.id.iv2);;
         iv3 = findViewById(R.id.iv3);
 
-        solverF = Animer.springOrigamiPOP(20,10);
+        solverF = Animer.interpolatorDroid(new LinearInterpolator(),500);
         solverA = Animer.springDroid(10,0.95f);
         solverB = Animer.springPrinciple(1000,25f);
         solverC = Animer.springProtopie(500,25);

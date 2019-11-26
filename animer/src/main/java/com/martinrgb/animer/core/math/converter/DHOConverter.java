@@ -37,13 +37,5 @@ public class DHOConverter extends AnSpringConverter {
 
     }
 
-    public float getStiffness() {
-        return (float) mStiffness;
-    }
-
-    public float getDampingRatio() {
-        return (float) mDampingRatio;
-    }
-
 
 }

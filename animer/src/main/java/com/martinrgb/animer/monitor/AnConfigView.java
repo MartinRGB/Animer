@@ -1,8 +1,10 @@
 package com.martinrgb.animer.monitor;
 
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Interpolator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -74,7 +76,7 @@ public class AnConfigView extends FrameLayout {
     private float[] MAX_VALUES = new float[]{MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4};
     private float[] MIN_VALUES = new float[]{MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4};
     private float[] RANGE_VALUES = new float[]{RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4};
-    private float[] SEEKBAR_VALUES = new float[]{seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4};
+    private Object[] SEEKBAR_VALUES = new Object[]{seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4};
     private final int PX_5 = dpToPx(5, getResources());
     private final int PX_10 = dpToPx(10, getResources());
     private final int PX_20 = dpToPx(20, getResources());
@@ -256,9 +258,7 @@ public class AnConfigView extends FrameLayout {
 
     private void initTypeConfigs() {
         mSolverTypesMap = anConfigRegistry.getAllSolverTypes();
-
         solverTypeSpinnerAdapter.clear();
-       // mSolverTypes.clear();
 
         for(int i = 0; i< mSolverTypesMap.size(); i++){
             solverTypeSpinnerAdapter.add(String.valueOf(mSolverTypesMap.getKey(i)));
@@ -326,22 +326,29 @@ public class AnConfigView extends FrameLayout {
 
 
     private void redefineMinMax(Animer.AnimerSolver animerSolver){
+        currentObjectType = animerSolver.getConfigSet().getKeyByString("converter_type").toString();
+
         for (int index = 0;index<listSize;index++){
-            MAX_VALUES[index] = (float) Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(index+1) +"_max").toString());
-            MIN_VALUES[index] = (float) Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(index+1) +"_min").toString());
-            RANGE_VALUES[index] = MAX_VALUES[index] - MIN_VALUES[index];
+            if(currentObjectType != "AndroidInterpolator"){
+                MAX_VALUES[index] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(index+1) +"_max").toString());
+                MIN_VALUES[index] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(index+1) +"_min").toString());
+                RANGE_VALUES[index] = MAX_VALUES[index] - MIN_VALUES[index];
+            }
+
         }
     }
 
     private void updateSeekBars(Animer.AnimerSolver animerSolver) {
 
-        currentObjectType = animerSolver.getConfigSet().getKeyByString("converter_type").toString();
 
+        Log.e("currentObjectType",String.valueOf(currentObjectType));
         for(int i = 0;i<listSize;i++){
-            SEEKBAR_VALUES[i] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i+1)).toString());
-            float progress = (SEEKBAR_VALUES[i] - MIN_VALUES[i])/RANGE_VALUES[i] *(MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
-            SEEKBARS[i].setProgress((int) progress);
-            SEEKBAR_LABElS[i].setText((String) animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i+1) +"_name") + ": " + (String) animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i+1)).toString());
+            if(currentObjectType != "AndroidInterpolator") {
+                SEEKBAR_VALUES[i] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i + 1)).toString());
+                float progress = ((float) SEEKBAR_VALUES[i] - MIN_VALUES[i]) / RANGE_VALUES[i] * (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
+                SEEKBARS[i].setProgress((int) progress);
+                SEEKBAR_LABElS[i].setText((String) animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": " + (String) animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i + 1)).toString());
+            }
         }
 
     }
@@ -351,31 +358,31 @@ public class AnConfigView extends FrameLayout {
         @Override
         public void onProgressChanged(SeekBar seekBar, int val, boolean b) {
 
-
             Log.e("On Process Changed","On Process Changed");
 
-            for(int i = 0;i<listSize;i++){
-                if (seekBar == SEEKBARS[i]) {
-                    SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL))*RANGE_VALUES[i] + MIN_VALUES[i];
-                    if(i == 0){
-                        String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[i]);
-                        SEEKBAR_LABElS[i].setText((String)  currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
-                        currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+            if(currentObjectType != "AndroidInterpolator") {
+                for (int i = 0; i < listSize; i++) {
+                    if (seekBar == SEEKBARS[i]) {
+                        SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[i] + MIN_VALUES[i];
+                        if (i == 0) {
+                            String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[i]);
+                            SEEKBAR_LABElS[i].setText((String) currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": " + roundedValue1Label);
+                            currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg" + String.valueOf(i + 1) + "", Float.valueOf(roundedValue1Label));
+                        } else if (i == 1) {
+                            String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
+                            SEEKBAR_LABElS[i].setText((String) currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": " + roundedValue1Label);
+                            currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg" + String.valueOf(i + 1) + "", Float.valueOf(roundedValue1Label));
+                        }
+
                     }
-                    else if(i == 1){
-                        String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
-                        SEEKBAR_LABElS[i].setText((String)  currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
-                        currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
-                    }
+                }
+
+                if (currentObjectType != "AndroidFling") {
+                    currentAnimer.getCurrentSolver().setArg1(getConvertValueByIndexAndType(0, currentObjectType));
+                    currentAnimer.getCurrentSolver().setArg2(getConvertValueByIndexAndType(1, currentObjectType));
 
                 }
             }
-
-            if(currentObjectType != "AndroidFling"){
-                currentAnimer.getCurrentSolver().setArg1(getConvertValueByIndexAndType(0, currentObjectType));
-                currentAnimer.getCurrentSolver().setArg2(getConvertValueByIndexAndType(1, currentObjectType));
-            }
-
 
         }
 
@@ -399,96 +406,26 @@ public class AnConfigView extends FrameLayout {
             case "AndroidSpring":
                 return SEEKBAR_VALUES[i];
             case "DHOSpring":
-                if( i == 0) {
-                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return dhoConverter.getStiffness();
-                }
-                else if(i == 1){
-                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return dhoConverter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                DHOConverter dhoConverter = new DHOConverter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return dhoConverter.getArg(i);
             case "iOSCoreAnimationSpring":
-                if( i == 0) {
-                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return dhoConverter.getStiffness();
-                }
-                else if(i == 1){
-                    DHOConverter dhoConverter = new DHOConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return dhoConverter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                DHOConverter iOSCASpring = new DHOConverter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return iOSCASpring.getArg(i);
             case "RK4Spring":
-                if( i == 0) {
-                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return rk4Converter.getStiffness();
-                }
-                else if(i == 1) {
-                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return rk4Converter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                RK4Converter rk4Converter = new RK4Converter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return rk4Converter.getArg(i);
             case "ProtopieSpring":
-                if( i == 0) {
-                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return rk4Converter.getStiffness();
-                }
-                else if(i == 1) {
-                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return rk4Converter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                RK4Converter protopieConverter = new RK4Converter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return protopieConverter.getArg(i);
             case "PrincipleSpring":
-                if( i == 0) {
-                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return rk4Converter.getStiffness();
-                }
-                else if(i == 1) {
-                    RK4Converter rk4Converter = new RK4Converter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return rk4Converter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                RK4Converter principleConverter = new RK4Converter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return principleConverter.getArg(i);
             case "iOSUIViewSpring":
-                if( i == 0) {
-                    UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return uiViewSpringConverter.getStiffness();
-                }
-                else if(i == 1) {
-                    UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return uiViewSpringConverter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return uiViewSpringConverter.getArg(i);
             case "OrigamiPOPSpring":
-                if( i == 0) {
-                    OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return origamiPOPConverter.getStiffness();
-                }
-                else if(i == 1) {
-                    OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                    return origamiPOPConverter.getDampingRatio();
-                }
-                else{
-                    // velocity here
-                    return SEEKBAR_VALUES[i];
-                }
+                OrigamiPOPConverter origamiPOPConverter = new OrigamiPOPConverter((float)SEEKBAR_VALUES[0],(float)SEEKBAR_VALUES[1]);
+                return origamiPOPConverter.getArg(i);
             default:
                 return SEEKBAR_VALUES[i];
         }

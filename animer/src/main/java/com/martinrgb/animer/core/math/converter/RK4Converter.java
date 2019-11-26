@@ -37,13 +37,4 @@ public class RK4Converter extends AnSpringConverter {
 
     }
 
-    public float getStiffness() {
-        return (float) mStiffness;
-    }
-
-    public float getDampingRatio() {
-        return (float) mDampingRatio;
-    }
-
-
 }

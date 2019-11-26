@@ -154,4 +154,22 @@ abstract class AnSpringConverter {
         }
         return friction;
     }
+
+    public float getStiffness() {
+        return (float) mStiffness;
+    }
+
+    public float getDampingRatio() {
+        return (float) mDampingRatio;
+    }
+
+    public float getArg(int i) {
+        if(i == 0){
+            return (float) mStiffness;
+        }
+        else if(i == 1){
+            return (float) mDampingRatio;
+        }
+        return -1;
+    }
 }

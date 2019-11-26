@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
@@ -34,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
         iv2 = findViewById(R.id.iv2);;
         iv3 = findViewById(R.id.iv3);
 
-        solverF = Animer.interpolatorDroid(new LinearInterpolator(),500);
+        solverF = Animer.interpolatorDroid(new AnticipateOvershootInterpolator(),500);
+       // solverF = Animer.springProtopie(10,0.95f);
         solverA = Animer.springDroid(10,0.95f);
         solverB = Animer.springPrinciple(1000,25f);
         solverC = Animer.springProtopie(500,25);

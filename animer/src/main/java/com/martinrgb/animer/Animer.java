@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;

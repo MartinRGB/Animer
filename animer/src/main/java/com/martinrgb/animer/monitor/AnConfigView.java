@@ -39,12 +39,12 @@ public class AnConfigView extends FrameLayout {
 
     private final AnSpinnerAdapter solverObjectSpinnerAdapter;
     private final AnSpinnerAdapter solverTypeSpinnerAdapter;
+    private final AnSpinnerAdapter interpolatorTypeSpinnerAdapter;
 
     private AnConfigRegistry anConfigRegistry;
     private final int mTextColor = Color.argb(255, 225, 225, 225);
 
-    private Spinner mSolverObjectSelectorSpinner;
-    private Spinner mSolverTypeSelectorSpinner;
+    private Spinner mSolverObjectSelectorSpinner,mSolverTypeSelectorSpinner,mInterpolatorTypeSelectorSpinner;
     private Animer currentAnimer;
     //private Animer.AnimerSolver currentSolver;
     private Animer mRevealAnimer;
@@ -84,6 +84,8 @@ public class AnConfigView extends FrameLayout {
 
     private ANConfigMap<String,Animer.AnimerSolver> mSolverTypesMap;
     private ANConfigMap<String,Animer> mAnimerObjectsMap;
+    private ANConfigMap<String,TimeInterpolator> mInterpolatorTypesMap;
+    private Context mContext;
 
     public AnConfigView(Context context) {
         this(context, null);
@@ -96,11 +98,13 @@ public class AnConfigView extends FrameLayout {
     public AnConfigView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        mContext = context;
 
         Resources resources = getResources();
         anConfigRegistry = AnConfigRegistry.getInstance();
         solverObjectSpinnerAdapter = new AnSpinnerAdapter(context,resources);
         solverTypeSpinnerAdapter = new AnSpinnerAdapter(context,resources);
+        interpolatorTypeSpinnerAdapter = new AnSpinnerAdapter(context,resources);
 
         addView(generateHierarchy(context));
 
@@ -201,35 +205,35 @@ public class AnConfigView extends FrameLayout {
         // ### Seekbar List
         seekbarListener = new SeekbarListener();
 
-        for (int i = 0;i<listSize;i++){
-            tableLayoutParams.setMargins(0, 0, PX_5, 0);
-
-            seekWrapper = new LinearLayout(context);
-            params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(PX_10, PX_10, PX_10, PX_10);
-            seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_10);
-            seekWrapper.setLayoutParams(params);
-            seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
-            listLayout.addView(seekWrapper);
-
-            SEEKBARS[i] = new SeekBar(context);
-            SEEKBARS[i].setLayoutParams(tableLayoutParams);
-            SEEKBARS[i].setId(SEEKBAR_START_ID + i);
-            seekWrapper.addView(SEEKBARS[i]);
-
-            SEEKBAR_LABElS[i] = new TextView(getContext());
-            SEEKBAR_LABElS[i].setTextColor(mTextColor);
-            params = createLayoutParams(PX_120, ViewGroup.LayoutParams.MATCH_PARENT);
-            SEEKBAR_LABElS[i].setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-            SEEKBAR_LABElS[i].setLayoutParams(params);
-            SEEKBAR_LABElS[i].setMaxLines(1);
-            SEEKBAR_LABElS[i].setId(SEEKLABEL_START_ID_START_ID + i);
-            seekWrapper.addView(SEEKBAR_LABElS[i]);
-
-            SEEKBARS[i].setMax(MAX_SEEKBAR_VAL);
-            SEEKBARS[i].setMin(MIN_SEEKBAR_VAL);
-            SEEKBARS[i].setOnSeekBarChangeListener(seekbarListener);
-        }
+//        for (int i = 0;i<listSize;i++){
+//            tableLayoutParams.setMargins(0, 0, PX_5, 0);
+//
+//            seekWrapper = new LinearLayout(context);
+//            params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+//            params.setMargins(PX_10, PX_10, PX_10, PX_10);
+//            seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_10);
+//            seekWrapper.setLayoutParams(params);
+//            seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+//            listLayout.addView(seekWrapper);
+//
+//            SEEKBARS[i] = new SeekBar(context);
+//            SEEKBARS[i].setLayoutParams(tableLayoutParams);
+//            SEEKBARS[i].setId(SEEKBAR_START_ID + i);
+//            seekWrapper.addView(SEEKBARS[i]);
+//
+//            SEEKBAR_LABElS[i] = new TextView(getContext());
+//            SEEKBAR_LABElS[i].setTextColor(mTextColor);
+//            params = createLayoutParams(PX_120, ViewGroup.LayoutParams.MATCH_PARENT);
+//            SEEKBAR_LABElS[i].setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+//            SEEKBAR_LABElS[i].setLayoutParams(params);
+//            SEEKBAR_LABElS[i].setMaxLines(1);
+//            SEEKBAR_LABElS[i].setId(SEEKLABEL_START_ID_START_ID + i);
+//            seekWrapper.addView(SEEKBAR_LABElS[i]);
+//
+//            SEEKBARS[i].setMax(MAX_SEEKBAR_VAL);
+//            SEEKBARS[i].setMin(MIN_SEEKBAR_VAL);
+//            SEEKBARS[i].setOnSeekBarChangeListener(seekbarListener);
+//        }
 
         View nub = new View(context);
         params = createLayoutParams(dpToPx(60, resources), dpToPx(40, resources));
@@ -241,6 +245,7 @@ public class AnConfigView extends FrameLayout {
 
         return root;
     }
+
 
     public void refreshAnimerConfigs() {
         mAnimerObjectsMap = anConfigRegistry.getAllAnimer();
@@ -267,12 +272,106 @@ public class AnConfigView extends FrameLayout {
         solverTypeSpinnerAdapter.notifyDataSetChanged();
         if (solverObjectSpinnerAdapter.getCount() > 0) {
             currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
-
+            recreateList();
             int typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")));
             mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
+
+
         }
     }
 
+    private void initInterpolatorConfigs() {
+        mInterpolatorTypesMap = anConfigRegistry.getAllInterpolatorTypes();
+        interpolatorTypeSpinnerAdapter.clear();
+
+        for(int i = 0; i< mInterpolatorTypesMap.size(); i++){
+            interpolatorTypeSpinnerAdapter.add(String.valueOf(mInterpolatorTypesMap.getKey(i)));
+        }
+
+        interpolatorTypeSpinnerAdapter.notifyDataSetChanged();
+        if (interpolatorTypeSpinnerAdapter.getCount() > 0) {
+            String interpolatorName = currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().replace("Interpolator","");
+            int interpolatorIndex = mInterpolatorTypesMap.getIndexByString(interpolatorName);
+            mInterpolatorTypeSelectorSpinner.setSelection(interpolatorIndex,false);
+        }
+    }
+
+    private boolean nonInterpolator = false;
+    private void recreateList(){
+        FrameLayout.LayoutParams params;
+        TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1f);
+        tableLayoutParams.setMargins(0, 0, PX_5, 0);
+        LinearLayout seekWrapper;
+
+        if(currentAnimer.getCurrentSolverData().getKeyByString("converter_type").toString() != "AndroidInterpolator"){
+            if(!nonInterpolator){
+                Log.e("Create List","Create List");
+                listLayout.removeAllViews();
+                for (int i = 0;i<listSize;i++){
+                    tableLayoutParams.setMargins(0, 0, PX_5, 0);
+
+                    seekWrapper = new LinearLayout(mContext);
+                    params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(PX_10, PX_10, PX_10, PX_10);
+                    seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_10);
+                    seekWrapper.setLayoutParams(params);
+                    seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+                    listLayout.addView(seekWrapper);
+
+                    SEEKBARS[i] = new SeekBar(mContext);
+                    SEEKBARS[i].setLayoutParams(tableLayoutParams);
+                    SEEKBARS[i].setId(SEEKBAR_START_ID + i);
+                    seekWrapper.addView(SEEKBARS[i]);
+
+                    SEEKBAR_LABElS[i] = new TextView(getContext());
+                    SEEKBAR_LABElS[i].setTextColor(mTextColor);
+                    params = createLayoutParams(PX_120, ViewGroup.LayoutParams.MATCH_PARENT);
+                    SEEKBAR_LABElS[i].setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+                    SEEKBAR_LABElS[i].setLayoutParams(params);
+                    SEEKBAR_LABElS[i].setMaxLines(1);
+                    SEEKBAR_LABElS[i].setId(SEEKLABEL_START_ID_START_ID + i);
+                    seekWrapper.addView(SEEKBAR_LABElS[i]);
+
+                    SEEKBARS[i].setMax(MAX_SEEKBAR_VAL);
+                    SEEKBARS[i].setMin(MIN_SEEKBAR_VAL);
+                    SEEKBARS[i].setOnSeekBarChangeListener(seekbarListener);
+                }
+                nonInterpolator = true;
+            }
+            else{
+                Log.e("Hold List","Hold List");
+
+            }
+        }
+        else{
+            nonInterpolator = false;
+            listLayout.removeAllViews();
+
+            // # Spinner
+            seekWrapper = new LinearLayout(mContext);
+            params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(PX_10, PX_10, PX_10, PX_10);
+            seekWrapper.setPadding(PX_10, PX_10, PX_10, PX_20);
+            seekWrapper.setLayoutParams(params);
+            seekWrapper.setOrientation(LinearLayout.HORIZONTAL);
+            listLayout.addView(seekWrapper);
+
+            mInterpolatorTypeSelectorSpinner = new Spinner(mContext, Spinner.MODE_DIALOG);
+            params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(PX_10, PX_10, PX_10, PX_10);
+            mInterpolatorTypeSelectorSpinner.setLayoutParams(tableLayoutParams);
+            seekWrapper.addView(mInterpolatorTypeSelectorSpinner);
+
+
+            mInterpolatorTypeSelectorSpinner.setAdapter(interpolatorTypeSpinnerAdapter);
+            mInterpolatorTypeSelectorSpinner.setOnItemSelectedListener(soverSelectedListener);
+
+            initInterpolatorConfigs();
+
+            Log.e("Remove List","Remove List");
+        }
+        //previousType = currentAnimer.getCurrentSolverData().getKeyByString("converter_type").toString();
+    }
 
     private int typeChecker,objectChecker = 0;
     private boolean isFixedSelection = false;
@@ -287,6 +386,7 @@ public class AnConfigView extends FrameLayout {
             if(adapterView == mSolverObjectSelectorSpinner){
                 // get Animer from Map
                 currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
+                recreateList();
                 redefineMinMax(currentAnimer.getCurrentSolver());
                 updateSeekBars(currentAnimer.getCurrentSolver());
 
@@ -310,12 +410,17 @@ public class AnConfigView extends FrameLayout {
                         // reset animer from Map
                         Animer.AnimerSolver seltectedSolver = (Animer.AnimerSolver) mSolverTypesMap.getValue(i);
                         currentAnimer.setSolver(seltectedSolver);
+                        recreateList();
                         redefineMinMax(currentAnimer.getCurrentSolver());
                         updateSeekBars(currentAnimer.getCurrentSolver());
                     }
 
                 }
                 typeChecker++;
+            }
+            else if(adapterView == mInterpolatorTypeSelectorSpinner){
+                //TODO
+
             }
         }
 
@@ -341,7 +446,7 @@ public class AnConfigView extends FrameLayout {
     private void updateSeekBars(Animer.AnimerSolver animerSolver) {
 
 
-        Log.e("currentObjectType",String.valueOf(currentObjectType));
+        //Log.e("currentObjectType",String.valueOf(currentObjectType));
         for(int i = 0;i<listSize;i++){
             if(currentObjectType != "AndroidInterpolator") {
                 SEEKBAR_VALUES[i] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i + 1)).toString());

@@ -315,7 +315,7 @@ public class Animer<T> {
 
     public static AnimerSolver springiOSUIView(float dampingratio,float duration){
         AnConfigData configData = new AnConfigData(dampingratio,duration);
-        configData.setArguments("iOSUIViewSpring","dampingratio",0.01,1,"duration",0.01,5);
+        configData.setArguments("iOSUIViewSpring","dampingratio",0.01,0.99,"duration",0.01,5);
         UIViewSpringConverter uiViewSpringConverter = new UIViewSpringConverter(dampingratio,duration);
         return new AnimerSolver(uiViewSpringConverter.getStiffness(),uiViewSpringConverter.getDampingRatio(),1,configData);
     }

@@ -33,12 +33,13 @@ public class MainActivity extends AppCompatActivity {
         iv2 = findViewById(R.id.iv2);;
         iv3 = findViewById(R.id.iv3);
 
+        solverF = Animer.springOrigamiPOP(20,10);
         solverA = Animer.springDroid(10,0.95f);
         solverB = Animer.springPrinciple(1000,25f);
         solverC = Animer.springProtopie(500,25);
         solverD = Animer.springiOSCoreAnimation(200,1.95f);
         solverE = Animer.springOrigamiPOP(20,10);
-        solverF = Animer.springOrigamiPOP(20,10);
+
 
         animer1 = new Animer(iv,solverA,Animer.TRANSLATION_X,0,600);
         animer1.setCurrentValue(200);

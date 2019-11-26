@@ -10,12 +10,10 @@ public class AnConfigRegistry {
         return INSTANCE;
     }
 
-    private final ANConfigMap<String,Animer.AnimerSolver> mSolverMap;
     private final ANConfigMap<String,Animer> mAnimerMap;
 
 
     AnConfigRegistry() {
-        mSolverMap = new ANConfigMap<String,Animer.AnimerSolver>();
         mAnimerMap = new ANConfigMap<String,Animer>();
     }
 
@@ -41,34 +39,12 @@ public class AnConfigRegistry {
         return mAnimerMap.remove(animer) != null;
     }
 
-    public boolean addSolver(String configName,Animer.AnimerSolver animerSolver) {
-        if (animerSolver == null) {
-            throw new IllegalArgumentException("animer is required");
-        }
-        if (configName == null) {
-            throw new IllegalArgumentException("configName is required");
-        }
-        if (mSolverMap.containsKey(animerSolver)) {
-            return false;
-        }
-        mSolverMap.put(configName,animerSolver);
-        return true;
-    }
-
-
-    public boolean removeSolverConfig(Animer.AnimerSolver animerSolver) {
-        if (animerSolver == null) {
-            throw new IllegalArgumentException("animer is required");
-        }
-        return mSolverMap.remove(animerSolver) != null;
+    public void removeAllAnimerConfig() {
+        mAnimerMap.clear();
     }
 
     public ANConfigMap<String,Animer> getAllAnimer() {
         return mAnimerMap;
-    }
-
-    public ANConfigMap<String,Animer.AnimerSolver> getAllSolver() {
-        return mSolverMap;
     }
 
     public ANConfigMap<String,Animer.AnimerSolver> getAllSolverTypes(){
@@ -85,8 +61,5 @@ public class AnConfigRegistry {
         return map;
     }
 
-    public void removeAllSpringConfig() {
-        mAnimerMap.clear();
-    }
 
 }

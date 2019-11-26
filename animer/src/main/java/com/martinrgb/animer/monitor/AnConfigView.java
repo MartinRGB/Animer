@@ -66,7 +66,7 @@ public class AnConfigView extends FrameLayout {
     private SeekBar[] SEEKBARS = new SeekBar[]{mArgument1SeekBar,mArgument2SeekBar,mArgument3SeekBar,mArgument4SeekBar};
     private TextView[] SEEKBAR_LABElS = new TextView[]{mArgument1SeekLabel,mArgument2SeekLabel,mArgument3SeekLabel,mArgument4SeekLabel};
 
-    private String currentType,previousSelectedType = "NULL";
+    private String currentObjectType = "NULL";
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
     private static final DecimalFormat DECIMAL_FORMAT_1 = new DecimalFormat("#.#");
 
@@ -267,15 +267,14 @@ public class AnConfigView extends FrameLayout {
         solverTypeSpinnerAdapter.notifyDataSetChanged();
         if (solverObjectSpinnerAdapter.getCount() > 0) {
             currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
-            //currentSolver = currentAnimer.getCurrentSolver();
-            previousSelectedType = String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type"));
-            int typeIndex = mSolverTypesMap.getIndexByString(previousSelectedType);
+
+            int typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")));
             mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
         }
     }
 
 
-    private int typeChecker = 0;
+    private int typeChecker,objectChecker = 0;
     private boolean isFixedSelection = false;
 
     private class SoverSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -286,31 +285,31 @@ public class AnConfigView extends FrameLayout {
             tv.setTextColor(Color.WHITE);
 
             if(adapterView == mSolverObjectSelectorSpinner){
+                // get Animer from Map
                 currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
-                //currentSolver = currentAnimer.getCurrentSolver();
                 redefineMinMax(currentAnimer.getCurrentSolver());
                 updateSeekBars(currentAnimer.getCurrentSolver());
 
+
+                // will not excute in init
+                if(objectChecker > 0){
+                    // type selection will only change text;
+                    isFixedSelection = true;
+                    int typeIndex = mSolverTypesMap.getIndexByString(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type").toString());
+                    mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
+                }
+                objectChecker++;
             }
             else if (adapterView == mSolverTypeSelectorSpinner){
-                if(typeChecker > 0 &&  currentAnimer.getCurrentSolver() !=null) {
+                // will not excute in init
+                if(typeChecker > 0) {
                     if(isFixedSelection){
                         isFixedSelection = false;
                     }
                     else{
-
+                        // reset animer from Map
                         Animer.AnimerSolver seltectedSolver = (Animer.AnimerSolver) mSolverTypesMap.getValue(i);
-                        Log.e("Solver Mode",String.valueOf(seltectedSolver.getSolverMode()));
-                        previousSelectedType = String.valueOf(seltectedSolver.getConfigSet().getKeyByString("converter_type"));
-                        Log.e("PreviousSelectedType",String.valueOf(previousSelectedType));
-
-//                        currentAnimer.getCurrentSolver().setSolverMode(seltectedSolver.getSolverMode());
-//                        currentAnimer.getCurrentSolver().setArg1( seltectedSolver.getArg1());
-//                        currentAnimer.getCurrentSolver().setArg2( seltectedSolver.getArg2());
-//                        currentAnimer.getCurrentSolver().getConfigSet().cloneConfigFrom(seltectedSolver.getConfigSet().getConfigs());
-
                         currentAnimer.setSolver(seltectedSolver);
-
                         redefineMinMax(currentAnimer.getCurrentSolver());
                         updateSeekBars(currentAnimer.getCurrentSolver());
                     }
@@ -335,16 +334,8 @@ public class AnConfigView extends FrameLayout {
     }
 
     private void updateSeekBars(Animer.AnimerSolver animerSolver) {
-        if((animerSolver.getConfigSet().getKeyByString("converter_type")) !=null){
-            currentType = animerSolver.getConfigSet().getKeyByString("converter_type").toString();
 
-            //TODO BUGs here
-            if(previousSelectedType != currentType){
-                int typeIndex = mSolverTypesMap.getIndexByString(currentType);
-                isFixedSelection = true;
-                mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
-            }
-        }
+        currentObjectType = animerSolver.getConfigSet().getKeyByString("converter_type").toString();
 
         for(int i = 0;i<listSize;i++){
             SEEKBAR_VALUES[i] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i+1)).toString());
@@ -380,9 +371,9 @@ public class AnConfigView extends FrameLayout {
                 }
             }
 
-            if(currentType != "AndroidFling"){
-                currentAnimer.getCurrentSolver().setArg1(getConvertValueByIndexAndType(0,currentType));
-                currentAnimer.getCurrentSolver().setArg2(getConvertValueByIndexAndType(1,currentType));
+            if(currentObjectType != "AndroidFling"){
+                currentAnimer.getCurrentSolver().setArg1(getConvertValueByIndexAndType(0, currentObjectType));
+                currentAnimer.getCurrentSolver().setArg2(getConvertValueByIndexAndType(1, currentObjectType));
             }
 
 
@@ -396,39 +387,6 @@ public class AnConfigView extends FrameLayout {
         public void onStopTrackingTouch(SeekBar seekBar) {
         }
     }
-
-
-    private Animer.AnimerSolver getSolverByType(String type){
-        switch (type) {
-            case "NULL":
-                return null;
-            case "AndroidInterpolator":
-                //TODO
-                //return Animer.interpolatorDroid(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-                return null;
-            case "AndroidFling":
-                return Animer.flingDroid(50,0.99f);
-            case "AndroidSpring":
-                return Animer.springDroid(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "DHOSpring":
-                return Animer.springDHO(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "iOSCoreAnimationSpring":
-                return Animer.springiOSCoreAnimation(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "RK4Spring":
-                return Animer.springRK4(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "ProtopieSpring":
-                return Animer.springProtopie(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "PrincipleSpring":
-                return Animer.springPrinciple(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "iOSUIViewSpring":
-                return Animer.springiOSUIView(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            case "OrigamiPOPSpring":
-                return Animer.springOrigamiPOP(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
-            default:
-                return null;
-        }
-    }
-
 
     private Object getConvertValueByIndexAndType(int i,String type){
         switch (type) {

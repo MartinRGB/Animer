@@ -43,7 +43,8 @@ public class AnConfigView extends FrameLayout {
 
     private Spinner mSolverObjectSelectorSpinner;
     private Spinner mSolverTypeSelectorSpinner;
-    private Animer.AnimerSolver currentSolver;
+    private Animer currentAnimer;
+    //private Animer.AnimerSolver currentSolver;
     private Animer mRevealAnimer;
 
     private FrameLayout root;
@@ -79,7 +80,8 @@ public class AnConfigView extends FrameLayout {
     private final int PX_20 = dpToPx(20, getResources());
     private final int PX_120 = dpToPx(120, getResources());
 
-    private ANConfigMap<String,Animer.AnimerSolver> mAnimerObjectsMap,mAnimerTypesMap;
+    private ANConfigMap<String,Animer.AnimerSolver> mSolverTypesMap;
+    private ANConfigMap<String,Animer> mAnimerObjectsMap;
 
     public AnConfigView(Context context) {
         this(context, null);
@@ -114,7 +116,7 @@ public class AnConfigView extends FrameLayout {
                         float minTranslate = 0;
                         float maxTranslate = root.getMeasuredHeight() - dpToPx(40/2, resources);
                         float range = maxTranslate - minTranslate;
-                        float yTranslate = (val * range) + minTranslate;
+                        float yTranslate = -(val * range) + minTranslate;
                         AnConfigView.this.setTranslationY(yTranslate);
                     }
                 });
@@ -139,7 +141,7 @@ public class AnConfigView extends FrameLayout {
         // # Container
         LinearLayout container = new LinearLayout(context);
         params = createLayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(0, PX_20, 0, 0);
+        params.setMargins(0, 0, 0, PX_20);
         container.setOrientation(LinearLayout.VERTICAL);
         container.setLayoutParams(params);
         container.setBackgroundColor(Color.argb(100, 0, 0, 0));
@@ -229,7 +231,7 @@ public class AnConfigView extends FrameLayout {
 
         View nub = new View(context);
         params = createLayoutParams(dpToPx(60, resources), dpToPx(40, resources));
-        params.gravity = Gravity.TOP | Gravity.CENTER;
+        params.gravity = Gravity.BOTTOM | Gravity.CENTER;
         nub.setLayoutParams(params);
         nub.setOnTouchListener(new OnNubTouchListener());
         nub.setBackgroundColor(Color.argb(255, 0, 164, 209));
@@ -242,7 +244,7 @@ public class AnConfigView extends FrameLayout {
         mAnimerObjectsMap = anConfigRegistry.getAllAnimer();
         solverObjectSpinnerAdapter.clear();
 
-        for(int i=0;i<mAnimerObjectsMap.size();i++){
+        for(int i = 0; i< mAnimerObjectsMap.size(); i++){
             solverObjectSpinnerAdapter.add(String.valueOf(mAnimerObjectsMap.getKey(i)));
         }
         solverObjectSpinnerAdapter.notifyDataSetChanged();
@@ -253,20 +255,21 @@ public class AnConfigView extends FrameLayout {
     }
 
     private void initTypeConfigs() {
-        mAnimerTypesMap = anConfigRegistry.getAllAnimerTypes();
+        mSolverTypesMap = anConfigRegistry.getAllSolverTypes();
 
         solverTypeSpinnerAdapter.clear();
        // mSolverTypes.clear();
 
-        for(int i=0;i<mAnimerTypesMap.size();i++){
-            solverTypeSpinnerAdapter.add(String.valueOf(mAnimerTypesMap.getKey(i)));
+        for(int i = 0; i< mSolverTypesMap.size(); i++){
+            solverTypeSpinnerAdapter.add(String.valueOf(mSolverTypesMap.getKey(i)));
         }
 
         solverTypeSpinnerAdapter.notifyDataSetChanged();
         if (solverObjectSpinnerAdapter.getCount() > 0) {
-            currentSolver = (Animer.AnimerSolver) mAnimerObjectsMap.getValue(0);
-            previousSelectedType = String.valueOf(currentSolver.getConfigSet().getKeyByString("converter_type"));
-            int typeIndex = mAnimerTypesMap.getIndexByString(previousSelectedType);
+            currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
+            //currentSolver = currentAnimer.getCurrentSolver();
+            previousSelectedType = String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type"));
+            int typeIndex = mSolverTypesMap.getIndexByString(previousSelectedType);
             mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
         }
     }
@@ -283,28 +286,33 @@ public class AnConfigView extends FrameLayout {
             tv.setTextColor(Color.WHITE);
 
             if(adapterView == mSolverObjectSelectorSpinner){
-                currentSolver = (Animer.AnimerSolver) mAnimerObjectsMap.getValue(i);
-                redefineMinMax(currentSolver);
-                updateSeekBars(currentSolver);
+                currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
+                //currentSolver = currentAnimer.getCurrentSolver();
+                redefineMinMax(currentAnimer.getCurrentSolver());
+                updateSeekBars(currentAnimer.getCurrentSolver());
 
             }
             else if (adapterView == mSolverTypeSelectorSpinner){
-                if(typeChecker > 0 && currentSolver !=null) {
+                if(typeChecker > 0 &&  currentAnimer.getCurrentSolver() !=null) {
                     if(isFixedSelection){
                         isFixedSelection = false;
                     }
                     else{
 
-                        Animer.AnimerSolver seltectedSolver = (Animer.AnimerSolver) mAnimerTypesMap.getValue(i);
-
-                        currentSolver.setArg1( seltectedSolver.getArg1());
-                        currentSolver.setArg2( seltectedSolver.getArg2());
-                        currentSolver.getConfigSet().cloneConfigFrom(seltectedSolver.getConfigSet().getConfig());
-
+                        Animer.AnimerSolver seltectedSolver = (Animer.AnimerSolver) mSolverTypesMap.getValue(i);
+                        Log.e("Solver Mode",String.valueOf(seltectedSolver.getSolverMode()));
                         previousSelectedType = String.valueOf(seltectedSolver.getConfigSet().getKeyByString("converter_type"));
+                        Log.e("PreviousSelectedType",String.valueOf(previousSelectedType));
 
-                        redefineMinMax(seltectedSolver);
-                        updateSeekBars(seltectedSolver);
+//                        currentAnimer.getCurrentSolver().setSolverMode(seltectedSolver.getSolverMode());
+//                        currentAnimer.getCurrentSolver().setArg1( seltectedSolver.getArg1());
+//                        currentAnimer.getCurrentSolver().setArg2( seltectedSolver.getArg2());
+//                        currentAnimer.getCurrentSolver().getConfigSet().cloneConfigFrom(seltectedSolver.getConfigSet().getConfigs());
+
+                        currentAnimer.setSolver(seltectedSolver);
+
+                        redefineMinMax(currentAnimer.getCurrentSolver());
+                        updateSeekBars(currentAnimer.getCurrentSolver());
                     }
 
                 }
@@ -330,8 +338,9 @@ public class AnConfigView extends FrameLayout {
         if((animerSolver.getConfigSet().getKeyByString("converter_type")) !=null){
             currentType = animerSolver.getConfigSet().getKeyByString("converter_type").toString();
 
+            //TODO BUGs here
             if(previousSelectedType != currentType){
-                int typeIndex = mAnimerTypesMap.getIndexByString(currentType);
+                int typeIndex = mSolverTypesMap.getIndexByString(currentType);
                 isFixedSelection = true;
                 mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
             }
@@ -359,20 +368,22 @@ public class AnConfigView extends FrameLayout {
                     SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL-MIN_SEEKBAR_VAL))*RANGE_VALUES[i] + MIN_VALUES[i];
                     if(i == 0){
                         String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[i]);
-                        SEEKBAR_LABElS[i].setText((String) currentSolver.getConfigSet().getKeyByString("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
-                        currentSolver.getConfigSet().addConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+                        SEEKBAR_LABElS[i].setText((String)  currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
+                        currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
                     }
                     else if(i == 1){
                         String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
-                        SEEKBAR_LABElS[i].setText((String) currentSolver.getConfigSet().getKeyByString("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
-                        currentSolver.getConfigSet().addConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
+                        SEEKBAR_LABElS[i].setText((String)  currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" +String.valueOf(i+1) +"_name") + ": " + roundedValue1Label);
+                        currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg"+String.valueOf(i+1)+"",Float.valueOf(roundedValue1Label));
                     }
 
                 }
             }
 
-            currentSolver.setArg1(getConvertValueByIndexAndType(0,currentType));
-            currentSolver.setArg2(getConvertValueByIndexAndType(1,currentType));
+            if(currentType != "AndroidFling"){
+                currentAnimer.getCurrentSolver().setArg1(getConvertValueByIndexAndType(0,currentType));
+                currentAnimer.getCurrentSolver().setArg2(getConvertValueByIndexAndType(1,currentType));
+            }
 
 
         }
@@ -386,6 +397,37 @@ public class AnConfigView extends FrameLayout {
         }
     }
 
+
+    private Animer.AnimerSolver getSolverByType(String type){
+        switch (type) {
+            case "NULL":
+                return null;
+            case "AndroidInterpolator":
+                //TODO
+                //return Animer.interpolatorDroid(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+                return null;
+            case "AndroidFling":
+                return Animer.flingDroid(50,0.99f);
+            case "AndroidSpring":
+                return Animer.springDroid(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "DHOSpring":
+                return Animer.springDHO(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "iOSCoreAnimationSpring":
+                return Animer.springiOSCoreAnimation(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "RK4Spring":
+                return Animer.springRK4(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "ProtopieSpring":
+                return Animer.springProtopie(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "PrincipleSpring":
+                return Animer.springPrinciple(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "iOSUIViewSpring":
+                return Animer.springiOSUIView(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            case "OrigamiPOPSpring":
+                return Animer.springOrigamiPOP(SEEKBAR_VALUES[0],SEEKBAR_VALUES[1]);
+            default:
+                return null;
+        }
+    }
 
 
     private Object getConvertValueByIndexAndType(int i,String type){
@@ -510,10 +552,7 @@ public class AnConfigView extends FrameLayout {
     }
 
     public static int dpToPx(float dp, Resources res) {
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                res.getDisplayMetrics());
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,res.getDisplayMetrics());
     }
 
     public static FrameLayout.LayoutParams createLayoutParams(int width, int height) {

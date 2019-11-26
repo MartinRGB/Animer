@@ -21,6 +21,18 @@ public class AnConfigData {
         addConfig("arg2",o2);
     }
 
+    public void setArguments(String type,String arg1,Object arg1_min,Object arg1_max,String arg2,Object arg2_min,Object arg2_max){
+        addConfig("converter_type",type);
+        addConfig("arg1_name",arg1);
+        addConfig("arg1_min",arg1_min);
+        addConfig("arg1_max",arg1_max);
+        addConfig("arg2_name",arg2);
+        addConfig("arg2_min",arg2_min);
+        addConfig("arg2_max",arg2_max);
+    }
+
+
+
     // ############################################
     // PhysicsState State's Getter & Setter
     // ############################################
@@ -29,11 +41,11 @@ public class AnConfigData {
         configMap.put(key,value);
     }
 
-    public LinkedHashMap getConfig(){
+    public LinkedHashMap getConfigs(){
         return configMap;
     }
 
-    public void clearConfig(){
+    public void clearConfigs(){
         configMap.clear();
     }
 
@@ -44,7 +56,6 @@ public class AnConfigData {
         }
         else{
         }
-
     }
 
     public Object getKeyByString(String key){

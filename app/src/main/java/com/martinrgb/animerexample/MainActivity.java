@@ -17,11 +17,11 @@ import com.martinrgb.animer.monitor.AnConfigView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView iv,iv2;
-    private Animer animer,animer2,animer3,animer4,animer5;
-    private boolean isOpen,isOpen2 = false;
+    private ImageView iv,iv2,iv3;
+    private Animer animer1,animer2,animer3,animer4,animer5,animer6;
+    private boolean isOpen,isOpen2,isOpen3 = false;
     private  AnConfigView mSpringConfiguratorView;
-    private Animer.AnimerSolver solverA,solverB,solverC,solverD,solverE;
+    private Animer.AnimerSolver solverA,solverB,solverC,solverD,solverE,solverF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,41 +31,44 @@ public class MainActivity extends AppCompatActivity {
 
         iv = findViewById(R.id.iv);
         iv2 = findViewById(R.id.iv2);;
+        iv3 = findViewById(R.id.iv3);
 
         solverA = Animer.springDroid(10,0.95f);
         solverB = Animer.springPrinciple(1000,25f);
         solverC = Animer.springProtopie(500,25);
         solverD = Animer.springiOSCoreAnimation(200,1.95f);
-        solverE = Animer.springOrigami(20,10);
+        solverE = Animer.springOrigamiPOP(20,10);
+        solverF = Animer.springOrigamiPOP(20,10);
 
-        animer = new Animer(iv,solverA,Animer.TRANSLATION_X,0,600);
-        animer.setCurrentValue(200);
+        animer1 = new Animer(iv,solverA,Animer.TRANSLATION_X,0,600);
+        animer1.setCurrentValue(200);
         animer2 = new Animer(iv,solverB,Animer.TRANSLATION_Y,0,500);
         animer2.setCurrentValue(-400);
         animer3 = new Animer(iv,solverC,Animer.ROTATION,0,720);
         animer4 = new Animer(iv2,solverD,Animer.SCALE,1,1.2f);
         animer5 = new Animer(iv2,solverE,Animer.ROTATION_X,0,720);
+        animer6 = new Animer(iv3,solverF,Animer.TRANSLATION_X,200,800);
 
         mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addSolver("红色 - X",solverA);
-        AnConfigRegistry.getInstance().addSolver("红色 - Y",solverB);
-        AnConfigRegistry.getInstance().addSolver("红色 - R",solverC);
-        AnConfigRegistry.getInstance().addSolver("蓝色 - S",solverD);
-        AnConfigRegistry.getInstance().addSolver("蓝色 - R_x",solverE);
+        AnConfigRegistry.getInstance().addAnimer("G色 - X",animer6);
+        AnConfigRegistry.getInstance().addAnimer("R色 - X",animer1);
+        AnConfigRegistry.getInstance().addAnimer("红色 - Y",animer2);
+        AnConfigRegistry.getInstance().addAnimer("红色 - R",animer3);
+        AnConfigRegistry.getInstance().addAnimer("蓝色 - S",animer4);
+        AnConfigRegistry.getInstance().addAnimer("蓝色 - R_x",animer5);
+
         mSpringConfiguratorView.refreshAnimerConfigs();
 
         iv.setOnClickListener(view -> {
 
             if(!isOpen){
-                //animer.setSolver(solverD);
-                animer.setEndvalue(600);
+                animer1.setEndvalue(600);
                 animer2.setEndvalue(-1200);
                 animer3.setEndvalue(720);
 
             }
             else{
-                //animer.setSolver(solverE);
-                animer.setEndvalue(200);
+                animer1.setEndvalue(200);
                 animer2.setEndvalue(-600);
                 animer3.setEndvalue(0);
 
@@ -76,18 +79,31 @@ public class MainActivity extends AppCompatActivity {
         iv2.setOnClickListener(view -> {
 
             if(!isOpen2){
-                //animer.setSolver(solverD);
                 animer4.setEndvalue(1.2f);
                 animer5.setEndvalue(360);
 
             }
             else{
-                //animer.setSolver(solverE);
                 animer4.setEndvalue(1f);
                 animer5.setEndvalue(0);
             }
             isOpen2 = !isOpen2;
         });
+
+        animer6.setCurrentValue(200);
+        iv3.setOnClickListener(view -> {
+
+            if(!isOpen3){
+                animer6.setEndvalue(800);
+
+            }
+            else{
+                animer6.setEndvalue(200);
+            }
+            isOpen3 = !isOpen3;
+        });
+
+
 
     }
 

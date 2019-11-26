@@ -14,7 +14,7 @@ public class ANConfigMap<K,V> extends LinkedHashMap {
 
     public Object getValue(int index){
         Object key = mLinkedHashMap.keySet().toArray()[index];
-        Object value = (Animer.AnimerSolver) mLinkedHashMap.get(key);
+        Object value = mLinkedHashMap.get(key);
         return value;
     }
     public Object getKey(int index){

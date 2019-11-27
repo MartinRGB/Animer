@@ -34,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        animer1 = new Animer(iv1,Animer.interpolatorDroid(new FastOutSlowInInterpolator(),1300),Animer.TRANSLATION_X,0,600);
+        Animer.AnimerSolver solverA  = Animer.interpolatorDroid(new FastOutSlowInInterpolator(),1300);
+        Animer.AnimerSolver solverB  = Animer.springDroid(1000,0.5f);
+
+        animer1 = new Animer(iv1,solverA,Animer.TRANSLATION_X,0,600);
         animer2 = new Animer(iv2,Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),1500),Animer.TRANSLATION_X,0,500);
         animer3 = new Animer(iv3,Animer.interpolatorDroid(new DecelerateInterpolator(2),1200),Animer.TRANSLATION_X,0,720);
         animer4 = new Animer(iv1,Animer.springRK4(100,10),Animer.ROTATION,1,1.2f);

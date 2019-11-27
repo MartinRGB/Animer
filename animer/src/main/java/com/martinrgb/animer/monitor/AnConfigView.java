@@ -86,6 +86,8 @@ public class AnConfigView extends FrameLayout {
     private ANConfigMap<String,Animer.AnimerSolver> mSolverTypesMap;
     private ANConfigMap<String,Animer> mAnimerObjectsMap;
     private ANConfigMap<String,Animer.AnimerSolver> mInterpolatorTypesMap;
+    private boolean nonInterpolator;
+
     private Context mContext;
 
     public AnConfigView(Context context) {
@@ -263,6 +265,14 @@ public class AnConfigView extends FrameLayout {
             currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
             recreateList();
             int typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")));
+
+            if(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")) == "AndroidInterpolator"){
+                nonInterpolator = false;
+            }
+            else{
+                nonInterpolator = true;
+            }
+
             mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
             initInterpolatorConfigs();
         }
@@ -284,7 +294,7 @@ public class AnConfigView extends FrameLayout {
         }
     }
 
-    private boolean nonInterpolator = true;
+
     private void recreateList(){
         FrameLayout.LayoutParams params;
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1f);
@@ -336,6 +346,7 @@ public class AnConfigView extends FrameLayout {
             nonInterpolator = false;
             listLayout.removeAllViews();
 
+            Log.e("23213","213213");
             // # Spinner
 
             //initInterpolatorConfigs();
@@ -447,9 +458,9 @@ public class AnConfigView extends FrameLayout {
 
                 if(interpolatorChecker > 0) {
                     Log.e("23233","3-2");
+
                     listSize = 1 + ((AnInterpolator)((Animer.AnimerSolver)mInterpolatorTypesMap.getValue(i)).getArg1()).getArgNum();
                     isFixedSelection = false;
-                    Log.e("mTime",String.valueOf((long)currentAnimer.getCurrentSolver().getArg2()));
                     Animer.AnimerSolver seltectedInterpolator =  (Animer.AnimerSolver) mInterpolatorTypesMap.getValue(i);
                     currentAnimer.setSolver(Animer.interpolatorDroid((AnInterpolator)seltectedInterpolator.getArg1(),(long)currentAnimer.getCurrentSolver().getArg2()));
                     //recreateList();

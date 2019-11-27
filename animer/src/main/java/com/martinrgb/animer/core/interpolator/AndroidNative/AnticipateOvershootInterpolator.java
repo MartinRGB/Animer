@@ -1,28 +1,23 @@
 package com.martinrgb.animer.core.interpolator.AndroidNative;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-
 import com.martinrgb.animer.core.interpolator.AnInterpolator;
 
 public class AnticipateOvershootInterpolator extends AnInterpolator {
-    private final float mTension;
+    private float mTension;
 
     public AnticipateOvershootInterpolator() {
         mTension = 2.0f * 1.5f;
-        setArg(0,2,"factor",0,10);
+        setArgData(0,2,"factor",0,10);
     }
 
     public AnticipateOvershootInterpolator(float tension) {
         mTension = tension * 1.5f;
-        setArg(0,tension,"factor",0,10);
+        setArgData(0,tension,"factor",0,10);
     }
 
     public AnticipateOvershootInterpolator(float tension, float extraTension) {
         mTension = tension * extraTension;
-        setArg(0,tension,"factor",0,10);
+        setArgData(0,tension,"factor",0,10);
     }
 
     private static float a(float t, float s) {
@@ -40,6 +35,14 @@ public class AnticipateOvershootInterpolator extends AnInterpolator {
         // f(t) = 0.5 * (o(t * 2 - 2, tension * extraTension) + 2), when t <= 1.0
         if (t < 0.5f) return 0.5f * a(t * 2.0f, mTension);
         else return 0.5f * (o(t * 2.0f - 2.0f, mTension) + 2.0f);
+    }
+
+    @Override
+    public void resetData(int i,float value){
+        setArgValue(i,value);
+        if(i == 0){
+            mTension = value;
+        }
     }
 
 }

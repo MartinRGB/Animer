@@ -1,18 +1,16 @@
 package com.martinrgb.animer.core.interpolator;
 
-import android.view.animation.Interpolator;
-
 public class CustomSpringInterpolator extends AnInterpolator{
 
     private float factor = 0.5f;
 
     public CustomSpringInterpolator(float factor) {
         this.factor = factor;
-        setArg(0,(float) factor,"factor",0,10);
+        setArgData(0,(float) factor,"factor",0,10);
     }
 
     public CustomSpringInterpolator() {
-        setArg(0,(float) 0.5,"factor",0,10);
+        setArgData(0,(float) 0.5,"factor",0,10);
     }
 
     @Override
@@ -25,4 +23,14 @@ public class CustomSpringInterpolator extends AnInterpolator{
             return value;
         }
     }
+
+    @Override
+    public void resetData(int i,float value){
+        setArgValue(i,value);
+        if(i == 0){
+            factor = value;
+        }
+
+    }
+
 }

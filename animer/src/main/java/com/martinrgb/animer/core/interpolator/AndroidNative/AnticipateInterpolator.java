@@ -1,21 +1,14 @@
 package com.martinrgb.animer.core.interpolator.AndroidNative;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-
 import com.martinrgb.animer.core.interpolator.AnInterpolator;
 
 public class AnticipateInterpolator extends AnInterpolator {
 
-
-
-    private final float mTension;
+    private float mTension;
 
     public AnticipateInterpolator() {
         mTension = 2.0f;
-        setArg(0,2,"factor",0,10);
+        setArgData(0,2,"factor",0,10);
     }
 
     /**
@@ -25,12 +18,20 @@ public class AnticipateInterpolator extends AnInterpolator {
      */
     public AnticipateInterpolator(float tension) {
         mTension = tension;
-        setArg(0,tension,"factor",0,10);
+        setArgData(0,tension,"factor",0,10);
     }
 
     public float getInterpolation(float t) {
         // a(t) = t * t * ((tension + 1) * t - tension)
         return t * t * ((mTension + 1) * t - mTension);
+    }
+
+    @Override
+    public void resetData(int i,float value){
+        setArgValue(i,value);
+        if(i == 0){
+            mTension = value;
+        }
     }
 
 }

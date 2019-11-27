@@ -2,7 +2,7 @@ package com.martinrgb.animer.core.interpolator;
 
 // Interpolator Version of Android's SpringAnimation
 
-import android.view.animation.Interpolator;
+import android.util.Log;
 
 public class AndroidSpringInterpolator extends AnInterpolator{
 
@@ -22,10 +22,10 @@ public class AndroidSpringInterpolator extends AnInterpolator{
         this.mVelocity = velocity;
         this.mDuration = duration/1000.f;
 
-        setArg(0,(float) stiffness,"stiffness",0.01f,3000);
-        setArg(1,(float) dampingratio,"dampingratio",0.01f,3000);
-        setArg(2,(float) velocity,"velocity",-5000,5000);
-        setArg(3,(float) duration,"duration",0,5000);
+        setArgData(0,(float) stiffness,"stiffness",0.01f,3000);
+        setArgData(1,(float) dampingratio,"dampingratio",0.01f,3000);
+        setArgData(2,(float) velocity,"velocity",-5000,5000);
+        setArgData(3,(float) duration,"duration",0,5000);
     }
 
     public AndroidSpringInterpolator(float stiffness, float dampingratio,float duration) {
@@ -34,10 +34,27 @@ public class AndroidSpringInterpolator extends AnInterpolator{
         this.mVelocity = 0.f;
         this.mDuration = duration/1000.f;
 
-        setArg(0,(float) stiffness,"stiffness",0.01f,3000);
-        setArg(1,(float) dampingratio,"dampingratio",0.01f,1);
-        setArg(2,(float) 0,"velocity",-5000,5000);
-        setArg(3,(float) duration,"duration",0,5000);
+        setArgData(0,(float) stiffness,"stiffness",0.01f,3000);
+        setArgData(1,(float) dampingratio,"dampingratio",0.01f,1);
+        setArgData(2,(float) 0,"velocity",-5000,5000);
+        setArgData(3,(float) duration,"duration",0,5000);
+    }
+
+    @Override
+    public void resetData(int i,float value){
+        setArgValue(i,value);
+        if(i == 0){
+            mStiffness = value;
+        }
+        if(i == 1){
+            mDampingRatio = value;
+        }
+        if(i == 2){
+            mVelocity = value;
+        }
+        if(i == 3){
+            mDuration = value/1000;
+        }
     }
 
 
@@ -59,6 +76,7 @@ public class AndroidSpringInterpolator extends AnInterpolator{
             float displacement = (float) (Math.pow(Math.E,-mDampingRatio * mNaturalFreq * deltaT) * (lastDisplacement * Math.cos(mDampedFreq * deltaT) + coeffB * Math.sin(mDampedFreq * deltaT)));
             float mValue = displacement + endVal;
 
+            Log.e("ratio",String.valueOf(displacement));
             if(mDuration == 0){
                 return starVal;
             }

@@ -19,32 +19,52 @@ public abstract class AnInterpolator implements TimeInterpolator {
     public float min1,min2,min3,min4,max1,max2,max3,max4 = -1f;
     public int argNum = 0;
 
-    public void setArg(int i,float val,String name,float min,float max){
+    public void setArgData(int i, float val, String name, float min, float max){
         if(i == 0){
-            arg1 = val;
+            //arg1 = val;
             string1 = name;
             min1 = min;
             max1 = max;
         }
         else if(i == 1){
-            arg2 = val;
+            //arg2 = val;
             string2 = name;
             min2 = min;
             max2 = max;
         }
         else if(i == 2){
-            arg3 = val;
+            //arg3 = val;
             string3 = name;
             min3 = min;
             max3 = max;
         }
         else if(i == 3){
-            arg4 = val;
+            //arg4 = val;
             string4 = name;
             min4 = min;
             max4 = max;
         }
+        setArgValue(i,val);
         argNum++;
+    }
+
+    public void resetData(int i,float value){
+
+    }
+
+    public void setArgValue(int i,float val){
+        if(i == 0){
+            arg1 = val;
+        }
+        else if(i == 1){
+            arg2 = val;
+        }
+        else if(i == 2){
+            arg3 = val;
+        }
+        else if(i == 3){
+            arg4 = val;
+        }
     }
 
     public int getArgNum(){

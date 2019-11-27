@@ -1,7 +1,5 @@
 package com.martinrgb.animer.core.interpolator;
 
-import android.view.animation.Interpolator;
-
 public class CustomBounceInterpolator extends AnInterpolator{
 
     //Parameters
@@ -45,8 +43,20 @@ public class CustomBounceInterpolator extends AnInterpolator{
 
         computeInternalParameters();
 
-        setArg(0,tension,"tension",0,100);
-        setArg(1,friction,"friction",0,100);
+        setArgData(0,tension,"tension",0,100);
+        setArgData(1,friction,"friction",0,100);
+    }
+
+    @Override
+    public void resetData(int i,float value){
+        setArgValue(i,value);
+        if(i == 0){
+            this.mTension = Math.min(Math.max(value,0.f),100.f) * (maxStifness- originalStiffness)/100.f;
+        }
+        if(i == 1){
+            this.mFriction = Math.min(Math.max(friction,0.f),100.f) * (maxFrictionMultipler - originalFrictionMultipler)/100.f;
+        }
+        computeInternalParameters();
     }
 
     public CustomBounceInterpolator() {

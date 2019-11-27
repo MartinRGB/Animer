@@ -3,6 +3,7 @@ package com.martinrgb.animer.monitor;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ class AnSpinnerAdapter extends BaseAdapter {
     private final List<String> mStrings;
     private final Resources mResources;
     private final int mTextColor = Color.argb(255, 0, 0, 0);
+    private String selectedString;
 
     public AnSpinnerAdapter(Context context,Resources resources) {
         mContext = context;
@@ -61,8 +63,10 @@ class AnSpinnerAdapter extends BaseAdapter {
                     ViewGroup.LayoutParams.MATCH_PARENT);
             textView.setLayoutParams(params);
             int twelvePx = dpToPx(12, mResources);
-            textView.setPadding(twelvePx, twelvePx, twelvePx, twelvePx);
+            textView.setPadding(twelvePx, dpToPx(8, mResources), twelvePx, dpToPx(8, mResources));
             textView.setTextColor(mTextColor);
+            textView.setTextSize(11);
+            selectedString = textView.getText().toString();
         } else {
             textView = (TextView) convertView;
         }

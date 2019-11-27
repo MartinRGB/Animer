@@ -4,7 +4,7 @@ package com.martinrgb.animer.core.interpolator;
 
 import android.view.animation.Interpolator;
 
-public class AndroidSpringInterpolator implements Interpolator{
+public class AndroidSpringInterpolator extends AnInterpolator{
 
     //Parameters
     private float mStiffness = 1500.f;
@@ -21,6 +21,11 @@ public class AndroidSpringInterpolator implements Interpolator{
         this.mDampingRatio = dampingratio;
         this.mVelocity = velocity;
         this.mDuration = duration/1000.f;
+
+        setArg(0,(float) stiffness,"stiffness",0.01f,3000);
+        setArg(1,(float) dampingratio,"dampingratio",0.01f,3000);
+        setArg(2,(float) velocity,"velocity",-5000,5000);
+        setArg(3,(float) duration,"duration",0,5000);
     }
 
     public AndroidSpringInterpolator(float stiffness, float dampingratio,float duration) {
@@ -28,6 +33,11 @@ public class AndroidSpringInterpolator implements Interpolator{
         this.mDampingRatio = dampingratio;
         this.mVelocity = 0.f;
         this.mDuration = duration/1000.f;
+
+        setArg(0,(float) stiffness,"stiffness",0.01f,3000);
+        setArg(1,(float) dampingratio,"dampingratio",0.01f,1);
+        setArg(2,(float) 0,"velocity",-5000,5000);
+        setArg(3,(float) duration,"duration",0,5000);
     }
 
 

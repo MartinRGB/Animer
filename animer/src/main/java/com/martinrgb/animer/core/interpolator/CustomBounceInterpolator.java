@@ -2,7 +2,7 @@ package com.martinrgb.animer.core.interpolator;
 
 import android.view.animation.Interpolator;
 
-public class CustomBounceInterpolator implements Interpolator{
+public class CustomBounceInterpolator extends AnInterpolator{
 
     //Parameters
     private static final float maxStifness = 50.f;
@@ -44,6 +44,9 @@ public class CustomBounceInterpolator implements Interpolator{
         this.mFriction = Math.min(Math.max(friction,0.f),100.f) * (maxFrictionMultipler - originalFrictionMultipler)/100.f;
 
         computeInternalParameters();
+
+        setArg(0,tension,"tension",0,100);
+        setArg(1,friction,"friction",0,100);
     }
 
     public CustomBounceInterpolator() {

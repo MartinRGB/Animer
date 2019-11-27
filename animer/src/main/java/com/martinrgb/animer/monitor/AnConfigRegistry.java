@@ -1,21 +1,24 @@
 package com.martinrgb.animer.monitor;
 
-import android.animation.TimeInterpolator;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.OvershootInterpolator;
-
-import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
-
 import com.martinrgb.animer.Animer;
+import com.martinrgb.animer.core.interpolator.AndroidNative.AccelerateDecelerateInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.AccelerateInterpolator;
+import com.martinrgb.animer.core.interpolator.AnInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.AnticipateInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.AnticipateOvershootInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.BounceInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutLinearInInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutSlowInInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.LinearInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.LinearOutSlowInInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidSpringInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomBounceInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomDampingInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomMocosSpringInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomSpringInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.CycleInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.DecelerateInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.OvershootInterpolator;
 
 public class AnConfigRegistry {
 
@@ -64,6 +67,7 @@ public class AnConfigRegistry {
 
     public ANConfigMap<String,Animer.AnimerSolver> getAllSolverTypes(){
         ANConfigMap<String,Animer.AnimerSolver> map = new ANConfigMap<String,Animer.AnimerSolver>();
+        map.put("AndroidInterpolator",Animer.interpolatorDroid(new LinearInterpolator(),500));
         map.put("AndroidSpring",Animer.springDroid(1500,0.5f));
         map.put("AndroidFling",Animer.flingDroid(4000,0.8f));
         map.put("iOSUIViewSpring",Animer.springiOSUIView(0.5f,0.5f));
@@ -76,20 +80,26 @@ public class AnConfigRegistry {
         return map;
     }
 
-    public ANConfigMap<String,TimeInterpolator> getAllInterpolatorTypes(){
-        ANConfigMap<String, TimeInterpolator> map = new ANConfigMap<String,TimeInterpolator>();
-        map.put("AccelerateDecelerate",new AccelerateDecelerateInterpolator());
-        map.put("Accelerate",new AccelerateInterpolator());
-        map.put("Decelerate",new DecelerateInterpolator());
-        map.put("Anticipate",new AnticipateInterpolator());
-        map.put("Overshoot",new OvershootInterpolator());
-        map.put("AnticipateOvershoot",new AnticipateOvershootInterpolator());
-        map.put("Bounce",new BounceInterpolator());
-        map.put("Cycle",new CycleInterpolator(2));
-        map.put("Linear",new LinearInterpolator());
-        map.put("FastOutSlowIn",new FastOutSlowInInterpolator());
-        map.put("LinearOutSlowIn",new LinearOutSlowInInterpolator());
-        map.put("FastOutLinear",new FastOutLinearInInterpolator());
+    public ANConfigMap<String, Animer.AnimerSolver> getAllInterpolatorTypes(){
+        ANConfigMap<String, Animer.AnimerSolver> map = new ANConfigMap<String,Animer.AnimerSolver>();
+        map.put("Linear",Animer.interpolatorDroid(new LinearInterpolator(),500));
+        map.put("AccelerateDecelerate",Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),500));
+        map.put("Accelerate",Animer.interpolatorDroid(new AccelerateInterpolator(2),500));
+        map.put("Decelerate",Animer.interpolatorDroid(new DecelerateInterpolator(2),500));
+        map.put("Anticipate",Animer.interpolatorDroid(new AnticipateInterpolator(2),500));
+        map.put("Overshoot",Animer.interpolatorDroid(new OvershootInterpolator(2),500));
+        map.put("AnticipateOvershoot",Animer.interpolatorDroid(new AnticipateOvershootInterpolator(2),500));
+        map.put("Bounce",Animer.interpolatorDroid(new BounceInterpolator(),500));
+        map.put("Cycle",Animer.interpolatorDroid(new CycleInterpolator(2),500));
+        map.put("FastOutSlowIn",Animer.interpolatorDroid(new FastOutSlowInInterpolator(),500));
+        map.put("LinearOutSlowIn",Animer.interpolatorDroid(new LinearOutSlowInInterpolator(),500));
+        map.put("FastOutLinearIn",Animer.interpolatorDroid(new FastOutLinearInInterpolator(),500));
+        map.put("CustomMocosSpring",Animer.interpolatorDroid(new CustomMocosSpringInterpolator(100,15,0),500));
+        map.put("CustomSpring",Animer.interpolatorDroid(new CustomSpringInterpolator(0.5f),500));
+        map.put("CustomBounce",Animer.interpolatorDroid(new CustomBounceInterpolator(0,0),500));
+        map.put("CustomDamping",Animer.interpolatorDroid(new CustomDampingInterpolator(0,0),500));
+        map.put("AndroidSpring",Animer.interpolatorDroid(new AndroidSpringInterpolator(1500,0.5f,500),500));
+
         return map;
     }
 

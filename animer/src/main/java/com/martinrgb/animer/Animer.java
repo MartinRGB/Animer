@@ -20,6 +20,7 @@ import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.martinrgb.animer.core.interpolator.AnInterpolator;
 import com.martinrgb.animer.core.math.converter.DHOConverter;
 import com.martinrgb.animer.core.math.converter.OrigamiPOPConverter;
 import com.martinrgb.animer.core.math.converter.RK4Converter;
@@ -343,9 +344,9 @@ public class Animer<T> {
         return new AnimerSolver(rk4Converter.getStiffness(),rk4Converter.getDampingRatio(),1,configData);
     }
 
-    public static AnimerSolver interpolatorDroid(TimeInterpolator interpolator, long duration){
+    public static AnimerSolver interpolatorDroid(AnInterpolator interpolator, long duration){
         AnConfigData configData = new AnConfigData(interpolator,duration);
-        configData.setArguments("AndroidInterpolator","interpolator",0.01,1,"duration",0.01,5);
+        configData.setArguments("AndroidInterpolator","interpolator",0.01,1,"duration",0.01,5000);
         return new AnimerSolver(interpolator,duration,2,configData);
     }
 
@@ -543,13 +544,13 @@ public class Animer<T> {
 
     private void attachSolverToTiming(AnimerSolver solver, ObjectAnimator timingAnimation){
         final ObjectAnimator timingAnim = timingAnimation;
-        timingAnim.setInterpolator( (TimeInterpolator) solver.getArg1());
+        timingAnim.setInterpolator( (AnInterpolator) solver.getArg1());
         timingAnim.setDuration( (long) solver.getArg2());
 
         solver.bindSolverListener(new AnimerSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
-                timingAnim.setInterpolator((TimeInterpolator) arg1);
+                timingAnim.setInterpolator((AnInterpolator) arg1);
                 timingAnim.setDuration((long) arg2);
             }
         });

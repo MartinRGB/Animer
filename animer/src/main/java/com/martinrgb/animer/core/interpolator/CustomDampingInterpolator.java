@@ -2,7 +2,7 @@ package com.martinrgb.animer.core.interpolator;
 
 import android.view.animation.Interpolator;
 
-public class CustomDampingInterpolator implements Interpolator{
+public class CustomDampingInterpolator extends AnInterpolator{
 
     //Parameters
     private static final float maxStifness = 50.f;
@@ -46,6 +46,9 @@ public class CustomDampingInterpolator implements Interpolator{
         this.mTension = tension;
 
         computeInternalParameters();
+
+        setArg(0,tension,"tension",0,100);
+        setArg(1,friction,"friction",0,100);
     }
 
     public CustomDampingInterpolator() {

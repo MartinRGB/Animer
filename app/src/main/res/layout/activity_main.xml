@@ -12,7 +12,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:translationX="200px"
-        android:translationY="-400px"
+        android:translationY="400px"
         android:background="#FF0000"/>
 
     <ImageView
@@ -20,8 +20,8 @@
         android:layout_centerVertical="true"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:translationX="800px"
-        android:translationY="-400px"
+        android:translationX="200px"
+        android:translationY="600px"
         android:background="#0000FF"/>
 
     <ImageView
@@ -30,7 +30,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:translationX="200px"
-        android:translationY="400px"
+        android:translationY="800px"
         android:background="#00FF00"/>
 
     <com.martinrgb.animer.monitor.AnConfigView

@@ -123,6 +123,8 @@ public class AnConfigView extends FrameLayout {
             }
         });
 
+        this.setElevation(1000);
+
     }
 
     private View generateHierarchy(Context context) {
@@ -141,7 +143,7 @@ public class AnConfigView extends FrameLayout {
         // # Container
         container = new LinearLayout(context);
         params = createLayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(0, 0, 0, PX_10);
+        params.setMargins(0, 0, 0, dpToPx(20,getResources()));
         container.setOrientation(LinearLayout.VERTICAL);
         container.setLayoutParams(params);
         container.setBackgroundColor(Color.argb(100, 0, 0, 0));

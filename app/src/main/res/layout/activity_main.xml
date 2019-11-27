@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+
+
+    <ImageView
+        android:id="@+id/iv4"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/avatar"
+        android:outlineProvider="bounds"
+        android:elevation="2dp"
+        android:background="@drawable/myrect"/>
+
+
     <ImageView
         android:id="@+id/iv"
         android:layout_centerVertical="true"

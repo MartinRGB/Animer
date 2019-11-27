@@ -17,9 +17,9 @@ import com.martinrgb.animer.monitor.AnConfigView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView iv1,iv2,iv3;
-    private Animer animer1,animer2,animer3,animer4,animer5,animer6;
-    private boolean isOpen,isOpen2,isOpen3 = false;
+    private ImageView iv1,iv2,iv3,iv4;
+    private Animer animer1,animer2,animer3,animer4,animer5,animer6,animer7;
+    private boolean isOpen,isOpen2,isOpen3,isOpen4 = false;
     private  AnConfigView mSpringConfiguratorView;
 
     @Override
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         iv1 = findViewById(R.id.iv);
         iv2 = findViewById(R.id.iv2);;
         iv3 = findViewById(R.id.iv3);
+        iv4 = findViewById(R.id.iv4);
 
 
 
@@ -43,12 +44,14 @@ public class MainActivity extends AppCompatActivity {
         animer4 = new Animer(iv1,Animer.springRK4(100,10),Animer.ROTATION,1,1.2f);
         animer5 = new Animer(iv2,Animer.springDHO(200,20),Animer.ROTATION,0,720);
         animer6 = new Animer(iv3,Animer.springOrigamiPOP(30,10),Animer.ROTATION,200,800);
+        animer7 = new Animer(iv4,Animer.springRK4(230,15),Animer.SCALE,1,0.5f);
 
         animer1.setCurrentValue(200);
         animer2.setCurrentValue(200);
         animer3.setCurrentValue(200);
 
         mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
+        AnConfigRegistry.getInstance().addAnimer("B色 - S",animer7);
         AnConfigRegistry.getInstance().addAnimer("R色 - X",animer1);
         AnConfigRegistry.getInstance().addAnimer("B色 - X",animer2);
         AnConfigRegistry.getInstance().addAnimer("G色 - X",animer3);
@@ -98,6 +101,17 @@ public class MainActivity extends AppCompatActivity {
                 animer6.setEndvalue(0);
             }
             isOpen3 = !isOpen3;
+        });
+
+        iv4.setOnClickListener(view -> {
+
+            if(!isOpen4){
+                animer7.setEndvalue(0.5f);
+            }
+            else{
+                animer7.setEndvalue(1f);
+            }
+            isOpen4 = !isOpen4;
         });
 
 

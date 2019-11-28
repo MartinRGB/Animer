@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
@@ -232,7 +233,7 @@ public class AnConfigView extends FrameLayout {
             listLayout.addView(seekWrapper);
 
             SEEKBAR_LABElS[i] = new TextView(getContext());
-            params = createLayoutParams(dpToPx(84,getResources()), ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = createLayoutParams(dpToPx(86,getResources()), ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE);
             SEEKBAR_LABElS[i].setLayoutParams(params);
             SEEKBAR_LABElS[i].setPadding(PADDING_SIZE + dpToPx(8,getResources()), PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
@@ -240,6 +241,7 @@ public class AnConfigView extends FrameLayout {
             SEEKBAR_LABElS[i].setTextColor(mTextColor);
             SEEKBAR_LABElS[i].setTextSize(11);
             SEEKBAR_LABElS[i].setMaxLines(1);
+            SEEKBAR_LABElS[i].setTypeface(Typeface.DEFAULT);
             SEEKBAR_LABElS[i].setId(SEEKLABEL_START_ID_START_ID + i);
             seekWrapper.addView(SEEKBAR_LABElS[i]);
 
@@ -255,7 +257,8 @@ public class AnConfigView extends FrameLayout {
             EDITTEXTS[i].setHintTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
             EDITTEXTS[i].setBackground(ContextCompat.getDrawable(mContext,R.drawable.ic_edit_border));
             EDITTEXTS[i].setGravity(Gravity.LEFT);
-
+            EDITTEXTS[i].setTypeface(Typeface.MONOSPACE);
+            SEEKBAR_LABElS[i].setId(EDITTEXT_START_ID_START_ID + i);
             EDITTEXTS[i].addTextChangedListener(new EditTextListener(EDITTEXTS[i],i));
 
             //TODO Refelection for old version
@@ -268,7 +271,7 @@ public class AnConfigView extends FrameLayout {
             params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE);
             SEEKBARS[i].setLayoutParams(params);
-            SEEKBARS[i].setPadding(PADDING_SIZE+ dpToPx(8,getResources()), PADDING_SIZE, PADDING_SIZE + dpToPx(16,getResources()), PADDING_SIZE);
+            SEEKBARS[i].setPadding(PADDING_SIZE+ dpToPx(4,getResources()), PADDING_SIZE, PADDING_SIZE + dpToPx(16,getResources()), PADDING_SIZE);
             SEEKBARS[i].setId(SEEKBAR_START_ID + i);
             SEEKBARS[i].setProgressBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorWhite)));
             SEEKBARS[i].setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.mainColor)));
@@ -375,7 +378,10 @@ public class AnConfigView extends FrameLayout {
                     float progress = ((float) SEEKBAR_VALUES[i] - MIN_VALUES[i]) / RANGE_VALUES[i] * (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
                     SEEKBARS[i].setProgress((int) progress);
                     SEEKBAR_LABElS[i].setText((String) animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": ");
+
+                    isEditListenerWork = false;
                     EDITTEXTS[i].setText(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(i + 1)).toString());
+                    isEditListenerWork = true;
             }
 
         }
@@ -386,14 +392,18 @@ public class AnConfigView extends FrameLayout {
                 float progress = ((float) SEEKBAR_VALUES[index] - MIN_VALUES[index]) / RANGE_VALUES[index] * (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
                 SEEKBARS[index].setProgress((int) progress);
                 SEEKBAR_LABElS[index].setText(((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).getArgString(index) + ": ");
+                isEditListenerWork = false;
                 EDITTEXTS[index].setText(String.valueOf(((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).getArgValue(index)));
+                isEditListenerWork = true;
             }
 
             SEEKBAR_VALUES[listSize-1] = Float.valueOf(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(2)).toString());
             float progress = ((float) SEEKBAR_VALUES[listSize-1] - MIN_VALUES[listSize-1]) / RANGE_VALUES[listSize-1] * (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
             SEEKBARS[listSize-1].setProgress((int) progress);
             SEEKBAR_LABElS[listSize-1].setText((String) animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(2) + "_name") + ": ");
+            isEditListenerWork = false;
             EDITTEXTS[listSize-1].setText(animerSolver.getConfigSet().getKeyByString("arg" + String.valueOf(2)).toString());
+            isEditListenerWork = true;
         }
 
     }

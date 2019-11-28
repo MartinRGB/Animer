@@ -63,9 +63,10 @@ class AnSpinnerAdapter extends BaseAdapter {
                     ViewGroup.LayoutParams.MATCH_PARENT);
             textView.setLayoutParams(params);
             int twelvePx = dpToPx(12, mResources);
-            textView.setPadding(twelvePx, twelvePx, twelvePx,twelvePx);
+            int ninePx = dpToPx(9, mResources);
+            textView.setPadding(twelvePx, ninePx, twelvePx,ninePx);
             textView.setTextColor(mTextColor);
-            textView.setTextSize(11);
+            textView.setTextSize(10);
             selectedString = textView.getText().toString();
         } else {
             textView = (TextView) convertView;

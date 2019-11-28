@@ -39,6 +39,7 @@ import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
 public class AnConfigView extends FrameLayout {
 
@@ -419,26 +420,51 @@ public class AnConfigView extends FrameLayout {
 
         @Override
         public void afterTextChanged(Editable s) {
+
             String mString = String.valueOf(s);
 
             if (mString.isEmpty()) {
                 //Do Nothing
             } else {
                 //Code to perform calculations
-                if(isEditListenerWork){
-                    Log.e("Changed",String.valueOf("Changed"));
-                    float calculatedProgress = (Float.valueOf(String.valueOf(s)) - MIN_VALUES[mIndex])/ RANGE_VALUES[mIndex]* (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
+                if(isEditListenerWork && isNumeric(mString)){
+                    // TODO MIN MAX FIX
+
+                    int mMin = (int) (((0 - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[mIndex] + MIN_VALUES[mIndex]);
+                    int mMax = (int) (((MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[mIndex] + MIN_VALUES[mIndex]);
+
+                    float convertedValue = Float.valueOf(mString);
+                    if(convertedValue > (float) mMax){
+                        convertedValue = mMax;
+                        EDITTEXTS[mIndex].setText(String.valueOf(mMax));
+                    }
+                    else if(convertedValue < (float) mMin) {
+                        convertedValue = mMin;
+                        EDITTEXTS[mIndex].setText(String.valueOf(mMin));
+                    }
+
+                    float calculatedProgress = (convertedValue - MIN_VALUES[mIndex])/ RANGE_VALUES[mIndex]* (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
                     canSetEditText = false;
                     SEEKBARS[mIndex].setProgress((int) calculatedProgress);
                     canSetEditText = true;
+
+
                 }
-//                Log.e("Changed",String.valueOf("Changed"));
-//                float calculatedProgress = (Float.valueOf(String.valueOf(s)) - MIN_VALUES[mIndex])/ RANGE_VALUES[mIndex]* (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL) + MIN_SEEKBAR_VAL;
-//                canSetEditText = false;
-//                SEEKBARS[mIndex].setProgress((int) calculatedProgress);
-//                canSetEditText = true;
             }
+
         }
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     private class SeekbarListener implements SeekBar.OnSeekBarChangeListener {

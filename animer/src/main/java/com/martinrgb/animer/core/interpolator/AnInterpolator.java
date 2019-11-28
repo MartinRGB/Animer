@@ -15,7 +15,6 @@ public abstract class AnInterpolator implements TimeInterpolator {
     // new classes that implement TimeInterpolator directly.
 
     //TODO Use reflection
-
     public float arg1,arg2,arg3,arg4 = -1f;
     public String string1,string2,string3,string4 = "NULL";
     public float min1,min2,min3,min4,max1,max2,max3,max4 = -1f;

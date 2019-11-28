@@ -38,41 +38,37 @@ import java.text.DecimalFormat;
  */
 public class AnConfigView extends FrameLayout {
 
-    private final AnSpinnerAdapter solverObjectSpinnerAdapter;
-    private final AnSpinnerAdapter solverTypeSpinnerAdapter;
-
+    private Spinner mSolverObjectSelectorSpinner,mSolverTypeSelectorSpinner;
+    private final AnSpinnerAdapter solverObjectSpinnerAdapter,solverTypeSpinnerAdapter;
+    private Animer currentAnimer,mRevealAnimer;
     private AnConfigRegistry anConfigRegistry;
+    private LinearLayout listLayout;
+    private SeekbarListener seekbarListener;
+    private SoverSelectedListener soverSelectedListener;
     private final int mTextColor = Color.argb(255, 225, 225, 225);
 
-    private Spinner mSolverObjectSelectorSpinner,mSolverTypeSelectorSpinner;
-    private Animer currentAnimer;
-    private Animer mRevealAnimer;
-
-    private FrameLayout root;
-    private LinearLayout listLayout,container;
-    private  SeekbarListener seekbarListener;
-    private SoverSelectedListener soverSelectedListener;
+    private String currentObjectType = "NULL";
 
     private int listSize = 2;
     private static int SEEKBAR_START_ID = 15000;
     private static int SEEKLABEL_START_ID_START_ID = 20000;
     private static final int MAX_SEEKBAR_VAL = 100000;
     private static final int MIN_SEEKBAR_VAL = 1;
-
+    private static final DecimalFormat DECIMAL_FORMAT_2 = new DecimalFormat("#.##");
+    private static final DecimalFormat DECIMAL_FORMAT_1 = new DecimalFormat("#.#");
+    private float MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MAX_VAL5;
+    private float[] MAX_VALUES = new float[]{MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MAX_VAL5};
+    private float MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4,MIN_VAL5;
+    private float[] MIN_VALUES = new float[]{MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4,MIN_VAL5};
+    private float RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4,RANGE_VAL5;
+    private float[] RANGE_VALUES = new float[]{RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4,RANGE_VAL5};
+    private float seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4,seekBarValue5;
+    private Object[] SEEKBAR_VALUES = new Object[]{seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4,seekBarValue5};
     private SeekBar mArgument1SeekBar,mArgument2SeekBar,mArgument3SeekBar,mArgument4SeekBar,mArgument5SeekBar;
-    private TextView mArgument1SeekLabel,mArgument2SeekLabel,mArgument3SeekLabel,mArgument4SeekLabel,mArgument5SeekLabel;
     private SeekBar[] SEEKBARS = new SeekBar[]{mArgument1SeekBar,mArgument2SeekBar,mArgument3SeekBar,mArgument4SeekBar,mArgument5SeekBar};
+    private TextView mArgument1SeekLabel,mArgument2SeekLabel,mArgument3SeekLabel,mArgument4SeekLabel,mArgument5SeekLabel;
     private TextView[] SEEKBAR_LABElS = new TextView[]{mArgument1SeekLabel,mArgument2SeekLabel,mArgument3SeekLabel,mArgument4SeekLabel,mArgument5SeekLabel};
 
-    private String currentObjectType = "NULL";
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
-    private static final DecimalFormat DECIMAL_FORMAT_1 = new DecimalFormat("#.#");
-
-    private float MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MAX_VAL5,MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4,MIN_VAL5,RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4,RANGE_VAL5,seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4,seekBarValue5;
-    private float[] MAX_VALUES = new float[]{MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MAX_VAL5};
-    private float[] MIN_VALUES = new float[]{MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4,MIN_VAL5};
-    private float[] RANGE_VALUES = new float[]{RANGE_VAL1,RANGE_VAL2,RANGE_VAL3,RANGE_VAL4,RANGE_VAL5};
-    private Object[] SEEKBAR_VALUES = new Object[]{seekBarValue1,seekBarValue2,seekBarValue3,seekBarValue4,seekBarValue5};
     private final int PX_5 = dpToPx(5, getResources());
     private final int PX_10 = dpToPx(10, getResources());
     private final int PX_120 = dpToPx(120, getResources());
@@ -102,27 +98,6 @@ public class AnConfigView extends FrameLayout {
 
         addView(generateHierarchy(context));
 
-        ViewTreeObserver vto = root.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                // Put your code here.
-                mRevealAnimer = new Animer();
-                mRevealAnimer.setSolver(Animer.springDroid(500,0.95f));
-                mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
-                    @Override
-                    public void onUpdate(float value, float velocity, float progress) {
-                        float val = (float) value;
-                        float minTranslate = 0;
-                        float maxTranslate = root.getMeasuredHeight() - dpToPx(40/2, resources);
-                        float range = maxTranslate - minTranslate;
-                        float yTranslate = -(val * range) + minTranslate;
-                        AnConfigView.this.setTranslationY(yTranslate);
-                    }
-                });
-            }
-        });
-
         this.setElevation(1000);
 
     }
@@ -136,12 +111,12 @@ public class AnConfigView extends FrameLayout {
         LinearLayout seekWrapper;
 
         // Root
-        root = new FrameLayout(context);
+        FrameLayout root = new FrameLayout(context);
         params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         root.setLayoutParams(params);
 
         // # Container
-        container = new LinearLayout(context);
+        LinearLayout container = new LinearLayout(context);
         params = createLayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 0, dpToPx(20,getResources()));
         container.setOrientation(LinearLayout.VERTICAL);
@@ -198,7 +173,6 @@ public class AnConfigView extends FrameLayout {
         listLayout.setOrientation(LinearLayout.VERTICAL);
         container.addView(listLayout);
 
-
         // ### Seekbar List
         seekbarListener = new SeekbarListener();
 
@@ -209,6 +183,29 @@ public class AnConfigView extends FrameLayout {
         nub.setOnTouchListener(new OnNubTouchListener());
         nub.setBackgroundColor(Color.argb(255, 0, 164, 209));
         root.addView(nub);
+
+
+        // ### Add Animation Listener
+        ViewTreeObserver vto = root.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Put your code here.
+                mRevealAnimer = new Animer();
+                mRevealAnimer.setSolver(Animer.springDroid(500,0.95f));
+                mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
+                    @Override
+                    public void onUpdate(float value, float velocity, float progress) {
+                        float val = (float) value;
+                        float minTranslate = 0;
+                        float maxTranslate = root.getMeasuredHeight() - dpToPx(40/2, resources);
+                        float range = maxTranslate - minTranslate;
+                        float yTranslate = -(val * range) + minTranslate;
+                        AnConfigView.this.setTranslationY(yTranslate);
+                    }
+                });
+            }
+        });
 
         return root;
     }
@@ -223,6 +220,7 @@ public class AnConfigView extends FrameLayout {
         }
         solverObjectSpinnerAdapter.notifyDataSetChanged();
         if (solverObjectSpinnerAdapter.getCount() > 0) {
+            // object first time selection
             mSolverObjectSelectorSpinner.setSelection(0);
             initTypeConfigs();
         }
@@ -238,16 +236,18 @@ public class AnConfigView extends FrameLayout {
 
         solverTypeSpinnerAdapter.notifyDataSetChanged();
         if (solverObjectSpinnerAdapter.getCount() > 0) {
+            // solver first time selection
             currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
             recreateList();
             int typeIndex = 0;
+            // select the right interpolator
             if(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")) == "AndroidInterpolator"){
                 typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName()));
             }
+            // select the right animator
             else{
                 typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")));
             }
-
             mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
         }
     }
@@ -307,30 +307,24 @@ public class AnConfigView extends FrameLayout {
             tv.setTextColor(Color.WHITE);
 
             if(adapterView == mSolverObjectSelectorSpinner){
-                // get Animer from Map
+                // get animer from Map
                 currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
                 recreateList();
                 redefineMinMax(currentAnimer.getCurrentSolver());
                 updateSeekBars(currentAnimer.getCurrentSolver());
 
-                Log.e("23233","1-0");
-
                 // will not excute in init
                 if(objectChecker > 0){
-                    Log.e("23233","1-1");
                     isFixedSelection = true;
-                    //int typeIndex = mSolverTypesMap.getIndexByString(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type").toString());
-                    //mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
-
-                    int typeIndex = 0;
-
+                    int typeIndex;
+                    // select the right interpolator
                     if(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")) == "AndroidInterpolator"){
                         typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName()));
                     }
+                    // select the right animator
                     else{
                         typeIndex = mSolverTypesMap.getIndexByString(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type").toString());
                     }
-
                     mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
                 }
 
@@ -340,15 +334,10 @@ public class AnConfigView extends FrameLayout {
                 // will not excute in init
                 if(typeChecker > 0) {
                     if(isFixedSelection){
-                        Log.e("23233","2-1");
                         isFixedSelection = false;
-                        //isFixedSelection2 = false;
                     }
                     else{
-
-                        Log.e("23233","2-2");
                         // reset animer from Map
-
                         Animer.AnimerSolver seltectedSolver = (Animer.AnimerSolver) mSolverTypesMap.getValue(i);
                         currentAnimer.setSolver(seltectedSolver);
                         recreateList();
@@ -358,7 +347,6 @@ public class AnConfigView extends FrameLayout {
                     }
                 }
                 typeChecker++;
-
             }
         }
 
@@ -366,7 +354,6 @@ public class AnConfigView extends FrameLayout {
         public void onNothingSelected(AdapterView<?> adapterView) {
         }
     }
-
 
     private void redefineMinMax(Animer.AnimerSolver animerSolver){
         currentObjectType = animerSolver.getConfigSet().getKeyByString("converter_type").toString();
@@ -406,9 +393,6 @@ public class AnConfigView extends FrameLayout {
         }
         else{
 
-
-            //AnInterpolator mInterpolator = (AnInterpolator) currentAnimer.getCurrentSolver().getArg1();
-
             for (int index = 0;index<listSize-1;index++){
 
                 SEEKBAR_VALUES[index] = ((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).getArgValue(index);
@@ -441,7 +425,7 @@ public class AnConfigView extends FrameLayout {
                             SEEKBAR_LABElS[i].setText((String) currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": " + roundedValue1Label);
                             currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg" + String.valueOf(i + 1) + "", Float.valueOf(roundedValue1Label));
                         } else if (i == 1) {
-                            String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
+                            String roundedValue1Label = DECIMAL_FORMAT_2.format(SEEKBAR_VALUES[i]);
                             SEEKBAR_LABElS[i].setText((String) currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": " + roundedValue1Label);
                             currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg" + String.valueOf(i + 1) + "", Float.valueOf(roundedValue1Label));
                         }
@@ -449,24 +433,24 @@ public class AnConfigView extends FrameLayout {
                     }
                 }
 
+                // Seekbar in Fling not works at all
                 if (currentObjectType != "AndroidFling") {
                     currentAnimer.getCurrentSolver().setArg1(getConvertValueByIndexAndType(0, currentObjectType));
                     currentAnimer.getCurrentSolver().setArg2(getConvertValueByIndexAndType(1, currentObjectType));
                 }
             }
             else{
-                //AnInterpolator mInterpolator = ((AnInterpolator) currentAnimer.getCurrentSolver().getArg1());
-
+                // Interpolator Factor
                 for (int i = 0; i < listSize - 1; i++) {
                     if (seekBar == SEEKBARS[i]) {
                         SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[i] + MIN_VALUES[i];
-                        String roundedValue1Label = DECIMAL_FORMAT.format(SEEKBAR_VALUES[i]);
+                        String roundedValue1Label = DECIMAL_FORMAT_2.format(SEEKBAR_VALUES[i]);
                         SEEKBAR_LABElS[i].setText(((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).getArgString(i) + ": " + roundedValue1Label);
                         ((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).resetData(i,Float.valueOf(roundedValue1Label));
                     }
                 }
 
-
+                // Interpolator Duration
                 if (seekBar == SEEKBARS[listSize - 1]) {
                     SEEKBAR_VALUES[listSize - 1] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[listSize - 1] + MIN_VALUES[listSize - 1];
                     String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[listSize - 1]);

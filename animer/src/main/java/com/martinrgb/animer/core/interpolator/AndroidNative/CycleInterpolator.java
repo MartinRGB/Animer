@@ -6,7 +6,7 @@ public class CycleInterpolator extends AnInterpolator {
 
     public CycleInterpolator(float cycles) {
         mCycles = cycles;
-        setArgData(0,cycles,"factor",0,10);
+        initArgData(0,cycles,"factor",0,10);
     }
 
     public float getInterpolation(float input) {
@@ -16,7 +16,7 @@ public class CycleInterpolator extends AnInterpolator {
     private float mCycles;
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             mCycles = value;

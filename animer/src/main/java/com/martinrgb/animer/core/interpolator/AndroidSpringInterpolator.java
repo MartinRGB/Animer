@@ -22,10 +22,10 @@ public class AndroidSpringInterpolator extends AnInterpolator{
         this.mVelocity = velocity;
         this.mDuration = duration/1000.f;
 
-        setArgData(0,(float) stiffness,"stiffness",0.01f,3000);
-        setArgData(1,(float) dampingratio,"dampingratio",0.01f,3000);
-        setArgData(2,(float) velocity,"velocity",-5000,5000);
-        setArgData(3,(float) duration,"duration",0,5000);
+        initArgData(0,(float) stiffness,"stiffness",0.01f,3000);
+        initArgData(1,(float) dampingratio,"dampingratio",0.01f,3000);
+        initArgData(2,(float) velocity,"velocity",-5000,5000);
+        initArgData(3,(float) duration,"duration",0,5000);
     }
 
     public AndroidSpringInterpolator(float stiffness, float dampingratio,float duration) {
@@ -34,14 +34,14 @@ public class AndroidSpringInterpolator extends AnInterpolator{
         this.mVelocity = 0.f;
         this.mDuration = duration/1000.f;
 
-        setArgData(0,(float) stiffness,"stiffness",0.01f,3000);
-        setArgData(1,(float) dampingratio,"dampingratio",0.01f,1);
-        setArgData(2,(float) 0,"velocity",-5000,5000);
-        setArgData(3,(float) duration,"duration",0,5000);
+        initArgData(0,(float) stiffness,"stiffness",0.01f,3000);
+        initArgData(1,(float) dampingratio,"dampingratio",0.01f,1);
+        initArgData(2,(float) 0,"velocity",-5000,5000);
+        initArgData(3,(float) duration,"duration",0,5000);
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             mStiffness = value;

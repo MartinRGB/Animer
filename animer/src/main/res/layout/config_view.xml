@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/nub_height"
+        android:background="@drawable/gradient">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/margin_size"
+            android:padding="@dimen/padding_size">
+            <Spinner
+                android:id="@+id/object_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MyTheme.HeaderBar.Spinner"
+                android:layout_margin="@dimen/margin_size"
+                android:spinnerMode="dropdown">
+            </Spinner>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/margin_size"
+            android:padding="@dimen/padding_size">
+            <Spinner
+                android:id="@+id/type_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MyTheme.HeaderBar.Spinner"
+                android:layout_margin="@dimen/margin_size"
+                android:spinnerMode="dropdown">
+            </Spinner>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/nub"
+        android:layout_width="112dp"
+        android:layout_height="26dp"
+        android:layout_gravity="bottom|center"
+        android:background="@drawable/ic_nub">
+
+    </View>
+
+
+</FrameLayout>

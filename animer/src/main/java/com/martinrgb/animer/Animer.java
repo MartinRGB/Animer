@@ -21,6 +21,7 @@ import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
 import com.martinrgb.animer.core.interpolator.AnInterpolator;
+import com.martinrgb.animer.core.math.converter.AndroidSpringConverter;
 import com.martinrgb.animer.core.math.converter.DHOConverter;
 import com.martinrgb.animer.core.math.converter.OrigamiPOPConverter;
 import com.martinrgb.animer.core.math.converter.RK4Converter;

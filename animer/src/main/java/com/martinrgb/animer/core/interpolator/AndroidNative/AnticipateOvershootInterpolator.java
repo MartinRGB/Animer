@@ -7,17 +7,17 @@ public class AnticipateOvershootInterpolator extends AnInterpolator {
 
     public AnticipateOvershootInterpolator() {
         mTension = 2.0f * 1.5f;
-        setArgData(0,2,"factor",0,10);
+        initArgData(0,2,"factor",0,10);
     }
 
     public AnticipateOvershootInterpolator(float tension) {
         mTension = tension * 1.5f;
-        setArgData(0,tension,"factor",0,10);
+        initArgData(0,tension,"factor",0,10);
     }
 
     public AnticipateOvershootInterpolator(float tension, float extraTension) {
         mTension = tension * extraTension;
-        setArgData(0,tension,"factor",0,10);
+        initArgData(0,tension,"factor",0,10);
     }
 
     private static float a(float t, float s) {
@@ -38,7 +38,7 @@ public class AnticipateOvershootInterpolator extends AnInterpolator {
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             mTension = value;

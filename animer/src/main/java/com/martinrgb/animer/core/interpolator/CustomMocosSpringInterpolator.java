@@ -14,9 +14,9 @@ public class CustomMocosSpringInterpolator extends AnInterpolator{
         this(tension, damping, 0.001);
         this.setInitialVelocity(20.);
 
-        setArgData(0,(float) tension,"tension",0,200);
-        setArgData(1,(float) damping,"damping",0,100);
-        setArgData(2,(float) 20,"velocity",0,1000);
+        initArgData(0,(float) tension,"tension",0,200);
+        initArgData(1,(float) damping,"damping",0,100);
+        initArgData(2,(float) 20,"velocity",0,1000);
     }
 
     public CustomMocosSpringInterpolator(double tension, double damping, double velocity) {
@@ -27,9 +27,9 @@ public class CustomMocosSpringInterpolator extends AnInterpolator{
         init();
 
 
-        setArgData(0,(float) tension,"tension",0,200);
-        setArgData(1,(float) damping,"damping",0,100);
-        setArgData(2,(float) velocity,"velocity",0,1000);
+        initArgData(0,(float) tension,"tension",0,200);
+        initArgData(1,(float) damping,"damping",0,100);
+        initArgData(2,(float) velocity,"velocity",0,1000);
     }
 
     private void init(){
@@ -46,7 +46,7 @@ public class CustomMocosSpringInterpolator extends AnInterpolator{
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             this.tension = (double) value;

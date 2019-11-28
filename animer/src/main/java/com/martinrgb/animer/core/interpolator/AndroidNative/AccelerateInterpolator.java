@@ -9,13 +9,13 @@ public class AccelerateInterpolator extends AnInterpolator {
     public AccelerateInterpolator() {
         mFactor = 1.0f;
         mDoubleFactor = 2.0;
-        setArgData(0,1,"factor",0,10);
+        initArgData(0,1,"factor",0,10);
     }
 
     public AccelerateInterpolator(float factor) {
         mFactor = factor;
         mDoubleFactor = 2 * mFactor;
-        setArgData(0,factor,"factor",0,10);
+        initArgData(0,factor,"factor",0,10);
     }
 
     public float getInterpolation(float input) {
@@ -27,7 +27,7 @@ public class AccelerateInterpolator extends AnInterpolator {
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             mFactor = value;

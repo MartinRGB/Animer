@@ -3,8 +3,10 @@ package com.martinrgb.animerexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.PathInterpolator;
 import android.widget.ImageView;
 
 import com.martinrgb.animer.Animer;
@@ -13,6 +15,9 @@ import com.martinrgb.animer.core.interpolator.AndroidNative.DecelerateInterpolat
 import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutSlowInInterpolator;
 import com.martinrgb.animer.monitor.AnConfigRegistry;
 import com.martinrgb.animer.monitor.AnConfigView;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,18 +38,18 @@ public class MainActivity extends AppCompatActivity {
         iv3 = findViewById(R.id.iv3);
         iv4 = findViewById(R.id.iv4);
 
-
-
-        Animer.AnimerSolver solverA  = Animer.interpolatorDroid(new FastOutSlowInInterpolator(),1300);
+        //Animer.AnimerSolver solverA  = Animer.interpolatorDroid(new FastOutSlowInInterpolator(),1300);
         Animer.AnimerSolver solverB  = Animer.springDroid(1000,0.5f);
 
-        animer1 = new Animer(iv1,solverA,Animer.TRANSLATION_X,0,600);
+        animer1 = new Animer(iv1,solverB,Animer.TRANSLATION_X,0,600);
         animer2 = new Animer(iv2,Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),1500),Animer.TRANSLATION_X,0,500);
         animer3 = new Animer(iv3,Animer.interpolatorDroid(new DecelerateInterpolator(2),1200),Animer.TRANSLATION_X,0,720);
         animer4 = new Animer(iv1,Animer.springRK4(100,10),Animer.ROTATION,1,1.2f);
         animer5 = new Animer(iv2,Animer.springDHO(200,20),Animer.ROTATION,0,720);
         animer6 = new Animer(iv3,Animer.springOrigamiPOP(30,10),Animer.ROTATION,200,800);
         animer7 = new Animer(iv4,Animer.springRK4(230,15),Animer.SCALE,1,0.5f);
+
+        PathInterpolator pathInterpolator = new PathInterpolator(0.5f,0.5f,0.5f,0.5f);
 
         animer1.setCurrentValue(200);
         animer2.setCurrentValue(200);

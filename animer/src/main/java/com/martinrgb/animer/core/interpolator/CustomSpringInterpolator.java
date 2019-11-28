@@ -6,11 +6,11 @@ public class CustomSpringInterpolator extends AnInterpolator{
 
     public CustomSpringInterpolator(float factor) {
         this.factor = factor;
-        setArgData(0,(float) factor,"factor",0,10);
+        initArgData(0,(float) factor,"factor",0,10);
     }
 
     public CustomSpringInterpolator() {
-        setArgData(0,(float) 0.5,"factor",0,10);
+        initArgData(0,(float) 0.5,"factor",0,10);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class CustomSpringInterpolator extends AnInterpolator{
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             factor = value;

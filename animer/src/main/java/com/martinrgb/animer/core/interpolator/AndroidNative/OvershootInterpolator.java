@@ -10,12 +10,12 @@ public class OvershootInterpolator extends AnInterpolator {
 
     public OvershootInterpolator() {
         mTension = 2.0f;
-        setArgData(0,2,"factor",0,10);
+        initArgData(0,2,"factor",0,10);
     }
 
     public OvershootInterpolator(float tension) {
         mTension = tension;
-        setArgData(0,tension,"factor",0,10);
+        initArgData(0,tension,"factor",0,10);
     }
 
 
@@ -27,7 +27,7 @@ public class OvershootInterpolator extends AnInterpolator {
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             mTension = value;

@@ -8,12 +8,12 @@ public class DecelerateInterpolator extends AnInterpolator {
 
     private float mFactor = 1.0f;
     public DecelerateInterpolator() {
-        setArgData(0,1,"factor",0,10);
+        initArgData(0,1,"factor",0,10);
     }
 
     public DecelerateInterpolator(float factor) {
         mFactor = factor;
-        setArgData(0,factor,"factor",0,10);
+        initArgData(0,factor,"factor",0,10);
     }
 
 
@@ -28,7 +28,7 @@ public class DecelerateInterpolator extends AnInterpolator {
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             mFactor = value;

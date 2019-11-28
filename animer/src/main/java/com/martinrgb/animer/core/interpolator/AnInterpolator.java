@@ -14,12 +14,14 @@ public abstract class AnInterpolator implements TimeInterpolator {
     // the new Animator-based animations can use either the old Interpolator implementations or
     // new classes that implement TimeInterpolator directly.
 
+    //TODO Use reflection
+
     public float arg1,arg2,arg3,arg4 = -1f;
     public String string1,string2,string3,string4 = "NULL";
     public float min1,min2,min3,min4,max1,max2,max3,max4 = -1f;
     public int argNum = 0;
 
-    public void setArgData(int i, float val, String name, float min, float max){
+    public void initArgData(int i, float val, String name, float min, float max){
         if(i == 0){
             //arg1 = val;
             string1 = name;
@@ -48,7 +50,7 @@ public abstract class AnInterpolator implements TimeInterpolator {
         argNum++;
     }
 
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
 
     }
 

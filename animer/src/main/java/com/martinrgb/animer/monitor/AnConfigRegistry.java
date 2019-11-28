@@ -11,6 +11,7 @@ import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutLinearInInter
 import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutSlowInInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidNative.LinearInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidNative.LinearOutSlowInInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.PathInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidSpringInterpolator;
 import com.martinrgb.animer.core.interpolator.CustomBounceInterpolator;
 import com.martinrgb.animer.core.interpolator.CustomDampingInterpolator;
@@ -76,6 +77,7 @@ public class AnConfigRegistry {
         map.put("DHOSpring",Animer.springDHO(50,2f));
         map.put("ProtopieSpring",Animer.springProtopie(300,15f));
         map.put("PrincipleSpring",Animer.springPrinciple(380,20f));
+        map.put("CubicBezier",Animer.interpolatorDroid(new PathInterpolator(0.5f,0.5f,0.5f,0.5f),500));
         map.put("LinearInterpolator",Animer.interpolatorDroid(new LinearInterpolator(),500));
         map.put("AccelerateDecelerateInterpolator",Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),500));
         map.put("AccelerateInterpolator",Animer.interpolatorDroid(new AccelerateInterpolator(2),500));

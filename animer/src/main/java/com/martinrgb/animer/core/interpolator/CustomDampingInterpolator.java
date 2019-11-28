@@ -45,12 +45,12 @@ public class CustomDampingInterpolator extends AnInterpolator{
 
         computeInternalParameters();
 
-        setArgData(0,tension,"tension",0,100);
-        setArgData(1,friction,"friction",0,100);
+        initArgData(0,tension,"tension",0,100);
+        initArgData(1,friction,"friction",0,100);
     }
 
     @Override
-    public void resetData(int i,float value){
+    public void resetArgValue(int i, float value){
         setArgValue(i,value);
         if(i == 0){
             this.mTension = Math.min(Math.max(value,0.f),100.f) * (maxStifness- originalStiffness)/100.f;

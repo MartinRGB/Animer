@@ -155,12 +155,36 @@ abstract class AnSpringConverter {
         return friction;
     }
 
+    public double computeDuration(double stiffness, double dampingratio) {
+        double epsilon = 0.001;
+        double velocity = 0.0;
+        double mass = 1;
+        double dampingRatio = dampingratio;
+        double undampedFrequency = Math.sqrt(stiffness / mass);
+        if (dampingRatio < 1) {
+            double a = Math.sqrt(1 - Math.pow(dampingRatio, 2));
+            double b = velocity / (a * undampedFrequency);
+            double c = dampingRatio / a;
+            double d = -((b - c) / epsilon);
+            if (d <= 0) {
+                return 0.0;
+            }
+            return Math.log(d) / (dampingRatio * undampedFrequency);
+        } else {
+            return 0.0;
+        }
+    }
+
     public float getStiffness() {
         return (float) mStiffness;
     }
 
     public float getDampingRatio() {
         return (float) mDampingRatio;
+    }
+
+    public float getDuration(){
+        return (float) computeDuration(mStiffness,mDampingRatio);
     }
 
     public float getArg(int i) {

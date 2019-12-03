@@ -44,6 +44,13 @@
             </Spinner>
         </LinearLayout>
 
+        <com.martinrgb.animer.monitor.shader.ShaderSurfaceView
+            android:id="@+id/shader_surfaceview"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:background="@drawable/grid"
+            android:layout_gravity="center"/>
+
         <LinearLayout
             android:id="@+id/list_layout"
             android:layout_width="match_parent"

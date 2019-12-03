@@ -17,7 +17,8 @@
         android:layout_height="200dp"
         android:src="@drawable/avatar"
         android:outlineProvider="bounds"
-        android:elevation="2dp"
+        android:elevation="-2dp"
+        android:translationY="200dp"
         android:background="@drawable/myrect"/>
 
 

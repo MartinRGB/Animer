@@ -4,6 +4,8 @@ package com.martinrgb.animer.core.interpolator;
 
 import android.util.Log;
 
+import com.martinrgb.animer.core.math.calculator.SpringInterpolatorCalculator;
+
 public class AndroidSpringInterpolator extends AnInterpolator{
 
     //Parameters
@@ -21,6 +23,7 @@ public class AndroidSpringInterpolator extends AnInterpolator{
         this.mDampingRatio = dampingratio;
         this.mVelocity = velocity;
         this.mDuration = duration/1000.f;
+        //this.mDuration = new SpringInterpolatorCalculator(stiffness,dampingratio).getDuration();
 
         initArgData(0,(float) stiffness,"stiffness",0.01f,3000);
         initArgData(1,(float) dampingratio,"dampingratio",0.01f,3000);
@@ -33,6 +36,7 @@ public class AndroidSpringInterpolator extends AnInterpolator{
         this.mDampingRatio = dampingratio;
         this.mVelocity = 0.f;
         this.mDuration = duration/1000.f;
+        //this.mDuration = new SpringInterpolatorCalculator(stiffness,dampingratio).getDuration();
 
         initArgData(0,(float) stiffness,"stiffness",0.01f,3000);
         initArgData(1,(float) dampingratio,"dampingratio",0.01f,1);

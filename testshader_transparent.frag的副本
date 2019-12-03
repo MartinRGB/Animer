@@ -5,23 +5,21 @@ precision mediump float;
 #define PI 3.14159265359
 
 uniform vec2 u_resolution;
-uniform vec2 u_mouse;
 uniform float u_time;
-uniform float u_slot1;
 
 const float lineJitter = 0.5;
-const float lineWidth = 10.0;
+const float lineWidth = 7.0;
 const float gridWidth = 1.7;
 const float scale = 0.0013;
-const float Samples = 5.;
+const float Samples = 15.;
 
 float timeProgress;
 vec2 circlePos = vec2(0.);
 float circleRadius = 0.0008;
 float mStartVelocity = 3000.;
-float mFriction = 0.56;
-float mStiffness = 300.;
-float mDampingRatio = 0.078;
+float mFriction = 3.56;
+float mStiffness = 500.;
+float mDampingRatio = 0.25;
 float mVelocity = 0.;
 float mFactor = 0.3;
 bool reset = false;
@@ -31,9 +29,9 @@ vec4 bezierPoint = vec4(0.725,0.011,0.398,1.000);
 float mCustomTension = 0.;
 float mCustomFriction = 0.;
 
-int duration_mode = 2;
+int duration_mode = 1;
 
-#define mFunction CubicBezierSimulator
+#define mFunction SpringSimulator
 
 float rand (in vec2 co) {
     return fract(sin(dot(co.xy,vec2(12.9898,78.233)))*43758.5453);
@@ -345,7 +343,7 @@ float CustomMocosSpringInterpolator(in float ratio) {
 }
 
 
-vec3 plot2D(in vec2 _st, in float _width ) {
+vec4 plot2D(in vec2 _st, in float _width ,vec3 initColor) {
     const float samples = float(Samples);
 
     vec2 steping = _width*vec2(scale)/samples;
@@ -359,28 +357,28 @@ vec3 plot2D(in vec2 _st, in float _width ) {
             mySamples++;
             float ii = i + lineJitter*rand(vec2(_st.x+ i*steping.x,_st.y+ j*steping.y));
             float jj = j + lineJitter*rand(vec2(_st.y + i*steping.x,_st.x+ j*steping.y));
-
+            //float f = mFunction((_st.x+ ii*steping.x) )-(_st.y+ jj*steping.y);
             float f = mFunction((_st.x+ ii*steping.x) )-(_st.y+ jj*steping.y);
             count += (f>0.0) ? 1. : -1.0 ;
         }
     }
     
     
-    vec3 color = vec3(1.0);
+    //vec4 color = vec4(1.0,1.,1.,0.);
     if (abs(count)!=mySamples)
-        return color = vec3(abs(float(count))/float(mySamples));
-    return color ;
+        return vec4( vec3(abs(float(count))/float(mySamples))*1000.*initColor,1.);
+    return vec4(0.);
 }
 
-vec3 grid2D( in vec2 _st, in float _width ) {
+vec4 grid2D( in vec2 _st, in float _width ) {
     float axisDetail = _width*scale;
     if (abs(_st.x)<axisDetail || abs(_st.y)<axisDetail) 
         //return 1.0-vec3(0.65,0.65,1.0);
     if (abs(mod(_st.x,1.0))<axisDetail || abs(mod(_st.y,1.0))<axisDetail) 
-        return 1.0-vec3(0.80,0.80,1.0);
+        return vec4(1.0-vec3(0.80,0.80,1.0),1.);
     if (abs(mod(_st.x,0.25))<axisDetail || abs(mod(_st.y,0.25))<axisDetail) 
-        return 1.0-vec3(0.95,0.95,1.0);
-    return vec3(0.0);
+        return vec4(1.0-vec3(0.95,0.95,1.0),1.);
+    return vec4(0.0);
 }
 
 float circle(in vec2 _st, in float _radius){
@@ -404,8 +402,9 @@ void main(){
 
     timeProgress = min(u_time,1.);
     
+    //mDampingRatio = (sin(u_time) + 1.)/2.;
     //#trigger
-    if(!reset){
+    if(reset){
         //computeSDSpringDuration(mStiffness,mDampingRatio)
         mDuration = (duration_mode == 0)? calculateFling(mStartVelocity,mFriction)[0] :((duration_mode == 1)?computeSDSpringDuration(mStiffness,mDampingRatio):mDuration );
         timeProgress = min(mod(u_time,mDuration)/mDuration,1.);
@@ -421,28 +420,26 @@ void main(){
     
     float bottomRange = -0.5;
     float topRange = 1.5;
-    vec3 color = vec3(1.);
+    vec4 color = vec4(0.,0.,0.,0.);
 
 
     if(st.x>-0.01 &&st.y>bottomRange && st.y<topRange && st.x<1.0000){
-        color = plot2D(st,lineWidth) ;
+        color = plot2D(st,lineWidth,vec3(0.,0.,0.));
         if(st.x<timeProgress){
            
-           color += plot2D(st,lineWidth)*vec3(10.,0.,0.) ;
-           //color = plot2D(st,lineWidth);
+           color += plot2D(st,lineWidth,vec3(0./255.,255./255.,253./255.));
     	}
         
     }
-    
 
     float zoom = 2.;
     uv *= zoom;
-    color -= grid2D(uv,gridWidth);
+    color += grid2D(uv,gridWidth);
     
     float step = 0.005;
     circlePos = vec2(timeProgress+step,mFunction(timeProgress+step));
-    color -= circle(uv - circlePos+vec2(0.001,0.004),circleRadius)*vec3(-10.,1.,1.);
+    color += vec4(0.,1.,1.,1.)*circle(uv - circlePos+vec2(0.001,0.004),circleRadius);
 
  
-    gl_FragColor = vec4(color,1.0);
+    gl_FragColor = color;
 }

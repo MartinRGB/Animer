@@ -599,6 +599,10 @@ public class Animer<T> {
     }
 
     public void start(){
+        if(triggereListener != null){
+            triggereListener.onTrigger(true);
+            triggereListener.onTrigger(false);
+        }
         setHardwareAcceleration(true);
         if(currentSolver.getSolverMode() == FLING_SOLVER_MODE) {
             mFlingAnimation.cancel();
@@ -647,7 +651,6 @@ public class Animer<T> {
     }
 
     public void end(){
-
         cancel();
         switch(currentSolver.getSolverMode())
         {
@@ -683,6 +686,10 @@ public class Animer<T> {
     }
 
     public void animateToState(String state){
+        if(triggereListener != null){
+            triggereListener.onTrigger(true);
+            triggereListener.onTrigger(false);
+        }
         setHardwareAcceleration(true);
         switch(currentSolver.getSolverMode())
         {
@@ -720,6 +727,10 @@ public class Animer<T> {
     // # Equal to [setEndValue]
 
     public void setEndvalue(float value){
+        if(triggereListener != null){
+            triggereListener.onTrigger(true);
+            triggereListener.onTrigger(false);
+        }
         setHardwareAcceleration(true);
         switch(currentSolver.getSolverMode())
         {
@@ -940,6 +951,7 @@ public class Animer<T> {
     private UpdateListener updateListener;
     private EndListener endListener;
     private ActionTouchListener actionListener;
+    private TriggeredListener triggereListener;
 
     public void setUpdateListener(UpdateListener listener) {
         updateListener = listener;
@@ -947,6 +959,10 @@ public class Animer<T> {
 
     public void setEndListener(EndListener listener) {
         endListener = listener;
+    }
+
+    public void setTriggerListener(TriggeredListener listener) {
+        triggereListener = listener;
     }
 
     public void setActionTouchListener(ActionTouchListener listener) {
@@ -958,6 +974,10 @@ public class Animer<T> {
     }
     public interface EndListener{
         void onEnd(float value, float velocity,boolean canceled);
+    }
+
+    public interface TriggeredListener{
+        void onTrigger(boolean triggered);
     }
 
     public interface ActionTouchListener{

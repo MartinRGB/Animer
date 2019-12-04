@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
         AnConfigRegistry.getInstance().addAnimer("B色 - S",animer7);
         AnConfigRegistry.getInstance().addAnimer("R色 - X",animer1);
-        AnConfigRegistry.getInstance().addAnimer("B色 - X",animer2);
+        AnConfigRegistry.getInstance().addAnimer("B色 - Xsssssssssssss",animer2);
         AnConfigRegistry.getInstance().addAnimer("G色 - X",animer3);
         AnConfigRegistry.getInstance().addAnimer("R色 - R",animer4);
         AnConfigRegistry.getInstance().addAnimer("B色 - R",animer5);

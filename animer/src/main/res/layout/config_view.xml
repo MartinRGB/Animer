@@ -12,7 +12,7 @@
         android:layout_marginBottom="@dimen/nub_height"
         android:background="@drawable/gradient">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -20,36 +20,50 @@
             android:padding="@dimen/padding_size">
             <Spinner
                 android:id="@+id/object_spinner"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MyTheme.HeaderBar.Spinner"
-                android:layout_margin="@dimen/margin_size"
+                android:paddingLeft="4dp"
+                android:layout_centerVertical="true"
                 android:spinnerMode="dropdown">
             </Spinner>
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+
+
+        <FrameLayout
+            android:layout_width="312dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:background="@drawable/grid">
+
+            <com.martinrgb.animer.monitor.shader.ShaderSurfaceView
+                android:id="@+id/shader_surfaceview"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+        
+        
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_margin="@dimen/margin_size"
             android:padding="@dimen/padding_size">
             <Spinner
                 android:id="@+id/type_spinner"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MyTheme.HeaderBar.Spinner"
                 android:layout_margin="@dimen/margin_size"
+                android:layout_centerVertical="true"
+                android:dropDownWidth="248dp"
                 android:spinnerMode="dropdown">
             </Spinner>
-        </LinearLayout>
 
-        <com.martinrgb.animer.monitor.shader.ShaderSurfaceView
-            android:id="@+id/shader_surfaceview"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:background="@drawable/grid"
-            android:layout_gravity="center"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/list_layout"

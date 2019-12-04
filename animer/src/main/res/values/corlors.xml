@@ -2,4 +2,6 @@
 <resources>
     <color name="mainColor">#FF3CFFFD</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="lighMainColor">#8591B2</color>
 </resources>

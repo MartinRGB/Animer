@@ -1,16 +1,12 @@
 package com.martinrgb.animer.monitor;
 
-import android.util.Log;
-
-import com.martinrgb.animer.Animer;
-
 import java.util.LinkedHashMap;
 
-public class ANConfigMap<K,V> extends LinkedHashMap {
+public class AnConfigMap<K,V> extends LinkedHashMap {
 
-    private ANConfigMap mLinkedHashMap;
+    private AnConfigMap mLinkedHashMap;
 
-    public ANConfigMap() {
+    public AnConfigMap() {
         mLinkedHashMap = this;
     }
 

@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -27,7 +25,6 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 
 import com.martinrgb.animer.Animer;
@@ -39,10 +36,7 @@ import com.martinrgb.animer.core.math.converter.RK4Converter;
 import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
 import com.martinrgb.animer.monitor.shader.ShaderSurfaceView;
 
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class AnConfigView extends FrameLayout {
 
@@ -85,8 +79,8 @@ public class AnConfigView extends FrameLayout {
     private final int PADDING_SIZE = (int) getResources().getDimension(R.dimen.padding_size);
     private final int PX_120 = dpToPx(120, getResources());
 
-    private ANConfigMap<String,Animer.AnimerSolver> mSolverTypesMap;
-    private ANConfigMap<String,Animer> mAnimerObjectsMap;
+    private AnConfigMap<String,Animer.AnimerSolver> mSolverTypesMap;
+    private AnConfigMap<String,Animer> mAnimerObjectsMap;
 
     private Animer.TriggeredListener triggeredListener;
 
@@ -302,11 +296,15 @@ public class AnConfigView extends FrameLayout {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            final TextView tv =(TextView) view;
-            tv.setTextColor(Color.WHITE);
+
+
+            Log.e("parentA",String.valueOf(adapterView.getId()));
+            Log.e("parentB",String.valueOf(mSolverTypeSelectorSpinner));
+
 
             if(adapterView == mSolverObjectSelectorSpinner){
                 // get animer from Map
+                solverObjectSpinnerAdapter.setSelectedItemIndex(i);
                 currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
                 currentAnimer.setTriggerListener(triggeredListener);
                 recreateList();
@@ -332,6 +330,7 @@ public class AnConfigView extends FrameLayout {
             }
             else if (adapterView == mSolverTypeSelectorSpinner){
                 // will not excute in init
+                solverTypeSpinnerAdapter.setSelectedItemIndex(i);
                 if(typeChecker > 0) {
                     if(typeSpinnerIsFixedSelection){
                         typeSpinnerIsFixedSelection = false;

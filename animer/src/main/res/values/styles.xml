@@ -2,10 +2,13 @@
     <style name="ActionBarThemeOverlay" parent="">
         <item name="android:textColorPrimary">#ffffff</item>
         <item name="colorControlNormal">#ffffff</item>
-        <item name="colorControlHighlight">#ff3CFFFD</item>
+        <item name="colorControlHighlight">#B6CAFF</item>
     </style>
 
     <style name="Widget.MyTheme.HeaderBar.Spinner" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
         <item name="android:theme">@style/ActionBarThemeOverlay</item>
+        <item name="android:background">@drawable/background_spinner</item>
+        <item name="android:popupBackground">@drawable/popbackground_spinner</item>
     </style>
+
 </resources>

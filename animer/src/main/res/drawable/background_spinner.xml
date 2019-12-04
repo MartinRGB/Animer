@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorTransparent" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_spinner"
+        android:width="12dp"
+        android:height="12dp"
+        android:gravity="center_vertical"
+        android:left="12dp"/>
+</layer-list>

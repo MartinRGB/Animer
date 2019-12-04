@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -19,8 +20,7 @@ class AnSpinnerAdapter extends BaseAdapter {
     private final Context mContext;
     private final List<String> mStrings;
     private final Resources mResources;
-    private final int mTextColor = Color.argb(255, 0, 0, 0);
-    private String selectedString;
+    private final int mTextColor = Color.argb(255, 255, 255, 255);
 
     public AnSpinnerAdapter(Context context,Resources resources) {
         mContext = context;
@@ -56,6 +56,9 @@ class AnSpinnerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView textView;
+
+
+
         if (convertView == null) {
             textView = new TextView(mContext);
             AbsListView.LayoutParams params = new AbsListView.LayoutParams(
@@ -64,15 +67,35 @@ class AnSpinnerAdapter extends BaseAdapter {
             textView.setLayoutParams(params);
             int twelvePx = dpToPx(12, mResources);
             int ninePx = dpToPx(9, mResources);
-            textView.setPadding(twelvePx, ninePx, twelvePx,ninePx);
+            textView.setPadding(dpToPx(32,mResources), ninePx, dpToPx(32,mResources),ninePx);
             textView.setTextColor(mTextColor);
             textView.setTextSize(10);
-            selectedString = textView.getText().toString();
         } else {
             textView = (TextView) convertView;
         }
         textView.setText(mStrings.get(position));
         return textView;
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent)
+    {
+        View v = null;
+        v = super.getDropDownView(position, null, parent);
+        // If this is the selected item position
+        if (position == seletecedIndex) {
+            //v.setBackgroundColor(Color.BLUE);
+            v.setAlpha(1.f);
+        }
+        else {
+            v.setAlpha(0.5f);
+        }
+        return v;
+    }
+
+    private int seletecedIndex = -1;
+    public void setSelectedItemIndex(int i){
+        seletecedIndex = i;
     }
 
     public static int dpToPx(float dp, Resources res) {

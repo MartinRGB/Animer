@@ -4,4 +4,10 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorTransparent">#00000000</color>
     <color name="lighMainColor">#8591B2</color>
+    <color name="gradient_end">#EF636E89</color>
+    <color name="gradient_start">#EF3B4357</color>
+    <color name="nub_start">#EF66718D</color>
+    <color name="nub_end">#EF636E89</color>
+
+
 </resources>

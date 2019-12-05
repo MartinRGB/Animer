@@ -460,7 +460,7 @@ void main(){
 
     vec4 color = vec4(0.,0.,0.,0.);
 
-    if(st.x>-0.01 &&st.y>-0.5 && st.y<1.5 && st.x<1.00){
+    if(st.x>-0.01 &&st.y>-0.5 && st.y<1.5 && st.x<1.01){
         color = plot2D(st,lineWidth,vec3(1.));
         if(st.x<timeProgress){
             color += plot2D(st,lineWidth,vec3(-255./255.,0./255.,0./255.));

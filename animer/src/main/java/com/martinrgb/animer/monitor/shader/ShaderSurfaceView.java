@@ -26,6 +26,7 @@ public class ShaderSurfaceView extends GLSurfaceView {
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		getHolder().setFormat(PixelFormat.RGBA_8888);
 		setRenderer(renderer);
+		//TODO Request Renderer
 		setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
 	}

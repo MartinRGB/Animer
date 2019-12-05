@@ -33,19 +33,16 @@
 
         <FrameLayout
             android:layout_width="312dp"
-            android:layout_height="240dp"
+            android:layout_height="160dp"
             android:layout_gravity="center"
             android:background="@drawable/grid">
 
             <com.martinrgb.animer.monitor.shader.ShaderSurfaceView
                 android:id="@+id/shader_surfaceview"
-                android:layout_width="240dp"
-                android:layout_height="240dp"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_gravity="center"/>
         </FrameLayout>
-        
-        
-
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -62,7 +59,6 @@
                 android:dropDownWidth="248dp"
                 android:spinnerMode="dropdown">
             </Spinner>
-
         </RelativeLayout>
 
         <LinearLayout
@@ -71,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:orientation="vertical">
-
         </LinearLayout>
 
     </LinearLayout>
@@ -82,7 +77,6 @@
         android:layout_height="26dp"
         android:layout_gravity="bottom|center"
         android:background="@drawable/ic_nub">
-
     </View>
 
 

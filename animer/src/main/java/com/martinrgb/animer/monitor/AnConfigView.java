@@ -114,7 +114,18 @@ public class AnConfigView extends FrameLayout {
         triggeredListener = new Animer.TriggeredListener() {
             @Override
             public void onTrigger(boolean triggered) {
+
                 shaderSurfaceView.resetTime();
+
+                //TODO ResetWhen Request
+//                if(triggered){
+//                    shaderSurfaceView.onResume();
+//                    shaderSurfaceView.resetTime();
+//                }
+//                else{
+//                    shaderSurfaceView.onPause();
+//                }
+
             }
         };
 
@@ -492,6 +503,9 @@ public class AnConfigView extends FrameLayout {
 
             //Log.e("On Process Changed","On Process Changed");
 
+            //TODO Request Renderer
+            //shaderSurfaceView.requestRender();
+
             if(currentObjectType != "AndroidInterpolator") {
                 for (int i = 0; i < listSize; i++) {
                     if (seekBar == SEEKBARS[i]) {
@@ -556,6 +570,11 @@ public class AnConfigView extends FrameLayout {
                         }
                         ((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).resetArgValue(i,Float.valueOf(roundedValue1Label));
                         shaderSurfaceView.setFactorInput(Float.valueOf(roundedValue1Label),i);
+
+                        if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("PathInterpolator")){
+
+                        }
+
                     }
                 }
 
@@ -570,7 +589,6 @@ public class AnConfigView extends FrameLayout {
                     currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg" + String.valueOf(2) + "", Float.valueOf(roundedValue1Label));
                     float floatVal = Float.valueOf(roundedValue1Label);
                     currentAnimer.getCurrentSolver().setArg2( (long) floatVal);
-                    //shaderSurfaceView.setFactorInput(floatVal,listSize - 1);
                     shaderSurfaceView.setDuration(floatVal/1000);
                 }
 
@@ -604,10 +622,6 @@ public class AnConfigView extends FrameLayout {
         for(int i=0;i<interpolatorArray.length;i++){
             if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().equals(interpolatorArray[i])){
                 shaderSurfaceView.setCurveMode(2.0f + (i*0.01f));
-
-                Log.e("value",String.valueOf(2.0f + (i*0.01f)));
-                Log.e("name",interpolatorArray[i]);
-                Log.e("simpleName",String.valueOf(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName()));
                 break;
             }
         }

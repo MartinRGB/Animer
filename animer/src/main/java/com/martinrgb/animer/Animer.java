@@ -537,8 +537,10 @@ public class Animer<T> {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     endCurrentPhysicsState(getCurrentPhysicsValue(),0,true);
+
                 }
             });
+
         }
         attachSolverToTiming(solver,mTimingAnimation);
     }

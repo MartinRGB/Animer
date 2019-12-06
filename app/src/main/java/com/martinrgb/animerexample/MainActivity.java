@@ -9,12 +9,17 @@ import android.view.WindowManager;
 import android.view.animation.PathInterpolator;
 import android.widget.ImageView;
 
+//import com.codemonkeylabs.fpslibrary.FrameDataCallback;
+//import com.codemonkeylabs.fpslibrary.TinyDancer;
 import com.martinrgb.animer.Animer;
 import com.martinrgb.animer.core.interpolator.AndroidNative.AccelerateDecelerateInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidNative.DecelerateInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutSlowInInterpolator;
 import com.martinrgb.animer.monitor.AnConfigRegistry;
 import com.martinrgb.animer.monitor.AnConfigView;
+import com.martinrgb.animer.monitor.fps.FPSBuilder;
+import com.martinrgb.animer.monitor.fps.FPSDetector;
+import com.martinrgb.animer.monitor.fps.FrameDataCallback;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

@@ -453,6 +453,9 @@ public class Animer<T> {
                 @Override
                 public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                     endCurrentPhysicsState(value,0,true);
+                    if(triggereListener !=null ){
+                        triggereListener.onTrigger(false);
+                    }
                 }
             });
         }
@@ -490,6 +493,9 @@ public class Animer<T> {
                 @Override
                 public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                     endCurrentPhysicsState(value,0,true);
+                    if(triggereListener !=null ){
+                        triggereListener.onTrigger(false);
+                    }
                 }
             });
         }
@@ -537,7 +543,9 @@ public class Animer<T> {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     endCurrentPhysicsState(getCurrentPhysicsValue(),0,true);
-
+                    if(triggereListener !=null ){
+                        triggereListener.onTrigger(false);
+                    }
                 }
             });
 
@@ -603,7 +611,7 @@ public class Animer<T> {
     public void start(){
         if(triggereListener != null){
             triggereListener.onTrigger(true);
-            triggereListener.onTrigger(false);
+            //triggereListener.onTrigger(false);
         }
         setHardwareAcceleration(true);
         if(currentSolver.getSolverMode() == FLING_SOLVER_MODE) {
@@ -690,7 +698,7 @@ public class Animer<T> {
     public void animateToState(String state){
         if(triggereListener != null){
             triggereListener.onTrigger(true);
-            triggereListener.onTrigger(false);
+            //triggereListener.onTrigger(false);
         }
         setHardwareAcceleration(true);
         switch(currentSolver.getSolverMode())
@@ -731,7 +739,7 @@ public class Animer<T> {
     public void setEndvalue(float value){
         if(triggereListener != null){
             triggereListener.onTrigger(true);
-            triggereListener.onTrigger(false);
+            //triggereListener.onTrigger(false);
         }
         setHardwareAcceleration(true);
         switch(currentSolver.getSolverMode())

@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.opengl.GLSurfaceView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -34,6 +35,8 @@ import com.martinrgb.animer.core.math.converter.DHOConverter;
 import com.martinrgb.animer.core.math.converter.OrigamiPOPConverter;
 import com.martinrgb.animer.core.math.converter.RK4Converter;
 import com.martinrgb.animer.core.math.converter.UIViewSpringConverter;
+import com.martinrgb.animer.monitor.fps.FPSDetector;
+import com.martinrgb.animer.monitor.fps.FrameDataCallback;
 import com.martinrgb.animer.monitor.shader.ShaderSurfaceView;
 
 import java.text.DecimalFormat;
@@ -78,6 +81,7 @@ public class AnConfigView extends FrameLayout {
     private final int MARGIN_SIZE = (int) getResources().getDimension(R.dimen.margin_size);
     private final int PADDING_SIZE = (int) getResources().getDimension(R.dimen.padding_size);
     private final int PX_120 = dpToPx(120, getResources());
+    private TextView fpsView;
 
     private AnConfigMap<String,Animer.AnimerSolver> mSolverTypesMap;
     private AnConfigMap<String,Animer> mAnimerObjectsMap;
@@ -104,6 +108,31 @@ public class AnConfigView extends FrameLayout {
         View view = inflate(getContext(), R.layout.config_view, null);
         addView(view);
 
+        fpsView = findViewById(R.id.fps_view);
+
+        Log.e("Text",String.valueOf(fpsView.getText()));
+
+        fpsView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if( String.valueOf(fpsView.getText()).contains("FPS")){
+                    FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
+                        @Override
+                        public void doFrame(long previousFrameNS, long currentFrameNS, int droppedFrames,float currentFPS) {
+                            ((TextView)findViewById(R.id.fps_view)).setText(String.valueOf(currentFPS));
+                        }
+                    }).show(context);;
+                }
+                else{
+                    FPSDetector.hide(context);
+                    ((TextView) v).setText("FPS");
+                }
+            }
+        });
+
+
+
         shaderSurfaceView = findViewById(R.id.shader_surfaceview);
         shaderSurfaceView.setFactorInput(1500,0);
         shaderSurfaceView.setFactorInput(0.5f,1);
@@ -118,13 +147,12 @@ public class AnConfigView extends FrameLayout {
                 shaderSurfaceView.resetTime();
 
                 //TODO ResetWhen Request
-//                if(triggered){
-//                    shaderSurfaceView.onResume();
-//                    shaderSurfaceView.resetTime();
-//                }
-//                else{
-//                    shaderSurfaceView.onPause();
-//                }
+                if(triggered){
+                    shaderSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                }
+                else{
+                    shaderSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+                }
 
             }
         };
@@ -504,7 +532,8 @@ public class AnConfigView extends FrameLayout {
             //Log.e("On Process Changed","On Process Changed");
 
             //TODO Request Renderer
-            //shaderSurfaceView.requestRender();
+            shaderSurfaceView.requestRender();
+
 
             if(currentObjectType != "AndroidInterpolator") {
                 for (int i = 0; i < listSize; i++) {
@@ -541,7 +570,6 @@ public class AnConfigView extends FrameLayout {
                     shaderSurfaceView.setCurveMode(1);
                     shaderSurfaceView.setFactorInput(convertVal1,0);
                     shaderSurfaceView.setFactorInput(convertVal2,1);
-                    shaderSurfaceView.resetTime();
                 }
                 else{
                     Object val1 = getConvertValueByIndexAndType(0, currentObjectType);
@@ -551,7 +579,6 @@ public class AnConfigView extends FrameLayout {
                     shaderSurfaceView.setCurveMode(0);
                     shaderSurfaceView.setFactorInput(convertVal1,0);
                     shaderSurfaceView.setFactorInput(convertVal2,1);
-                    shaderSurfaceView.resetTime();
                 }
 
 
@@ -592,7 +619,6 @@ public class AnConfigView extends FrameLayout {
                     shaderSurfaceView.setDuration(floatVal/1000);
                 }
 
-                shaderSurfaceView.resetTime();
             }
         }
 

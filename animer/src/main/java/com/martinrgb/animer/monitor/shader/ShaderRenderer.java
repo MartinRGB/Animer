@@ -39,7 +39,7 @@ public class ShaderRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		startTime =  System.nanoTime();
+		startTime = System.nanoTime();
 		resolution[0] = width;
 		resolution[1] = height;
 		shaderProgram.setOnChange(width,height);
@@ -47,7 +47,8 @@ public class ShaderRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		float time = (System.nanoTime() - startTime) / NS_PER_SECOND;
+		//float time = (System.nanoTime() - startTime) / NS_PER_SECOND;
+		float time = (isInteraction)? (System.nanoTime() - startTime) / NS_PER_SECOND:0;
 		shaderProgram.setOnDrawFrame(resolution,time,factors,mode,duration);
 		if(LoggerConfig.ON == true){
 			FPSCounter.logFrameRate();
@@ -73,7 +74,9 @@ public class ShaderRenderer implements GLSurfaceView.Renderer {
     }
 
 
+    private boolean isInteraction = false;
 	public void resetTime(){
+		isInteraction = true;
 		startTime = System.nanoTime();
 	}
 

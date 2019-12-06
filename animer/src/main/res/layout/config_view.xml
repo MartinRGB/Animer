@@ -27,6 +27,22 @@
                 android:layout_centerVertical="true"
                 android:spinnerMode="dropdown">
             </Spinner>
+
+            <TextView
+                android:id="@+id/fps_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textAlignment="center"
+                android:layout_marginRight="16dp"
+                android:gravity="center"
+                android:typeface="monospace"
+                android:textColor="@color/colorWhite"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:text="FPS"
+                android:background="@drawable/ic_button_background">
+            </TextView>
         </RelativeLayout>
 
 

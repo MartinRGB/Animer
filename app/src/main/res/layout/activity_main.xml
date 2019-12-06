@@ -53,7 +53,6 @@
         android:id="@+id/an_configurator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         />
 
 

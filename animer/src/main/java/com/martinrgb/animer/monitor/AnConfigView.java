@@ -45,7 +45,7 @@ public class AnConfigView extends FrameLayout {
 
     private Spinner mSolverObjectSelectorSpinner,mSolverTypeSelectorSpinner;
     private AnSpinnerAdapter solverObjectSpinnerAdapter,solverTypeSpinnerAdapter;
-    private Animer currentAnimer,mRevealAnimer;
+    private Animer currentAnimer,mRevealAnimer,mFPSAnimer;
     private AnConfigRegistry anConfigRegistry;
     private LinearLayout listLayout;
     private SeekbarListener seekbarListener;
@@ -101,37 +101,16 @@ public class AnConfigView extends FrameLayout {
     public AnConfigView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initView(context);
-
     }
 
+    private boolean hadInited = false;
     private void initView(Context context) {
         View view = inflate(getContext(), R.layout.config_view, null);
         addView(view);
 
+
         fpsView = findViewById(R.id.fps_view);
-
-        Log.e("Text",String.valueOf(fpsView.getText()));
-
-        fpsView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if( String.valueOf(fpsView.getText()).contains("FPS")){
-                    FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
-                        @Override
-                        public void doFrame(long previousFrameNS, long currentFrameNS, int droppedFrames,float currentFPS) {
-                            ((TextView)findViewById(R.id.fps_view)).setText(String.valueOf(currentFPS));
-                        }
-                    }).show(context);;
-                }
-                else{
-                    FPSDetector.hide(context);
-                    ((TextView) v).setText("FPS");
-                }
-            }
-        });
-
-
+        fpsView.setOnTouchListener(new OnFPSTouchListener());
 
         shaderSurfaceView = findViewById(R.id.shader_surfaceview);
         shaderSurfaceView.setFactorInput(1500,0);
@@ -186,19 +165,29 @@ public class AnConfigView extends FrameLayout {
             @Override
             public void onGlobalLayout() {
                 // Put your code here.
-                mRevealAnimer = new Animer();
-                mRevealAnimer.setSolver(Animer.springDroid(500,0.95f));
-                mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
-                    @Override
-                    public void onUpdate(float value, float velocity, float progress) {
-                        float val = (float) value;
-                        float minTranslate = 0;
-                        float maxTranslate = view.getMeasuredHeight() - getResources().getDimension(R.dimen.nub_height);
-                        float range = maxTranslate - minTranslate;
-                        float yTranslate = -(val * range) + minTranslate;
-                        AnConfigView.this.setTranslationY(yTranslate);
-                    }
-                });
+                if(!hadInited) {
+                    mRevealAnimer = new Animer();
+                    mRevealAnimer.setSolver(Animer.springDroid(500, 0.95f));
+                    mRevealAnimer.setUpdateListener(new Animer.UpdateListener() {
+                        @Override
+                        public void onUpdate(float value, float velocity, float progress) {
+                            AnConfigView.this.setTranslationY(value);
+                        }
+                    });
+
+                    mFPSAnimer = new Animer();
+                    mFPSAnimer.setSolver(Animer.springDroid(600, 0.7f));
+                    mFPSAnimer.setUpdateListener(new Animer.UpdateListener() {
+                        @Override
+                        public void onUpdate(float value, float velocity, float progress) {
+                            fpsView.setScaleX(value);
+                            fpsView.setScaleY(value);
+                        }
+                    });
+                    mRevealAnimer.setCurrentValue(-(AnConfigView.this.getMeasuredHeight() - getResources().getDimension(R.dimen.nub_height)));
+                    mFPSAnimer.setCurrentValue(1);
+                    hadInited = true;
+                }
             }
         });
 
@@ -232,8 +221,13 @@ public class AnConfigView extends FrameLayout {
         solverTypeSpinnerAdapter.notifyDataSetChanged();
         if (solverObjectSpinnerAdapter.getCount() > 0) {
             // solver first time selection
+            if(currentAnimer !=null && currentAnimer.getTriggerListener() !=null){
+                currentAnimer.removeTriggerListener();
+            }
             currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
             currentAnimer.setTriggerListener(triggeredListener);
+            //shaderSurfaceView.requestRender();
+
             recreateList();
             int typeIndex = 0;
             // select the right interpolator
@@ -337,15 +331,16 @@ public class AnConfigView extends FrameLayout {
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-            Log.e("parentA",String.valueOf(adapterView.getId()));
-            Log.e("parentB",String.valueOf(mSolverTypeSelectorSpinner));
-
-
             if(adapterView == mSolverObjectSelectorSpinner){
                 // get animer from Map
                 solverObjectSpinnerAdapter.setSelectedItemIndex(i);
+                if(currentAnimer !=null && currentAnimer.getTriggerListener() !=null){
+                    currentAnimer.removeTriggerListener();
+                }
                 currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
                 currentAnimer.setTriggerListener(triggeredListener);
+                //shaderSurfaceView.requestRender();
+
                 recreateList();
                 redefineMinMax(currentAnimer.getCurrentSolver());
                 updateSeekBars(currentAnimer.getCurrentSolver());
@@ -532,8 +527,6 @@ public class AnConfigView extends FrameLayout {
             //Log.e("On Process Changed","On Process Changed");
 
             //TODO Request Renderer
-            shaderSurfaceView.requestRender();
-
 
             if(currentObjectType != "AndroidInterpolator") {
                 for (int i = 0; i < listSize; i++) {
@@ -620,6 +613,8 @@ public class AnConfigView extends FrameLayout {
                 }
 
             }
+
+            shaderSurfaceView.requestRender();
         }
 
         @Override
@@ -744,19 +739,85 @@ public class AnConfigView extends FrameLayout {
         }
     }
 
+    private float nubDragStartY,currViewTransY,nubDragMoveY;
+
     private class OnNubTouchListener implements View.OnTouchListener {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                togglePosition();
+            float maxValue = 0;
+            float minValue = -(AnConfigView.this.getMeasuredHeight() - getResources().getDimension(R.dimen.nub_height));
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    nubDragStartY = motionEvent.getRawY();
+                    currViewTransY = AnConfigView.this.getTranslationY();
+                    nubDragMoveY = 0;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    nubDragMoveY =  (motionEvent.getRawY() - nubDragStartY);
+                    if(nubDragMoveY  + currViewTransY> minValue && nubDragMoveY + currViewTransY< maxValue){
+                        mRevealAnimer.setCurrentValue(nubDragMoveY + currViewTransY);
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    Log.e("moveY",String.valueOf(nubDragMoveY));
+
+                    if( Math.abs(nubDragMoveY) > (maxValue - minValue)/3){
+                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?maxValue:minValue);
+                    }
+                    else{
+                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?minValue:maxValue);
+                    }
+
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    break;
             }
+
             return true;
+
         }
     }
 
-    private void togglePosition() {
-        double currentValue = mRevealAnimer.getCurrentPhysicsState().getPhysicsValue();
-        mRevealAnimer.setEndvalue(currentValue == 1 ? 0 : 1);
+    private class OnFPSTouchListener implements View.OnTouchListener {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mFPSAnimer.setEndvalue(0.8f);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mFPSAnimer.setEndvalue(1f);
+                    if (String.valueOf(fpsView.getText()).contains("FPS")) {
+                        FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
+                            @Override
+                            public void doFrame(long previousFrameNS, long currentFrameNS, int droppedFrames, float currentFPS) {
+                                fpsView.setText(String.valueOf(currentFPS));
+                            }
+                        }).show(mContext);
+                    } else {
+                        FPSDetector.hide(mContext);
+                        fpsView.setText("FPS");
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    mFPSAnimer.setEndvalue(1);
+                    if (String.valueOf(fpsView.getText()).contains("FPS")) {
+                        FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
+                            @Override
+                            public void doFrame(long previousFrameNS, long currentFrameNS, int droppedFrames, float currentFPS) {
+                                fpsView.setText(String.valueOf(currentFPS));
+                            }
+                        }).show(mContext);
+                    } else {
+                        FPSDetector.hide(mContext);
+                        fpsView.setText("FPS");
+                    }
+                    break;
+            }
+            return true;
+        }
     }
 
     public static int dpToPx(float dp, Resources res) {

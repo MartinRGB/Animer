@@ -2,5 +2,5 @@
 <resources>
     <dimen name="margin_size">4dp</dimen>
     <dimen name="padding_size">4dp</dimen>
-    <dimen name="nub_height">26dp</dimen>
+    <dimen name="nub_height">46dp</dimen>
 </resources>

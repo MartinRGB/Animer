@@ -90,9 +90,9 @@
     <View
         android:id="@+id/nub"
         android:layout_width="112dp"
-        android:layout_height="26dp"
+        android:layout_height="@dimen/nub_height"
         android:layout_gravity="bottom|center"
-        android:background="@drawable/ic_nub">
+        android:background="@drawable/ic_nub2">
     </View>
 
 

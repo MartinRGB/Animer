@@ -971,8 +971,22 @@ public class Animer<T> {
         endListener = listener;
     }
 
+    public TriggeredListener getTriggerListener() {
+        if(triggereListener !=null){
+            return triggereListener;
+        }
+        else{
+            return null;
+        }
+
+    }
+
     public void setTriggerListener(TriggeredListener listener) {
         triggereListener = listener;
+    }
+
+    public void removeTriggerListener() {
+        triggereListener = null;
     }
 
     public void setActionTouchListener(ActionTouchListener listener) {

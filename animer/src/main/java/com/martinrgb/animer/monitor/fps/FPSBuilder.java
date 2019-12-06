@@ -75,10 +75,10 @@ public class FPSBuilder
      */
     public void show(Context context) {
 
-        if (overlayPermRequest(context)) {
-            //once permission is granted then you must call show() again
-            return;
-        }
+//        if (overlayPermRequest(context)) {
+//            //once permission is granted then you must call show() again
+//            return;
+//        }
 
         //are we running?  if so, call tinyCoach.show() and return
 //        if (tinyCoach != null) {

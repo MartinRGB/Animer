@@ -759,17 +759,20 @@ public class AnConfigView extends FrameLayout {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.e("moveY",String.valueOf(nubDragMoveY));
-
                     if( Math.abs(nubDragMoveY) > (maxValue - minValue)/3){
                         mRevealAnimer.setEndvalue((currViewTransY == minValue)?maxValue:minValue);
                     }
                     else{
                         mRevealAnimer.setEndvalue((currViewTransY == minValue)?minValue:maxValue);
                     }
-
                     break;
                 case MotionEvent.ACTION_CANCEL:
+                    if( Math.abs(nubDragMoveY) > (maxValue - minValue)/3){
+                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?maxValue:minValue);
+                    }
+                    else{
+                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?minValue:maxValue);
+                    }
                     break;
             }
 
@@ -793,11 +796,21 @@ public class AnConfigView extends FrameLayout {
                         FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
                             @Override
                             public void doFrame(long previousFrameNS, long currentFrameNS, int droppedFrames, float currentFPS) {
+                                if(currentFPS <50 && currentFPS > 30){
+                                    fpsView.setTextColor(Color.YELLOW);
+                                }
+                                else if(currentFPS>=50){
+                                    fpsView.setTextColor(Color.GREEN);
+                                }
+                                else if(currentFPS < 30){
+                                    fpsView.setTextColor(Color.RED);
+                                }
                                 fpsView.setText(String.valueOf(currentFPS));
                             }
                         }).show(mContext);
                     } else {
                         FPSDetector.hide(mContext);
+                        fpsView.setTextColor(Color.WHITE);
                         fpsView.setText("FPS");
                     }
                     break;
@@ -807,11 +820,21 @@ public class AnConfigView extends FrameLayout {
                         FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
                             @Override
                             public void doFrame(long previousFrameNS, long currentFrameNS, int droppedFrames, float currentFPS) {
+                                if(currentFPS <50 && currentFPS > 30){
+                                    fpsView.setTextColor(Color.YELLOW);
+                                }
+                                else if(currentFPS>=50){
+                                    fpsView.setTextColor(Color.GREEN);
+                                }
+                                else if(currentFPS < 30){
+                                    fpsView.setTextColor(Color.RED);
+                                }
                                 fpsView.setText(String.valueOf(currentFPS));
                             }
                         }).show(mContext);
                     } else {
                         FPSDetector.hide(mContext);
+                        fpsView.setTextColor(Color.WHITE);
                         fpsView.setText("FPS");
                     }
                     break;

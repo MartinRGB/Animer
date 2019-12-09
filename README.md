@@ -9,9 +9,9 @@ for a better Android Animation Experience
 
 
 ```
-  dependencies {
-      implementation 'com.martinrgb:animer:0.1.5.3'
-  }
+dependencies {
+    implementation 'com.martinrgb:animer:0.1.5.3'
+}
 ```
 
 ## Usage
@@ -21,84 +21,84 @@ Animer supports multiple ways of animating:
 ### Android Native Style
 ```java
   
-  // equal to Android's TimingInterpolator
-  Animer.AnimerSolver solver  = Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),600)
-  
-  // similar to ObjectAnimator 
-  Animer animer = new Animer(myView,solver,Animer.TRANSLATION_Y,0,200);
-  
-  animer.start();
-  
-  // animer.cancel();
-  
-  // animer.end();
+// equal to Android's TimingInterpolator
+Animer.AnimerSolver solver  = Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),600)
+
+// similar to ObjectAnimator 
+Animer animer = new Animer(myView,solver,Animer.TRANSLATION_Y,0,200);
+
+animer.start();
+
+// animer.cancel();
+
+// animer.end();
 
 ```
 
 ### FramerJS State Machine Style
 ```java
-  // equal to Android's SpringAnimation
-  Animer.AnimerSolver solver  = Animer.springDroid(1000,0.5f);
-  
-  Animer animer = new Animer();
-  
-  // add a solver to Animer; 
-  animer.setSolver(solver);
-  
-  // add value to different state;
-  animer.setStateValue("stateA",300);
-  animer.setStateValue("stateB",700);
-  animer.setStateValue("stateC",200);
-  
-  // add a listener to observe the motion of the Animation
-  animer.setUpdateListener(new Animer.UpdateListener() {
-      @Override
-      public void onUpdate(float value, float velocity, float progress) {
-        myView1.setTranslationX(value);
-        myView2.setScaleX(1.f+value/100);
-        myView2.setScaleY(1.f+value/100);
-      }
-  });
-  
-  // switch immediately
-  animer.switchToState("stateA");
-  
-  // or animate to state value
-  // animer.animateToState("stateB");
+// equal to Android's SpringAnimation
+Animer.AnimerSolver solver  = Animer.springDroid(1000,0.5f);
+
+Animer animer = new Animer();
+
+// add a solver to Animer; 
+animer.setSolver(solver);
+
+// add value to different state;
+animer.setStateValue("stateA",300);
+animer.setStateValue("stateB",700);
+animer.setStateValue("stateC",200);
+
+// add a listener to observe the motion of the Animation
+animer.setUpdateListener(new Animer.UpdateListener() {
+    @Override
+    public void onUpdate(float value, float velocity, float progress) {
+      myView1.setTranslationX(value);
+      myView2.setScaleX(1.f+value/100);
+      myView2.setScaleY(1.f+value/100);
+    }
+});
+
+// switch immediately
+animer.switchToState("stateA");
+
+// or animate to state value
+// animer.animateToState("stateB");
 ```
 
 ### Facebook Rebound Style
 ```java
-  // equal to Android's SpringAnimation
-  
-  Animer.AnimerSolver solver  = Animer.springOrigamiPOP(5,10);
-  
-  Animer animer = new Animer(myView,solver,Animer.SCALE);
-  
-  // setup a listener to add everything you want
-  animer.setUpdateListener(new Animer.UpdateListener() {
-      @Override
-      public void onUpdate(float value, float velocity, float progress) 
-        myView.setScaleX(value);
-        myView.setScaleY(value);
-      }
-  });
-  
-  animer.setCurrentValue(1.f);
-  
-  boolean isScaled = false;
-  
-  iv1.setOnClickListener(view -> {
+// equal to Android's SpringAnimation
 
-      if(!isScaled){
-          animer.setEndValue(0.5);
+Animer.AnimerSolver solver  = Animer.springOrigamiPOP(5,10);
 
-      }
-      else{
-          animer4.setEndvalue(1);
-      }
-      isScaled = !isScaled;
-  });
+Animer animer = new Animer(myView,solver,Animer.SCALE);
+
+// setup a listener to add everything you want
+animer.setUpdateListener(new Animer.UpdateListener() {
+    @Override
+    public void onUpdate(float value, float velocity, float progress) 
+      myView.setScaleX(value);
+      myView.setScaleY(value);
+    }
+});
+
+animer.setCurrentValue(1.f);
+
+boolean isScaled = false;
+
+iv1.setOnClickListener(view -> {
+
+    if(!isScaled){
+        animer.setEndValue(0.5);
+
+    }
+    else{
+        animer4.setEndvalue(1);
+    }
+    isScaled = !isScaled;
+});
   
 ```
 
@@ -107,19 +107,19 @@ Animer supports multiple ways of animating:
 init in xml
 
 ```xml
-    <com.martinrgb.animer.monitor.AnConfigView
-        android:id="@+id/an_configurator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+<com.martinrgb.animer.monitor.AnConfigView
+    android:id="@+id/an_configurator"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
 ```
 
 add animers' config in java
 
-```
-        AnConfigView mAnimerConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addAnimer("Card Scale Animation",cardScaleAnimer);
-        AnConfigRegistry.getInstance().addAnimer("Card TranslationX Animation",cardTransXAnimer);
-        mAnimerConfiguratorView.refreshAnimerConfigs();
+```java
+AnConfigView mAnimerConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
+AnConfigRegistry.getInstance().addAnimer("Card Scale Animation",cardScaleAnimer);
+AnConfigRegistry.getInstance().addAnimer("Card TranslationX Animation",cardTransXAnimer);
+mAnimerConfiguratorView.refreshAnimerConfigs();
 ```
 
 

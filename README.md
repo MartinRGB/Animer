@@ -1,7 +1,10 @@
 <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" width="264" height="100" />
 for a better Android Animation Experience
 
+
 [ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.3) ](https://bintray.com/martinrgb/animer/animer/0.1.5.3/link)
+
+## How to Use
 
 
 
@@ -51,9 +54,9 @@ for a better Android Animation Experience
 
 **Dev Tools**
 
-- Data-bind graph to modify and preview animation in application
-- Data-bind selctor to change animation-type in application
+- Data-bind graph to modify and preview animation in application ✅
+- Data-bind selctor to change animation-type in application ✅（Still has some bugs)
 
 **Utils**
 
-- AE Plugin for converting curves & revealing codes
+- AE Plugin for converting curves & revealing codes ✅（Will update GUI later)

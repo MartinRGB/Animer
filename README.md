@@ -100,14 +100,14 @@ animer.setCurrentValue(1.f);
 
 boolean isScaled = false;
 
-iv1.setOnClickListener(view -> {
+myView.setOnClickListener(view -> {
 
     if(!isScaled){
         animer.setEndValue(0.5);
 
     }
     else{
-        animer4.setEndvalue(1);
+        animer.setEndvalue(1);
     }
     isScaled = !isScaled;
 });

@@ -1,9 +1,7 @@
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png" width="264" height="100" />
-for a better Android Animation Experience,see project in:
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" width="264" height="100" />
+for a better Android Animation Experience
 
-[demo branch](https://github.com/MartinRGB/Animer/tree/demo)
-
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.4.2) ](https://bintray.com/martinrgb/animer/animer/0.1.4.2/link)
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.3) ](https://bintray.com/martinrgb/animer/animer/0.1.5.3/link)
 
 
 

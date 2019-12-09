@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView iv1,iv2,iv3,iv4;
     private Animer animer1,animer2,animer3,animer4,animer5,animer6,animer7;
     private boolean isOpen,isOpen2,isOpen3,isOpen4 = false;
-    private  AnConfigView mSpringConfiguratorView;
+    private  AnConfigView mAnimerConfiguratorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +47,27 @@ public class MainActivity extends AppCompatActivity {
         Animer.AnimerSolver solverB  = Animer.springDroid(1000,0.5f);
 
 
-        animer1 = new Animer(iv1,solverB,Animer.TRANSLATION_X,0,600);
+        //animer1 = new Animer(iv1,solverB,Animer.TRANSLATION_X,0,600);
+        animer1 = new Animer();
+        animer1.setSolver(solverB);
+        animer1.setUpdateListener(new Animer.UpdateListener() {
+            @Override
+            public void onUpdate(float value, float velocity, float progress) {
+                iv1.setTranslationX(value);
+            }
+        });
+        animer1.setStateValue("stateA",300);
+        animer1.setStateValue("stateB",700);
+        animer1.setStateValue("stateC",200);
+
         animer2 = new Animer(iv2,Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),1500),Animer.TRANSLATION_X,0,500);
+
         animer3 = new Animer(iv3,Animer.interpolatorDroid(new DecelerateInterpolator(2),1200),Animer.TRANSLATION_X,0,720);
         animer4 = new Animer(iv1,Animer.springRK4(100,10),Animer.ROTATION,1,1.2f);
         animer5 = new Animer(iv2,Animer.springDHO(200,20),Animer.ROTATION,0,720);
         animer6 = new Animer(iv3,Animer.springOrigamiPOP(30,10),Animer.ROTATION,200,800);
         animer7 = new Animer(iv4,Animer.springRK4(230,15),Animer.SCALE,1,0.5f);
+
 
         PathInterpolator pathInterpolator = new PathInterpolator(0.5f,0.5f,0.5f,0.5f);
 
@@ -61,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
         animer2.setCurrentValue(200);
         animer3.setCurrentValue(200);
 
-        mSpringConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addAnimer("B色 - S",animer7);
+
+
+        mAnimerConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
+        AnConfigRegistry.getInstance().addAnimer("Image Scale Animation",animer7);
         AnConfigRegistry.getInstance().addAnimer("R色 - X",animer1);
         AnConfigRegistry.getInstance().addAnimer("B色 - Xsssssssssssss",animer2);
         AnConfigRegistry.getInstance().addAnimer("G色 - X",animer3);
@@ -70,17 +86,18 @@ public class MainActivity extends AppCompatActivity {
         AnConfigRegistry.getInstance().addAnimer("B色 - R",animer5);
         AnConfigRegistry.getInstance().addAnimer("G色 - R",animer6);
 
-        mSpringConfiguratorView.refreshAnimerConfigs();
+        mAnimerConfiguratorView.refreshAnimerConfigs();
 
         iv1.setOnClickListener(view -> {
 
             if(!isOpen){
-                animer1.setEndvalue(800);
+                animer1.animateToState("stateA");
                 animer4.setEndvalue(720);
 
             }
             else{
-                animer1.setEndvalue(200);
+                //animer1.setEndvalue(200);
+                animer1.animateToState("stateB");
                 animer4.setEndvalue(0);
             }
             isOpen = !isOpen;

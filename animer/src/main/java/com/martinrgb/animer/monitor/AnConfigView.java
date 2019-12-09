@@ -366,6 +366,7 @@ public class AnConfigView extends FrameLayout {
                 // will not excute in init
                 solverTypeSpinnerAdapter.setSelectedItemIndex(i);
                 if(typeChecker > 0) {
+                    //TODO Bugs Here
                     if(typeSpinnerIsFixedSelection){
                         typeSpinnerIsFixedSelection = false;
                     }
@@ -379,6 +380,7 @@ public class AnConfigView extends FrameLayout {
 
                     }
                 }
+
                 typeChecker++;
             }
         }

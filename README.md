@@ -8,6 +8,8 @@ It contains animation curves in `Android` `iOS` `Origami(POP or Rebound in Clien
 
 All these animation algorithm will be translated into Android's native implementation like PhysicsAnimation & TimingInterpolator,which can improve the performance of animation.
 
+It also provides a real-time controller & graph UI for tweaking parameters. 
+
 Web version —— [Animator List](http://www.martinrgb.com/Animator_List/#)
 
 AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)

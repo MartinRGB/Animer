@@ -8,9 +8,9 @@ It contains animation curves in `Android` `iOS` `Origami(POP or Rebound in Clien
 
 All these animation algorithm will be translated into Android's native implementation like PhysicsAnimation & TimingInterpolator,which can improve the performance of animation.
 
-If you are looking for web version,check this —— [Animator List](http://www.martinrgb.com/Animator_List/#)
+Web version —— [Animator List](http://www.martinrgb.com/Animator_List/#)
 
-If you are looking for AE plugin(only script currently),check this —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
+AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
 
 ## Download
 [ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.3) ](https://bintray.com/martinrgb/animer/animer/0.1.5.3/link)

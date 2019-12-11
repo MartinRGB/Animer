@@ -452,7 +452,7 @@ void main(){
 
 
     //#Scale
-    float mScale = 0.85;
+    float mScale = 0.8;
     st *= 1./mScale;
     st -= (1./mScale - 1.)/2.;
 

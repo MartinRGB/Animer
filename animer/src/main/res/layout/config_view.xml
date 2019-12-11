@@ -51,7 +51,7 @@
             android:layout_width="312dp"
             android:layout_height="160dp"
             android:layout_gravity="center"
-            android:background="@drawable/grid">
+            android:background="@drawable/ic_grid">
 
             <com.martinrgb.animer.monitor.shader.ShaderSurfaceView
                 android:id="@+id/shader_surfaceview"

@@ -26,10 +26,10 @@ public class PrototypeActivity extends AppCompatActivity {
 
     private static final Animer.AnimerSolver solverRect = Animer.springRK4(650,45);
     private static final Animer.AnimerSolver solverScale = Animer.springRK4(400,30f);
-    private static final Animer.AnimerSolver solverButtonScale = Animer.springRK4(400,30f);
-    private static final Animer.AnimerSolver solverRadius = Animer.interpolatorDroid(new FastOutSlowInInterpolator(),400);
+    private static final Animer.AnimerSolver solverButtonScale = Animer.springRK4(500,30f);
+    private static final Animer.AnimerSolver solverRadius = Animer.interpolatorDroid(new FastOutSlowInInterpolator(),600);
     private static final Animer.AnimerSolver solverTrans = Animer.springDroid(800,0.95f);
-    private static final Animer.AnimerSolver solverAlpha = Animer.interpolatorDroid(new LinearInterpolator(),150);
+    private static final Animer.AnimerSolver solverAlpha = Animer.interpolatorDroid(new LinearInterpolator(),100);
     private static final Animer.AnimerSolver solverNav = Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),150);
 
     private Animer mRectAnimer,mTransAnimer,mRadiusAnimer,mAlphaAnimer, mNavAnimer,mScaleAnimer,mScaleButtonAnimer;

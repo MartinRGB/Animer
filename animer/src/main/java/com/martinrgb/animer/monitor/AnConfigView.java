@@ -58,7 +58,7 @@ public class AnConfigView extends FrameLayout {
     private int listSize = 2;
     private static int SEEKBAR_START_ID = 15000;
     private static int SEEKLABEL_START_ID_START_ID = 20000;
-    private static int EDITTEXT_START_ID_START_ID = 20000;
+    private static int EDITTEXT_START_ID_START_ID = 25000;
     private static final int MAX_SEEKBAR_VAL = 100000;
     private static final int MIN_SEEKBAR_VAL = 1;
     private static final DecimalFormat DECIMAL_FORMAT_2 = new DecimalFormat("#.##");
@@ -324,6 +324,7 @@ public class AnConfigView extends FrameLayout {
 
     private int typeChecker,objectChecker = 0;
     private boolean typeSpinnerIsFixedSelection = false;
+    private int prevTypeIndex = -1,typeIndex = -1;
 
     private class SoverSelectedListener implements AdapterView.OnItemSelectedListener {
 
@@ -337,6 +338,9 @@ public class AnConfigView extends FrameLayout {
                 if(currentAnimer !=null && currentAnimer.getTriggerListener() !=null){
                     currentAnimer.removeTriggerListener();
                 }
+                if(typeIndex !=-1){
+                    prevTypeIndex = typeIndex;
+                }
                 currentAnimer = (Animer) mAnimerObjectsMap.getValue(i);
                 currentAnimer.setTriggerListener(triggeredListener);
                 //shaderSurfaceView.requestRender();
@@ -348,17 +352,21 @@ public class AnConfigView extends FrameLayout {
                 // will not excute in init
                 if(objectChecker > 0){
                     typeSpinnerIsFixedSelection = true;
-                    int typeIndex;
                     // select the right interpolator
-                    if(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")) == "AndroidInterpolator"){
+                    if(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")).toString().contains("AndroidInterpolator")){
                         typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName()));
                     }
                     // select the right animator
                     else{
                         typeIndex = mSolverTypesMap.getIndexByString(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type").toString());
                     }
-                    mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
 
+                    // when aniamtor type is equal,fix bugs
+                    if(mSolverTypeSelectorSpinner.getSelectedItemPosition() == typeIndex){
+                        typeSpinnerIsFixedSelection = false;
+                    }
+
+                    mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
                 }
 
                 objectChecker++;
@@ -367,10 +375,10 @@ public class AnConfigView extends FrameLayout {
                 // will not excute in init
                 solverTypeSpinnerAdapter.setSelectedItemIndex(i);
                 if(typeChecker > 0) {
-                    //TODO Bugs Here
                     if(typeSpinnerIsFixedSelection){
                         typeSpinnerIsFixedSelection = false;
                     }
+                    //TODO Remeber Parameters Before
                     else{
                         // reset animer from Map
                         Animer.AnimerSolver seltectedSolver = (Animer.AnimerSolver) mSolverTypesMap.getValue(i);
@@ -378,10 +386,8 @@ public class AnConfigView extends FrameLayout {
                         recreateList();
                         redefineMinMax(currentAnimer.getCurrentSolver());
                         updateSeekBars(currentAnimer.getCurrentSolver());
-
                     }
                 }
-
                 typeChecker++;
             }
         }
@@ -465,12 +471,10 @@ public class AnConfigView extends FrameLayout {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            //Log.e("BeforeChange",String.valueOf(s));
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            //Log.e("onTextChanged",String.valueOf(s));
         }
 
         @Override
@@ -526,8 +530,6 @@ public class AnConfigView extends FrameLayout {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int val, boolean b) {
-
-            //Log.e("On Process Changed","On Process Changed");
 
             //TODO Request Renderer
 
@@ -649,61 +651,6 @@ public class AnConfigView extends FrameLayout {
                 break;
             }
         }
-
-//        if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("PathInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.0f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("LinearInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.1f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("AccelerateDecelerateInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.2f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("AccelerateInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.3f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("DecelerateInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.4f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("AnticipateInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.5f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("OvershootInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.6f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("AnticipateOvershootInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.7f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("BounceInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.8f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("CycleInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.9f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("FastOutSlowInInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.1f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("LinearOutSlowInInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.11f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("FastOutLinearInInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.12f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("CustomMocosSpringInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.13f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("CustomSpringInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.14f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("CustomBounceInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.15f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("CustomDampingInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.16f);
-//        }
-//        else if(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName().contains("AndroidSpringInterpolator")){
-//            shaderSurfaceView.setCurveMode(2.17f);
-//        }
     }
 
     private Object getConvertValueByIndexAndType(int i,String type){

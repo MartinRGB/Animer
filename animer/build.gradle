@@ -44,7 +44,7 @@ publish {
     groupId = 'com.martinrgb'
     repoName = 'animer'
     artifactId = 'animer'
-    publishVersion = '0.1.5.5'
+    publishVersion = '0.1.5.7'
     desc = 'An animation controller for better Android Experience'
     website = "https://github.com/MartinRGB/Animer"
 }

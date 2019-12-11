@@ -8,7 +8,7 @@ Animer is a java library which designed for a better Android animation experienc
 
 It contains animation curves in `Android` `iOS` `Origami(POP or Rebound in Client)` `Principle` `Protopie` `FramerJS`
 
-All these animation algorithm will be translated into Android's native implementation like PhysicsAnimation & TimingInterpolator,which can improve the performance of animation.
+All these animation algorithm will be translated into Android's native implementation like DynamicAnimation & TimingInterpolator,which can improve the performance of animation.
 
 It also provides a real-time controller & graph UI for tweaking parameters. 
 
@@ -21,12 +21,12 @@ AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://g
 [Simple Demo 2](https://github.com/MartinRGB/Animer/files/3948863/app-debug.zip)
 
 ## Download
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.5) ](https://bintray.com/martinrgb/animer/animer/0.1.5.5/link)
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.7) ](https://bintray.com/martinrgb/animer/animer/0.1.5.7/link)
 
 
 ```
 dependencies {
-    implementation 'com.martinrgb:animer:0.1.5.5'
+    implementation 'com.martinrgb:animer:0.1.5.7'
 }
 ```
 
@@ -138,6 +138,59 @@ AnConfigRegistry.getInstance().addAnimer("Card Scale Animation",cardScaleAnimer)
 AnConfigRegistry.getInstance().addAnimer("Card TranslationX Animation",cardTransXAnimer);
 mAnimerConfiguratorView.refreshAnimerConfigs();
 ```
+
+
+### Supported View Propertys:
+
+```
+Animer.TRANSLATION_X
+Animer.TRANSLATION_Y
+Animer.TRANSLATION_Z
+Animer.SCALE // equal to SCALE_X + SCALE_Y
+Animer.SCALE_X
+Animer.SCALE_Y
+Animer.ROTATION
+Animer.ROTATION_X
+Animer.ROTATION_Y
+Animer.X
+Animer.Y
+Animer.Z
+Animer.ALPHA
+```
+
+### Supported Animators(as AnimerSolver):
+
+```java
+
+Animer.springDroid(stiffness,dampingratio)                              // Android Dynamic SpringAnimation
+Animer.flingDroid(velocity,friction)                                    // Android Dynamic FlingAnimation
+Animer.springiOSUIView(dampingratio,duration)                           // iOS UIView SPring
+Animer.springiOSCoreAnimation(stiffness,damping)                        // iOS CASpringAnimation
+Animer.springOrigamiPOP(bounciness,speed)                               // Origami POP
+Animer.springRK4(tension,friction)                                      // Framer-RK4
+Animer.springDHO(stiffness,damping)                                     // Framer-DHO
+Animer.springProtopie(tension,friction)                                 // Protopie
+Animer.springPrinciple(tension,friction)                                // Principle
+
+// Custom Bounce Interpolator(Romain Guy's DropInMotion)
+Animer.interpolatorDroid(new CustomBounceInterpolator(),duration)       
+
+// Custom Damping Interpolator(Romain Guy's DropInMotion)
+Animer.interpolatorDroid(new CustomDampingInterpolator(),duration)      
+
+// MocosSpring Interpolator (https://github.com/marcioapaiva/mocos-controlator)
+Animer.interpolatorDroid(new CustomMocosSpringInterpolator(),duration)  
+
+// Custom Spring Interpolator(https://inloop.github.io/interpolator/)
+Animer.interpolatorDroid(new CustomSpringInterpolator(),duration)       
+// Android Native Interpolator Below
+Animer.interpolatorDroid(new PathInterpolator(),duration)               // Cubic Bezier Interpolator
+...
+Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Android Decelerate Interpolator
+...
+
+```
+
 
 
 ## Core concpet:

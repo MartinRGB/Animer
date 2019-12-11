@@ -83,15 +83,15 @@ public class MainActivity extends AppCompatActivity {
         iv1.setOnClickListener(view -> {
 
             if(!isOpen){
-                animer1.setEndvalue(800);
+                animer1.setEndValue(800);
                 //animer1.animateToState("stateA");
-                animer4.setEndvalue(720);
+                animer4.setEndValue(720);
 
             }
             else{
-                animer1.setEndvalue(200);
+                animer1.setEndValue(200);
                 //animer1.animateToState("stateB");
-                animer4.setEndvalue(0);
+                animer4.setEndValue(0);
             }
             isOpen = !isOpen;
         });
@@ -99,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
         iv2.setOnClickListener(view -> {
 
             if(!isOpen2){
-                animer2.setEndvalue(800);
-                animer5.setEndvalue(720);
+                animer2.setEndValue(800);
+                animer5.setEndValue(720);
 
             }
             else{
-                animer2.setEndvalue(200);
-                animer5.setEndvalue(0);
+                animer2.setEndValue(200);
+                animer5.setEndValue(0);
             }
             isOpen2 = !isOpen2;
         });
@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
         iv3.setOnClickListener(view -> {
 
             if(!isOpen3){
-                animer3.setEndvalue(800);
-                animer6.setEndvalue(720);
+                animer3.setEndValue(800);
+                animer6.setEndValue(720);
 
             }
             else{
-                animer3.setEndvalue(200);
-                animer6.setEndvalue(0);
+                animer3.setEndValue(200);
+                animer6.setEndValue(0);
             }
             isOpen3 = !isOpen3;
         });
@@ -127,10 +127,10 @@ public class MainActivity extends AppCompatActivity {
         iv4.setOnClickListener(view -> {
 
             if(!isOpen4){
-                animer7.setEndvalue(0.5f);
+                animer7.setEndValue(0.5f);
             }
             else{
-                animer7.setEndvalue(1f);
+                animer7.setEndValue(1f);
             }
             isOpen4 = !isOpen4;
         });

@@ -763,18 +763,18 @@ public class AnConfigView extends FrameLayout {
                     break;
                 case MotionEvent.ACTION_UP:
                     if( Math.abs(nubDragMoveY) > (maxValue - minValue)/3){
-                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?maxValue:minValue);
+                        mRevealAnimer.setEndValue((currViewTransY == minValue)?maxValue:minValue);
                     }
                     else{
-                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?minValue:maxValue);
+                        mRevealAnimer.setEndValue((currViewTransY == minValue)?minValue:maxValue);
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     if( Math.abs(nubDragMoveY) > (maxValue - minValue)/3){
-                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?maxValue:minValue);
+                        mRevealAnimer.setEndValue((currViewTransY == minValue)?maxValue:minValue);
                     }
                     else{
-                        mRevealAnimer.setEndvalue((currViewTransY == minValue)?minValue:maxValue);
+                        mRevealAnimer.setEndValue((currViewTransY == minValue)?minValue:maxValue);
                     }
                     break;
             }
@@ -789,12 +789,12 @@ public class AnConfigView extends FrameLayout {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    mFPSAnimer.setEndvalue(0.8f);
+                    mFPSAnimer.setEndValue(0.8f);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     break;
                 case MotionEvent.ACTION_UP:
-                    mFPSAnimer.setEndvalue(1f);
+                    mFPSAnimer.setEndValue(1f);
                     if (String.valueOf(fpsView.getText()).contains("FPS")) {
                         FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
                             @Override
@@ -818,7 +818,7 @@ public class AnConfigView extends FrameLayout {
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
-                    mFPSAnimer.setEndvalue(1);
+                    mFPSAnimer.setEndValue(1);
                     if (String.valueOf(fpsView.getText()).contains("FPS")) {
                         FPSDetector.create().addFrameDataCallback(new FrameDataCallback() {
                             @Override

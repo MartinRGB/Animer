@@ -736,7 +736,7 @@ public class Animer<T> {
 
     // # Equal to [setEndValue]
 
-    public void setEndvalue(float value){
+    public void setEndValue(float value){
         if(triggereListener != null){
             triggereListener.onTrigger(true);
             //triggereListener.onTrigger(false);

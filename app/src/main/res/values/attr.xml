@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SmoothCornersImage">
+        <attr name="smooth_radius" format="integer"/>
+        <attr name="is_square" format="boolean"/>
+    </declare-styleable>
+</resources>

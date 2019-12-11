@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    style="@style/ActivityStyle"
+    tools:context=".PrototypeActivity">
+
+    <ImageView
+        android:id="@+id/top_iv"
+        android:layout_width="335dp"
+        android:layout_height="241dp"
+        android:src="@drawable/top"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="12dp"
+        />
+
+    <com.martinrgb.animerexample.SmoothCornersImage
+        android:id="@+id/smooth_iv"
+        android:layout_width="335dp"
+        android:layout_height="140dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="306dp"
+        android:translationX="36px"
+        android:scaleType="fitXY"
+        android:src="@drawable/image_default"
+        app:smooth_radius="60"
+        app:is_square="false"/>
+
+    <ImageView
+        android:id="@+id/smooth_text_iv"
+        android:layout_width="311dp"
+        android:layout_height="35dp"
+        android:src="@drawable/text"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="462dp"
+        android:layout_marginLeft="23dp"
+        />
+
+    <ImageView
+        android:id="@+id/bottom_iv"
+        android:layout_width="335dp"
+        android:layout_height="192dp"
+        android:src="@drawable/bottom"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="528dp"
+        android:layout_marginLeft="12dp"
+        />
+
+    <ImageView
+        android:id="@+id/nav_iv"
+        android:layout_width="360dp"
+        android:layout_height="98dp"
+        android:src="@drawable/nav_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        />
+
+    <ImageView
+        android:id="@+id/detail_text_iv"
+        android:alpha ="0"
+        android:layout_width="337dp"
+        android:layout_height="371dp"
+        android:src="@drawable/detail_text"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="389dp"
+        android:layout_marginLeft="12dp"
+        />
+
+    <ImageView
+        android:id="@+id/arrow_iv"
+        android:src="@drawable/ic_arrow"
+        android:alpha ="0"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"/>
+
+    <com.martinrgb.animer.monitor.AnConfigView
+        android:id="@+id/an_configurator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+</RelativeLayout>

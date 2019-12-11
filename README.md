@@ -81,7 +81,7 @@ animer.switchToState("stateA");
 
 ### Facebook Rebound Style
 ```java
-// equal to Android's SpringAnimation
+// equal to 
 
 Animer.AnimerSolver solver  = Animer.springOrigamiPOP(5,10);
 

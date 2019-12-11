@@ -17,7 +17,7 @@ Web version —— [Animator List](http://www.martinrgb.com/Animator_List/#)
 AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
 
 ## Download
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.3) ](https://bintray.com/martinrgb/animer/animer/0.1.5.5/link)
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.5) ](https://bintray.com/martinrgb/animer/animer/0.1.5.5/link)
 
 
 ```

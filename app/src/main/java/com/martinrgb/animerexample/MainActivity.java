@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
         animer7 = new Animer(iv4,Animer.springRK4(230,15),Animer.SCALE,1,0.5f);
 
 
+        animer1.setCurrentValue(200);
+        animer2.setCurrentValue(200);
+        animer3.setCurrentValue(200);
+
         mAnimerConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
         AnConfigRegistry.getInstance().addAnimer("Image Scale Animation",animer7);
         AnConfigRegistry.getInstance().addAnimer("Red TranslationX",animer1);

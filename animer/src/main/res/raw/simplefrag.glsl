@@ -463,7 +463,7 @@ void main(){
     if(st.x>-0.01 &&st.y>-0.5 && st.y<1.5 && st.x<1.01){
         color = plot2D(st,lineWidth,vec3(1.));
         if(st.x<timeProgress){
-            color += plot2D(st,lineWidth,vec3(-255./255.,0./255.,0./255.));
+            color += plot2D(st,lineWidth,vec3(-0./255.,-255./255.,-255./255.));
         }
     }
 
@@ -474,7 +474,7 @@ void main(){
     uv *= 1./mScale;
     uv -= (1./mScale - 1.)/2.;
 
-    color += vec4(-1000.,1.,1.,1.)*circle(uv - circlePos+vec2(0.001,0.004),circleRadius);
+    color += vec4(1.,-1000.,-1000.,1.)*circle(uv - circlePos+vec2(0.001,0.004),circleRadius);
 
     gl_FragColor = color;
 }

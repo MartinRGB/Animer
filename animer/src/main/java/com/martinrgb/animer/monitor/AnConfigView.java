@@ -358,6 +358,7 @@ public class AnConfigView extends FrameLayout {
                         typeIndex = mSolverTypesMap.getIndexByString(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type").toString());
                     }
                     mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
+
                 }
 
                 objectChecker++;

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mainColor">#FF3CFFFD</color>
+    <color name="mainColor">#E44C5C</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorTransparent">#00000000</color>
-    <color name="lighMainColor">#8591B2</color>
-    <color name="gradient_end">#EF636E89</color>
-    <color name="gradient_start">#EF3B4357</color>
-    <color name="nub_start">#EF66718D</color>
-    <color name="nub_end">#EF636E89</color>
+    <color name="lighMainColor">#4C4C4C</color>
+    <color name="gradient_end">#19181D</color>
+    <color name="gradient_start">#111112</color>
+    <color name="nub_start">#19181D</color>
+    <color name="nub_end">#1A191E</color>
 
 
 </resources>

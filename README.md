@@ -17,12 +17,12 @@ Web version —— [Animator List](http://www.martinrgb.com/Animator_List/#)
 AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
 
 ## Download
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.3) ](https://bintray.com/martinrgb/animer/animer/0.1.5.3/link)
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.3) ](https://bintray.com/martinrgb/animer/animer/0.1.5.5/link)
 
 
 ```
 dependencies {
-    implementation 'com.martinrgb:animer:0.1.5.3'
+    implementation 'com.martinrgb:animer:0.1.5.5'
 }
 ```
 
@@ -106,7 +106,7 @@ myView.setOnClickListener(view -> {
 
     }
     else{
-        animer.setEndvalue(1);
+        animer.setEndValue(1);
     }
     isScaled = !isScaled;
 });

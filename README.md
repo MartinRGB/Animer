@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" width="264" height="100" />
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/logo.png?token=ABVV6IRDJX54663FGBF3NAC5633SY" width="264"/>
 
 ## About
 
@@ -16,19 +16,19 @@ Web version(Convert Any Animation tools' parameters to Android's) —— [Animat
 
 AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
 
-[Simple Demo 1](https://github.com/MartinRGB/Animer/files/3948871/app-debug_2.zip)
-
-[Simple Demo 2](https://github.com/MartinRGB/Animer/files/3948863/app-debug.zip)
-
 ## Download
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.7) ](https://bintray.com/martinrgb/animer/animer/0.1.5.7/link)
 
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.7) ](https://bintray.com/martinrgb/animer/animer/0.1.5.7/link)
 
 ```
 dependencies {
     implementation 'com.martinrgb:animer:0.1.5.7'
 }
 ```
+
+[Simple Demo 1](https://github.com/MartinRGB/Animer/files/3948871/app-debug_2.zip)
+
+[Simple Demo 2](https://github.com/MartinRGB/Animer/files/3948863/app-debug.zip)
 
 ## Usage
 
@@ -119,7 +119,7 @@ myView.setOnClickListener(view -> {
 
 ### Add animers to configUI
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG" width="360" height="441" />
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG" width="360"  />
 
 init in xml
 
@@ -195,6 +195,8 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 
 ## Core concpet:
+
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" width="900" />
 
 **Data**
 

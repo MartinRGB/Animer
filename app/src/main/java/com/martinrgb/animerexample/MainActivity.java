@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.PathInterpolator;
 import android.widget.ImageView;
 
 //import com.codemonkeylabs.fpslibrary.FrameDataCallback;
@@ -15,6 +14,10 @@ import com.martinrgb.animer.Animer;
 import com.martinrgb.animer.core.interpolator.AndroidNative.AccelerateDecelerateInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidNative.DecelerateInterpolator;
 import com.martinrgb.animer.core.interpolator.AndroidNative.FastOutSlowInInterpolator;
+import com.martinrgb.animer.core.interpolator.AndroidNative.PathInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomBounceInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomMocosSpringInterpolator;
+import com.martinrgb.animer.core.interpolator.CustomSpringInterpolator;
 import com.martinrgb.animer.monitor.AnConfigRegistry;
 import com.martinrgb.animer.monitor.AnConfigView;
 import com.martinrgb.animer.monitor.fps.FPSBuilder;
@@ -45,18 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         Animer.AnimerSolver solverB  = Animer.springDroid(1000,0.5f);
 
-//        animer1 = new Animer();
-//        animer1.setSolver(solverB);
-//        animer1.setUpdateListener(new Animer.UpdateListener() {
-//            @Override
-//            public void onUpdate(float value, float velocity, float progress) {
-//                iv1.setTranslationX(value);
-//            }
-//        });
-//        animer1.setStateValue("stateA",300);
-//        animer1.setStateValue("stateB",700);
-//        animer1.setStateValue("stateC",200);
-
         animer1 = new Animer(iv1,solverB,Animer.TRANSLATION_X,0,500);
         animer2 = new Animer(iv2,Animer.interpolatorDroid(new AccelerateDecelerateInterpolator(),1500),Animer.TRANSLATION_X,0,500);
         animer3 = new Animer(iv3,Animer.interpolatorDroid(new DecelerateInterpolator(2),1200),Animer.TRANSLATION_X,0,720);
@@ -64,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         animer5 = new Animer(iv2,Animer.springDHO(200,20),Animer.ROTATION,0,720);
         animer6 = new Animer(iv3,Animer.springOrigamiPOP(30,10),Animer.ROTATION,200,800);
         animer7 = new Animer(iv4,Animer.springRK4(230,15),Animer.SCALE,1,0.5f);
-
 
         animer1.setCurrentValue(200);
         animer2.setCurrentValue(200);

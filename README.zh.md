@@ -4,6 +4,8 @@
 
 <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif"/>
 
+Launguage:[English](https://github.com/MartinRGB/Animer)
+
 Animer 是一款致力于提升 Android 动画体验的 Java 库，目前主要功能是基于 `View 动画`的控制器和调试器
 
 Animer 封装了:

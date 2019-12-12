@@ -6,7 +6,9 @@
 
 Launguage:[English](https://github.com/MartinRGB/Animer)
 
-Animer 是一款致力于提升 Android 动画体验的 Java 库，目前主要功能是基于 `View 动画`的控制器和调试器
+Animer 是一款致力于提升 Android 动画体验的 Java 库
+
+你可以把 Animer 理解为`基于 View 动画` 、`强化动画控制、交互性` 的动画器，并提供了调试UI
 
 Animer 封装了:
 

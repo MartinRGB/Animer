@@ -4,6 +4,8 @@
 
 <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif"/>
 
+[中文说明](https://github.com/MartinRGB/Animer/blob/master/README.zh.md)
+
 Animer is a java library which designed for a better Android animation experience.（Currently is more like a view animation controller)
 
 It contains animation curves in `Android` `iOS` `Origami(POP or Rebound in Client)` `Principle` `Protopie` `FramerJS`

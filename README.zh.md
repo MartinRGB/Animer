@@ -35,9 +35,11 @@ dependencies {
 }
 ```
 
-[View 动画 Demo 1](https://github.com/MartinRGB/Animer/files/3948871/app-debug_2.zip)
+## 两个简单的 View 实现的快速原型
 
-[View 动画 Demo 2](https://github.com/MartinRGB/Animer/files/3948863/app-debug.zip)
+[View Demo 1](https://github.com/MartinRGB/Animer/files/3948871/app-debug_2.zip)
+
+[View Demo 2](https://github.com/MartinRGB/Animer/files/3948863/app-debug.zip)
 
 ## 使用方法
 

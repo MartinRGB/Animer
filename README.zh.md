@@ -214,15 +214,15 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 **数据**
 
-- [FramerJS]的动画状态机概念(https://github.com/koenbok/Framer/tree/master/framer) ✅
-- [Animation Converter]中的多平台、工具动画器转换函数(https://github.com/MartinRGB/AndroidInterpolator_AE) ✅
+- FramerJS 的[动画状态机概念](https://github.com/koenbok/Framer/tree/master/framer) ✅
+- Animation Converter 中的[多平台、工具动画器转换函数](https://github.com/MartinRGB/AndroidInterpolator_AE) ✅
 - 支持读取外部 JSON 编辑动画(???)
 
 **算法**
 
-- [Rebound]的物理动画概念(https://github.com/facebook/rebound) & Android DynamicAnimation ✅
+- Rebound 的[物理动画概念](https://github.com/facebook/rebound) & Android DynamicAnimation ✅
 - Android 原生的 查找表插值器（LookupTable Interpolator） + RK4 弹性解算器 + DHO 弹性解算器 ✅
-- [Flutter Physics]的物理模拟(https://api.flutter.dev/flutter/physics/physics-library.html) & [UIKit Dyanmic]的物理模拟(https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
+- Flutter Physics 的[物理模拟](https://api.flutter.dev/flutter/physics/physics-library.html) & UIKit Dyanmic 的[物理模拟](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - 动量传递与保存（通过状态机实现）
 
 **高级动画**

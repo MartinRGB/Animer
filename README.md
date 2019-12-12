@@ -192,7 +192,12 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 ```
 
+## TODO
 
+- Redesign the API
+- Rewrite the glsl shader
+- Consider scences in activity/fragment transition
+- Hook mechanism 
 
 ## Core concpet:
 

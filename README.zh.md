@@ -215,7 +215,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 下图是 Animer 大致的原理和设计思路
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" width="900" />
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept_cn.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept_cn.jpg" width="900" />
 
 **数据**
 

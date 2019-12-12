@@ -234,7 +234,6 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - Use android framework native DyanmicAniamtion And TimingInterpolator ✅
 - Pre-save animation's data for less calculation
 - Hardware Acceleration ✅
-- RenderThread
 
 **Design Component**
 

@@ -17,7 +17,7 @@ Animer 封装了:
 * 贝塞尔函数曲线 (iOS Deafult Easing,Web Default CSS Easing，AE 拉两个关键帧间曲线 都可以用此法实现） 
 * Principle、Origami、Protopie、FramerJS 等动画工具的曲线
 
-Animer 并没有像 Rebound 那样，通过 Choreographer 或者自构建 Looper ，从头构建一套动画器，而是将上述曲线的算法通过转换器，最终会转换成 Android 原生的 DynamicAnimation 或者 TimingInterpolator，进而提高动画执行性能。
+Animer 并没有像 [Rebound](https://github.com/facebook/rebound) 那样，通过 Choreographer 或者自构建 Looper ，从头构建一套动画器，而是将上述曲线的算法通过转换器，最终会转换成 Android 原生的 DynamicAnimation 或者 TimingInterpolator，进而提高动画执行性能。
 
 Animer 提供了可实时调节的控制UI和曲线图表，以便设计师和开发者调节参数，节省编译时间。
 
@@ -224,7 +224,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 **算法**
 
-- Rebound 的[物理动画概念](https://github.com/facebook/rebound) & Android DynamicAnimation ✅
+- Rebound 的[物理动画概念](https://github.com/facebook/rebound) 和 Android 的 DynamicAnimation ✅
 - Android 原生的 查找表插值器（LookupTable Interpolator） + RK4 弹性解算器 + DHO 弹性解算器 ✅
 - Flutter Physics 的[物理模拟](https://api.flutter.dev/flutter/physics/physics-library.html) & UIKit Dyanmic 的[物理模拟](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - 动量传递与保存（通过状态机实现）

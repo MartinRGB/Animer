@@ -209,6 +209,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - 重写绘制图表的 shader，目前使用了太多条件分歧，参考[如何在shader中避免使用if else](https://www.bilibili.com/read/cv1469216/)
 - 考虑转场的使用场景
 - 考虑 Hook 机制
+- 考虑重新设计调试UI，因为不方便连续调试，可能考虑 adb + electron + web桌面客户端的方式
 
 ## Animer 设计的核心理念和一些想法
 
@@ -248,7 +249,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - 可考虑将动画数据转换为预存数组，以便节省实时计算开销
 - 硬件加速 ✅
 
-**设计组建**
+**设计组件**
 
 - Scrollview|Scroller|PageViewer 组件跟案例，提供更好的 Overscroll 和 Fling 效果
 - Drag | 拖拽组件跟案例，提供更符合物理直觉的甩手感

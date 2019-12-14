@@ -14,9 +14,9 @@ All these animation algorithm will be translated into Android's native implement
 
 It also provides a real-time controller & graph UI for tweaking parameters. 
 
-Web version(Convert Any Animation tools' parameters to Android's) —— [Animator List](http://www.martinrgb.com/Animer_Web/#)
+Web version(Convert Any Animation tools' parameters to Android's) —— [Animer_Web](http://www.martinrgb.com/Animer_Web/#)
 
-AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animer_AE)
+AE plugin(only scripts currently) —— [Animer_AE](https://github.com/MartinRGB/Animer_AE)
 
 ## Download
 

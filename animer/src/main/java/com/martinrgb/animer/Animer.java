@@ -465,14 +465,12 @@ public class Animer<T> {
     private void attachSolverToFling(AnimerSolver solver, FlingAnimation flingAnimation){
         final FlingAnimation flingAnim = flingAnimation;
         flingAnim.setStartVelocity((float) solver.getArg1());
-        //flingAnim.setStartVelocity(mPhysicsState.getPhysicsVelocity());
         flingAnim.setFriction((float) solver.getArg2());
 
         solver.bindSolverListener(new AnimerSolver.SolverListener() {
             @Override
             public void onSolverUpdate(Object arg1, Object arg2) {
                 flingAnim.setStartVelocity((float) arg1);
-                //flingAnim.setStartVelocity(mPhysicsState.getPhysicsVelocity());
                 flingAnim.setFriction((float) arg2);
             }
         });

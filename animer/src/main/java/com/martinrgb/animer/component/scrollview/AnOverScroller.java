@@ -11,6 +11,7 @@ import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
 import com.martinrgb.animer.Animer;
+import com.martinrgb.animer.core.math.calculator.FlingCalculator;
 
 public class AnOverScroller {
 
@@ -23,6 +24,8 @@ public class AnOverScroller {
     private boolean isSpringBackLocked = false;
     private boolean isDyanmicDamping = false;
     private boolean isVertical = true;
+    private boolean isFixedScroll = false;
+    private float fixedCellWidth = 0;
 
     public AnOverScroller(Context context) {
         this(context, null);
@@ -192,25 +195,61 @@ public class AnOverScroller {
                       int minX, int maxX, int minY, int maxY, int overX, int overY) {
 
 
-        Log.e("fling",String.valueOf("fling"));
+        // TODO:springBack 机制
+        if(isFixedScroll()){
+            FlingCalculator flingCalculator = new FlingCalculator(velocityX,(float)flingAnimer.getArgument2());
+            float flingTransition = flingCalculator.getTransiton();
 
-        if(ScrollerisVertScroll()){
-            flingAnimation.setStartVelocity(velocityY);
-            scrollValue.setValue(startY);
+
+            if(ScrollerisVertScroll()){
+                springAnimation.setStartVelocity(velocityY);
+                scrollValue.setValue(startY);
+                springAnimation.setStartValue(startY);
+            }
+            else {
+                springAnimation.setStartVelocity(velocityX);
+                scrollValue.setValue(startX);
+                springAnimation.setStartValue(startX);
+            }
+
+            springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
+            springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
+
+            if(ScrollerisVertScroll()){
+
+                float roundValue = Math.round(((startY + flingCalculator.getTransiton())/fixedCellWidth))*fixedCellWidth;
+                springAnimation.getSpring().setFinalPosition(roundValue);
+            }
+            else {
+                float roundValue = Math.round(((startX + flingCalculator.getTransiton())/fixedCellWidth))*fixedCellWidth;
+                springAnimation.getSpring().setFinalPosition(roundValue);
+            }
+            springAnimation.start();
+
         }
         else {
-            flingAnimation.setStartVelocity(velocityX);
-            scrollValue.setValue(startX);
+            if(ScrollerisVertScroll()){
+                flingAnimation.setStartVelocity(velocityY);
+                scrollValue.setValue(startY);
+            }
+            else {
+                flingAnimation.setStartVelocity(velocityX);
+                scrollValue.setValue(startX);
+            }
+
+            if(getDynamicFlingFrictionState()){
+                float dynamicDamping = (ScrollerisVertScroll())? (float) mapValueFromRangeToRange(Math.abs(velocityY),0,24000,1.35,0.5) :  (float) mapValueFromRangeToRange(Math.abs(velocityX),0,24000,1.35,0.5);
+                flingAnimation.setFriction(dynamicDamping);
+            }
+            else {
+                flingAnimation.setFriction((float)flingAnimer.getArgument2());
+            }
+            flingAnimation.start();
         }
 
-        if(getDynamicFlingFrictionState()){
-            float dynamicDamping = (ScrollerisVertScroll())? (float) mapValueFromRangeToRange(Math.abs(velocityY),0,24000,1.35,0.5) :  (float) mapValueFromRangeToRange(Math.abs(velocityX),0,24000,1.35,0.5);
-            flingAnimation.setFriction(dynamicDamping);
-        }
-        else {
-            flingAnimation.setFriction((float)flingAnimer.getArgument2());
-        }
-        flingAnimation.start();
+
+
+
 
     }
 
@@ -232,6 +271,14 @@ public class AnOverScroller {
 
     public boolean getDynamicFlingFrictionState(){
         return isDyanmicDamping;
+    }
+
+    public void setFixedScroll(boolean fixedScroll,float cellWidth){
+        isFixedScroll = fixedScroll;
+        fixedCellWidth = cellWidth;
+    }
+    private boolean isFixedScroll(){
+        return  isFixedScroll;
     }
 
     private void setSpringBackLockedState(boolean springBackLocked) {

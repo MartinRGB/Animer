@@ -7,7 +7,7 @@ public class FlingCalculator {
     private float mDuration;
     private float mTransiton;
 
-    public FlingCalculator(float friction,float velocity) {
+    public FlingCalculator(float velocity,float friction) {
         mFriction = friction*-4.2f;
         mVelocity = velocity;
         mDuration = calculate()[0];

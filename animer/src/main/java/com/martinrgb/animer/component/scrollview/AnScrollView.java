@@ -2145,5 +2145,8 @@ public class AnScrollView extends FrameLayout {
     private boolean isVertScroll(){
         return IS_VERTICAL_SCROLL;
     }
+    public void setFixedScroll(boolean boo,float width){
+        mScroller.setFixedScroll(boo,width);
+    }
 
 }

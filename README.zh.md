@@ -21,9 +21,9 @@ Animer 并没有像 [Rebound](https://github.com/facebook/rebound) 那样，通�
 
 Animer 提供了可实时调节的控制UI和曲线图表，以便设计师和开发者调节参数，节省编译时间。
 
-网页版本(该网页主要功能是可以将其他平台、工具的参数转化为安卓原生动画类的参数) —— [Animator List](http://www.martinrgb.com/Animator_List/#)
+网页版本(该网页主要功能是可以将其他平台、工具的参数转化为安卓原生动画类的参数) —— [Animer_Web](http://www.martinrgb.com/Animer_Web/#)
 
-AE 插件(目前仅仅是脚本形式，而且建议使用英文版 AE) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
+AE 插件(目前仅仅是脚本形式，而且建议使用英文版 AE) —— [Animer_AE](https://github.com/MartinRGB/Animer_AE)
 
 ## 下载
 
@@ -215,7 +215,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 下图是 Animer 大致的原理和设计思路
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" width="900" />
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept_cn.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept_cn.jpg" width="900" />
 
 **数据**
 

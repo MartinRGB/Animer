@@ -14,9 +14,9 @@ All these animation algorithm will be translated into Android's native implement
 
 It also provides a real-time controller & graph UI for tweaking parameters. 
 
-Web version(Convert Any Animation tools' parameters to Android's) —— [Animator List](http://www.martinrgb.com/Animator_List/#)
+Web version(Convert Any Animation tools' parameters to Android's) —— [Animer_Web](http://www.martinrgb.com/Animer_Web/#)
 
-AE plugin(only scripts currently) —— [Animator_List_AE_OpenSource](https://github.com/MartinRGB/Animator_List_AE_OpenSource)
+AE plugin(only scripts currently) —— [Animer_AE](https://github.com/MartinRGB/Animer_AE)
 
 ## Download
 
@@ -203,7 +203,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 ## Core concpet:
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept.jpg" width="900" />
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept_en.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/concept_en.jpg" width="900" />
 
 **Data**
 

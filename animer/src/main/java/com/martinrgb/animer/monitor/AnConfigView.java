@@ -574,6 +574,7 @@ public class AnConfigView extends FrameLayout {
                     Object val2 = getConvertValueByIndexAndType(1, currentObjectType);
                     float convertVal1 = Float.valueOf(String.valueOf(val1));
                     float convertVal2 = Float.valueOf(String.valueOf(val2));
+                    currentAnimer.getCurrentSolver().setArg2(Math.max(0.01f,(float)val2));
                     shaderSurfaceView.setCurveMode(0);
                     shaderSurfaceView.setFactorInput(convertVal1,0);
                     shaderSurfaceView.setFactorInput(convertVal2,1);

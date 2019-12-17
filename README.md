@@ -22,11 +22,11 @@ AE plugin(only scripts currently) —— [Animer_AE](https://github.com/MartinRG
 
 ## Download
 
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.7) ](https://bintray.com/martinrgb/animer/animer/0.1.5.7/link)
+[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.8) ](https://bintray.com/martinrgb/animer/animer/0.1.5.8/link)
 
 ```
 dependencies {
-    implementation 'com.martinrgb:animer:0.1.5.7'
+    implementation 'com.martinrgb:animer:0.1.5.8'
 }
 ```
 

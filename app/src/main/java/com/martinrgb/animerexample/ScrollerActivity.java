@@ -52,6 +52,13 @@ public class ScrollerActivity extends AppCompatActivity {
         for (int i = 0; i < ROW_COUNT; i++) {
 
             ExampleRowView exampleRowView = new ExampleRowView(getApplicationContext());
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    (int) LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            exampleRowView.getRootLayout().setLayoutParams(params);
+
             exampleRowView.setHeader("Header " + i);
             exampleRowView.setSub("Sub " + i);
             exampleRowView.setImage(imageViews[i%4]);
@@ -124,11 +131,13 @@ public class ScrollerActivity extends AppCompatActivity {
         private final TextView mHeaderView;
         private final TextView mSubView;
         private final SmoothCornersImage mImageView;
+        private final LinearLayout root;
 
         public ExampleRowView(Context context) {
             super(context);
             LayoutInflater inflater = LayoutInflater.from(context);
             ViewGroup view = (ViewGroup) inflater.inflate(R.layout.custom_cell_view, this, false);
+            root = view.findViewById(R.id.root);
             mHeaderView = (TextView) view.findViewById(R.id.head_view);
             mSubView = (TextView) view.findViewById(R.id.sub_view);
             mImageView = view.findViewById(R.id.img_view);
@@ -145,6 +154,9 @@ public class ScrollerActivity extends AppCompatActivity {
         public void setImage(int id) {
             mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),id));
             mImageView.setScaleType(ImageView.ScaleType.MATRIX);
+        }
+        public LinearLayout getRootLayout(){
+            return root;
         }
     }
 

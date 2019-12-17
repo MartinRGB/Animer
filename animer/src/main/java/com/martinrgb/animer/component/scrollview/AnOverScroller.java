@@ -299,9 +299,7 @@ public class AnOverScroller {
 
     }
 
-    private static double mapValueFromRangeToRange(
-            double value,
-            double fromLow,
+    private static double mapValueFromRangeToRange(double value,double fromLow,
             double fromHigh,
             double toLow,
             double toHigh) {

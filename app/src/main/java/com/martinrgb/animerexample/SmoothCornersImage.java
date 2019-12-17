@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -16,6 +17,8 @@ import android.graphics.Xfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+
 import androidx.appcompat.widget.AppCompatImageView;
 
 
@@ -26,6 +29,7 @@ public class SmoothCornersImage extends AppCompatImageView {
 
     private Bitmap imageBitmap;
     private Rect dstRect;
+    private Matrix matrix;
 
     float cx, cy;
 
@@ -83,6 +87,27 @@ public class SmoothCornersImage extends AppCompatImageView {
             dstRect = new Rect(0, 0, w, h);
             this.WIDTH = isSquare()?Math.min(w,h):w;
             this.HEIGHT = isSquare()?Math.min(w,h):h;
+
+            matrix = new Matrix();
+            Point canvasCenter = new Point((int)this.cx,(int)this.cy);
+            Point bmpCenter = new Point(this.imageBitmap.getWidth() / 2, this.imageBitmap.getHeight() / 2);
+
+            float xRatio = bmpCenter.x/this.cx;
+            float yRatio = bmpCenter.y/this.cy;
+
+            float ratio;
+            if(xRatio > yRatio){
+                ratio = 1/yRatio;
+            }
+            else {
+                ratio = 1/xRatio;
+            }
+
+            Log.e("ratio", String.valueOf(ratio));
+
+            matrix.postTranslate(cx - bmpCenter.x, cy - bmpCenter.y);
+            matrix.postScale(ratio,ratio, cx, cy);
+
         }
     }
 
@@ -164,8 +189,9 @@ public class SmoothCornersImage extends AppCompatImageView {
 
             if(imageBitmap.getWidth() != 1){
 
-                canvas.drawBitmap(this.imageBitmap, -(this.imageBitmap.getWidth() - canvas.getWidth())/2, -(this.imageBitmap.getHeight() - canvas.getHeight())/2, paint);
-
+                //canvas.drawBitmap(this.imageBitmap, -(this.imageBitmap.getWidth() - canvas.getWidth())/2, -(this.imageBitmap.getHeight() - canvas.getHeight())/2, paint);
+                //canvas.drawBitmap(this.imageBitmap, 0,0, paint);
+                canvas.drawBitmap(this.imageBitmap,matrix,paint);
             }
             else{
                 canvas.drawBitmap(this.imageBitmap, null, dstRect, paint);

@@ -2,11 +2,10 @@
 
 ## 关于
 
-<div id="container" style="display:flex">
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" style="border-radius: 10px;border: 1px solid #dedede; !important"/>
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs_2.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif_2" style="margin-left: 20px;border-radius: 10px;border: 1px solid #dedede; !important"/>
-</div>
+| MonitorUI Example        | Scroller Example           | View Prototype  |
+| ------------- |-------------| ----- |
+|     <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif"/> |     <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs_2.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif_2"/> |    <img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs_3.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif_3"/>
 
 Launguage:[English](https://github.com/MartinRGB/Animer)
 

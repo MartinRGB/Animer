@@ -17,9 +17,8 @@ public class AnOverScroller {
 
     private FlingAnimation flingAnimation;
     private SpringAnimation springAnimation;
-    private Animer flingAnimer;
-    private Animer springAnimer;
-    private Animer springAsFlingAnimer;
+    private Animer flingAnimer,springAnimer,flingSpringAnimer;
+    private Animer scrollAnimer;
     private FloatValueHolder scrollValue;
     private FloatValueHolder scrollSpeed;
     private boolean canSpringBack = true;
@@ -31,6 +30,7 @@ public class AnOverScroller {
     private final Animer.AnimerSolver defaultFling = Animer.flingDroid(4000,0.8f);
     private final Animer.AnimerSolver springAsFling = Animer.springDroid(50,0.99f);
 
+    private boolean isAnimerDriven = true;
 
 
     public AnOverScroller(Context context) {
@@ -53,47 +53,87 @@ public class AnOverScroller {
 
     public AnOverScroller(Context context, Interpolator interpolator, boolean flywheel) {
 
-        springAnimer = new Animer();
-        springAnimer.setSolver(defaultSpring);
+        if(!isAnimerDriven){
+            springAnimer = new Animer();
+            springAnimer.setSolver(defaultSpring);
 
-        flingAnimer = new Animer();
-        flingAnimer.setSolver(defaultFling);
+            flingAnimer = new Animer();
+            flingAnimer.setSolver(defaultFling);
 
-        springAsFlingAnimer = new Animer();
-        springAsFlingAnimer.setSolver(springAsFling);
+            flingSpringAnimer = new Animer();
+            flingSpringAnimer.setSolver(springAsFling);
 
-        scrollValue = new FloatValueHolder();
-        scrollSpeed = new FloatValueHolder();
-        scrollValue.setValue(0);
-        flingAnimation = new FlingAnimation(scrollValue);
-        flingAnimation.setFriction((float)flingAnimer.getArgument2());
-        flingAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
-            @Override
-            public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                scrollSpeed.setValue(velocity);
-            }
-        });
-
-        springAnimation = new SpringAnimation(scrollValue);
-        springAnimation.setSpring(new SpringForce());
-        springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
-        springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
-        springAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
-            @Override
-            public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                if(isSpringBack()){
-                    setSpringBack(false);
+            scrollValue = new FloatValueHolder();
+            scrollSpeed = new FloatValueHolder();
+            scrollValue.setValue(0);
+            flingAnimation = new FlingAnimation(scrollValue);
+            flingAnimation.setFriction((float)flingAnimer.getArgument2());
+            flingAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+                @Override
+                public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
+                    scrollSpeed.setValue(velocity);
                 }
-                scrollSpeed.setValue(velocity);
-            }
-        });
-        springAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
-            @Override
-            public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                setSpringBack(true);
-                scrollSpeed.setValue(0);
-            }
-        });
+            });
+
+            springAnimation = new SpringAnimation(scrollValue);
+            springAnimation.setSpring(new SpringForce());
+            springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
+            springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
+            springAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+                @Override
+                public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
+                    if(isSpringBack()){
+                        setSpringBack(false);
+                    }
+                    scrollSpeed.setValue(velocity);
+                }
+            });
+            springAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
+                @Override
+                public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
+                    setSpringBack(true);
+                    scrollSpeed.setValue(0);
+                }
+            });
+        }
+        else{
+            scrollValue = new FloatValueHolder();
+            scrollSpeed = new FloatValueHolder();
+            scrollValue.setValue(0);
+
+            springAnimer = new Animer();
+            springAnimer.setSolver(defaultSpring);
+
+            flingSpringAnimer = new Animer();
+            flingSpringAnimer.setSolver(springAsFling);
+
+            flingAnimer = new Animer();
+            flingAnimer.setSolver(defaultFling);
+
+            scrollAnimer = new Animer(scrollValue.getValue());
+            scrollAnimer.setArgument1(springAnimer.getArgument1());
+            scrollAnimer.setArgument2(springAnimer.getArgument2());
+
+            scrollAnimer.setUpdateListener(new Animer.UpdateListener() {
+                @Override
+                public void onUpdate(float value, float velocity, float progress) {
+                    if (isSpringBack()) {
+                        setSpringBack(false);
+                    }
+                    scrollValue.setValue(value);
+                    scrollSpeed.setValue(velocity);
+                }
+            });
+
+            scrollAnimer.setEndListener(new Animer.EndListener() {
+                @Override
+                public void onEnd(float value, float velocity, boolean canceled) {
+                    setSpringBack(true);
+                    scrollValue.setValue(value);
+                    scrollSpeed.setValue(0);
+                }
+            });
+        }
 
     }
 
@@ -143,158 +183,246 @@ public class AnOverScroller {
         }
     }
 
+    //TODO:Should Only run one time
     public boolean springBack(int startX, int startY, int velocityX,int velocityY,int minX, int maxX, int minY, int maxY) {
 
-        Log.e("springBack","SpringBack");
-        Log.e("speed",String.valueOf(scrollSpeed.getValue()));
-        if(scrollerisVertScroll()){
+        if(!isAnimerDriven){
 
-            if (startY > maxY || startY < minY) {
+            if(scrollerisVertScroll()){
 
-                if(!isFixedScroll){
-                    flingAnimation.cancel();
-
-
-                    if (isSpringBack()) {
-                        scrollValue.setValue(startY);
-                        springAnimation.setStartValue(startY);
-                        springAnimation.setStartVelocity(scrollSpeed.getValue());
-
-                        springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
-                        springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
-
-                        if (startY > maxY) {
-                            springAnimation.getSpring().setFinalPosition(maxY);
-                        } else if (startY < minY) {
-                            springAnimation.getSpring().setFinalPosition(minY);
+                if (startY > maxY || startY < minY) {
+                    if(!isFixedScroll){
+                        flingAnimation.cancel();
+                        if (isSpringBack()) {
+                            springFunctions(startY,minY,maxY);
                         }
-                        springAnimation.start();
                     }
-                }
-                else {
-                    scrollValue.setValue(startY);
-                    springAnimation.setStartValue(startY);
-                    springAnimation.setStartVelocity(scrollSpeed.getValue());
-
-                    springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
-                    springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
-
-                    if (startY > maxY) {
-                        springAnimation.getSpring().setFinalPosition(maxY);
-                    } else if (startY < minY) {
-                        springAnimation.getSpring().setFinalPosition(minY);
+                    else {
+                        springFunctions(startY,minY,maxY);
                     }
-                    springAnimation.start();
-                }
 
-                return true;
+                    return true;
+                }
             }
+            else {
+                if (startX > maxX || startX < minX) {
+                    if(!isFixedScroll){
+                        flingAnimation.cancel();
+                        if (isSpringBack()) {
+                            springFunctions(startX,minX,maxX);
+                        }
+                    }
+                    else {
+                        springFunctions(startX,minX,maxX);
+                    }
 
+                    return true;
+                }
+            }
         }
         else {
-            if (startX > maxX || startX < minX) {
+            if(scrollerisVertScroll()){
 
-                if(!isFixedScroll){
-                    flingAnimation.cancel();
-
-                    if (isSpringBack()) {
-                        scrollValue.setValue(startX);
-                        springAnimation.setStartValue(startX);
-                        springAnimation.setStartVelocity(scrollSpeed.getValue());
-
-                        springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
-                        springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
-
-                        if (startX > maxX) {
-                            springAnimation.getSpring().setFinalPosition(maxX);
-                        } else if (startX < minX) {
-                            springAnimation.getSpring().setFinalPosition(minX);
-                        }
-                        springAnimation.start();
+                if (startY > maxY || startY < minY) {
+                    if(!isFixedScroll){
+//                        scrollAnimer.cancel();
+//                        if (isSpringBack()) {
+//                            springFunctions(startY,minY,maxY);
+//                        }
+                        springFunctions(startY,minY,maxY);
                     }
-                }
-                else {
-
-                    scrollValue.setValue(startX);
-                    springAnimation.setStartValue(startX);
-                    springAnimation.setStartVelocity(scrollSpeed.getValue());
-
-                    springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
-                    springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
-
-                    if (startX > maxX) {
-                        springAnimation.getSpring().setFinalPosition(maxX);
-                    } else if (startX < minX) {
-                        springAnimation.getSpring().setFinalPosition(minX);
+                    else {
+                        springFunctions(startY,minY,maxY);
                     }
-                    springAnimation.start();
 
+                    return true;
                 }
+            }
+            else {
+                if (startX > maxX || startX < minX) {
+                    if(!isFixedScroll){
+//                        scrollAnimer.cancel();
+//                        if (isSpringBack()) {
+//                            springFunctions(startX,minX,maxX);
+//                        }
+                        springFunctions(startX,minX,maxX);
+                    }
+                    else {
+                        springFunctions(startX,minX,maxX);
+                    }
 
-                return true;
+                    return true;
+                }
             }
         }
 
         return true;
     }
 
+    private  int i,a = 0;
+
+    private void springFunctions(float val,float min,float max){
+
+        if(!isAnimerDriven){
+            scrollValue.setValue(val);
+            springAnimation.setStartValue(val);
+            springAnimation.setStartVelocity(scrollSpeed.getValue());
+
+            springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
+            springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
+
+            if (val > max) {
+                springAnimation.getSpring().setFinalPosition(max);
+            } else if (val < min) {
+                springAnimation.getSpring().setFinalPosition(min);
+            }
+            springAnimation.start();
+        }else {
+
+            // TODO: When fixedScroll, velocity is not correct;
+            // setFrom | setVelocity didnt work cause when start() triggered:
+            // mSpringAnimation.setStartValue(getCurrentPhysicsValue());
+            // mSpringAnimation.setStartVelocity(getCurrentPhysicsVelocity());
+            // mSpringAnimation.animateToFinalPosition(getStateValue(state));
+            // scrollAnimer.setFrom(val);
+            // scrollAnimer.setVelocity(scrollSpeed.getValue());
+            scrollValue.setValue(val);
+            scrollAnimer.setFrom(val);
+            scrollAnimer.setVelocity(scrollSpeed.getValue());
+            scrollAnimer.setArgument1((float)springAnimer.getArgument1());
+            scrollAnimer.setArgument2((float)springAnimer.getArgument2());
+
+            if (val > max) {
+                scrollAnimer.setTo(max);
+            } else if (val < min) {
+                scrollAnimer.setTo(min);
+            }
+
+            scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(val);
+            scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(scrollSpeed.getValue());
+
+            scrollAnimer.start();
+        }
+
+    }
+
     public void fling(int startX, int startY, int velocityX, int velocityY,
                       int minX, int maxX, int minY, int maxY, int overX, int overY) {
 
-        if(isFixedScroll()){
-            FlingCalculator flingCalculator;
-            if(scrollerisVertScroll()){
-                flingCalculator = new FlingCalculator(velocityY,(float)flingAnimer.getArgument2());
-            }
-            else {
-                flingCalculator = new FlingCalculator(velocityX,(float)flingAnimer.getArgument2());
-            }
+        if(!isAnimerDriven) {
+            if (isFixedScroll()) {
+                FlingCalculator flingCalculator;
 
-            float flingTransition = flingCalculator.getTransiton();
+                if (scrollerisVertScroll()) {
+                    flingCalculator = new FlingCalculator(velocityY, (float) flingAnimer.getArgument2());
+                    float flingTransition = flingCalculator.getTransiton();
+                    springAnimation.setStartVelocity(velocityY);
+                    scrollValue.setValue(startY);
+                    springAnimation.setStartValue(startY);
+                    float roundValue = Math.round(((startY + flingTransition) / fixedCellWidth)) * fixedCellWidth;
+                    springAnimation.getSpring().setFinalPosition(roundValue);
+                } else {
+                    flingCalculator = new FlingCalculator(velocityX, (float) flingAnimer.getArgument2());
+                    float flingTransition = flingCalculator.getTransiton();
+                    springAnimation.setStartVelocity(velocityX);
+                    scrollValue.setValue(startX);
+                    springAnimation.setStartValue(startX);
+                    float roundValue = Math.round(((startX + flingTransition) / fixedCellWidth)) * fixedCellWidth;
+                    springAnimation.getSpring().setFinalPosition(roundValue);
+                }
 
-            if(scrollerisVertScroll()){
-                springAnimation.setStartVelocity(velocityY);
-                scrollValue.setValue(startY);
-                springAnimation.setStartValue(startY);
-            }
-            else {
-                springAnimation.setStartVelocity(velocityX);
-                scrollValue.setValue(startX);
-                springAnimation.setStartValue(startX);
-            }
+                springAnimation.getSpring().setStiffness((float) flingSpringAnimer.getArgument1());
+                springAnimation.getSpring().setDampingRatio((float) flingSpringAnimer.getArgument2());
+                springAnimation.start();
+            } else {
+                if (scrollerisVertScroll()) {
+                    flingAnimation.setStartVelocity(velocityY);
+                    scrollValue.setValue(startY);
+                } else {
+                    flingAnimation.setStartVelocity(velocityX);
+                    scrollValue.setValue(startX);
+                }
 
-            springAnimation.getSpring().setStiffness((float)springAsFlingAnimer.getArgument1());
-            springAnimation.getSpring().setDampingRatio((float)springAsFlingAnimer.getArgument2());
-
-            if(scrollerisVertScroll()){
-                float roundValue = Math.round(((startY + flingTransition)/fixedCellWidth))*fixedCellWidth;
-                springAnimation.getSpring().setFinalPosition(roundValue);
+                if (getDynamicFlingFrictionState()) {
+                    float dynamicDamping;
+                    if(scrollerisVertScroll()){
+                        dynamicDamping = (scrollerisVertScroll()) ? (float) mapValueFromRangeToRange(Math.abs(velocityY), 0, 24000, 1.35, 0.5) : (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5);
+                    }
+                    else {
+                        dynamicDamping = (scrollerisVertScroll()) ? (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5) : (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5);
+                    }
+                    flingAnimation.setFriction(dynamicDamping);
+                } else {
+                    flingAnimation.setFriction((float) flingAnimer.getArgument2());
+                }
+                flingAnimation.start();
             }
-            else {
-                float roundValue = Math.round(((startX + flingTransition)/fixedCellWidth))*fixedCellWidth;
-                springAnimation.getSpring().setFinalPosition(roundValue);
-            }
-            springAnimation.start();
-
         }
         else {
-            if(scrollerisVertScroll()){
-                flingAnimation.setStartVelocity(velocityY);
-                scrollValue.setValue(startY);
-            }
-            else {
-                flingAnimation.setStartVelocity(velocityX);
-                scrollValue.setValue(startX);
-            }
 
-            if(getDynamicFlingFrictionState()){
-                float dynamicDamping = (scrollerisVertScroll())? (float) mapValueFromRangeToRange(Math.abs(velocityY),0,24000,1.35,0.5) :  (float) mapValueFromRangeToRange(Math.abs(velocityX),0,24000,1.35,0.5);
-                flingAnimation.setFriction(dynamicDamping);
+            if(isFixedScroll()){
+                FlingCalculator flingCalculator;
+                if(scrollerisVertScroll()){
+                    flingCalculator = new FlingCalculator(velocityY,(float)flingAnimer.getArgument2());
+                    float flingTransition = flingCalculator.getTransiton();
+
+                    scrollAnimer.setVelocity(velocityY);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(velocityY);
+                    scrollAnimer.setFrom(startY);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(startY);
+                    float roundValue = Math.round(((startY + flingTransition)/fixedCellWidth))*fixedCellWidth;
+                    scrollAnimer.setTo(roundValue);
+                }
+                else {
+
+                    scrollAnimer.cancel();
+                    flingCalculator = new FlingCalculator(velocityX,(float)flingAnimer.getArgument2());
+                    float flingTransition = flingCalculator.getTransiton();
+
+                    scrollAnimer.setVelocity(velocityX);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(velocityX);
+                    scrollAnimer.setFrom(startX);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(startX);
+                    float roundValue = Math.round(((startX + flingTransition)/fixedCellWidth))*fixedCellWidth;
+                    scrollAnimer.setTo(roundValue);
+                }
+
+                scrollAnimer.setArgument1((float) flingSpringAnimer.getArgument1());
+                scrollAnimer.setArgument2((float) flingSpringAnimer.getArgument2());
+
+                scrollAnimer.start();
             }
             else {
-                flingAnimation.setFriction((float)flingAnimer.getArgument2());
+                if(scrollerisVertScroll()){
+                    scrollAnimer.setSolver(flingAnimer.getCurrentSolver());
+                    scrollAnimer.setArgument1((float)velocityY);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(velocityY);
+                    scrollAnimer.setFrom(startY);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(startY);
+                }
+                else {
+                    scrollAnimer.setSolver(flingAnimer.getCurrentSolver());
+                    scrollAnimer.setArgument1((float)velocityX);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(velocityX);
+                    scrollAnimer.setFrom(startX);
+                    scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(startX);
+                }
+
+                if(getDynamicFlingFrictionState()){
+                    float dynamicDamping;
+                    if(scrollerisVertScroll()){
+                        dynamicDamping = (scrollerisVertScroll()) ? (float) mapValueFromRangeToRange(Math.abs(velocityY), 0, 24000, 1.35, 0.5) : (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5);
+                    }
+                    else {
+                        dynamicDamping = (scrollerisVertScroll()) ? (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5) : (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5);
+                    }
+                    scrollAnimer.setArgument2((float)dynamicDamping);
+                }
+                else {
+                    //flingAnimation.setFriction((float)flingAnimer.getArgument2());
+                }
+                scrollAnimer.start();
             }
-            flingAnimation.start();
         }
 
     }
@@ -310,16 +438,31 @@ public class AnOverScroller {
     }
 
     public boolean computeScrollOffset() {
-        return (flingAnimation.isRunning() || springAnimation.isRunning());
+        if(!isAnimerDriven){
+            return (flingAnimation.isRunning() || springAnimation.isRunning());
+        }
+        else {
+            return scrollAnimer.isRunning();
+        }
     }
 
     public final boolean isFinished() {
-        return !(springAnimation.isRunning() || flingAnimation.isRunning());
+        if(!isAnimerDriven){
+            return !(springAnimation.isRunning() || flingAnimation.isRunning());
+        }
+        else {
+            return !scrollAnimer.isRunning();
+        }
     }
 
     public void abortAnimation() {
-        springAnimation.cancel();
-        flingAnimation.cancel();
+        if(!isAnimerDriven){
+            springAnimation.cancel();
+            flingAnimation.cancel();
+        }
+        else {
+            scrollAnimer.cancel();
+        }
     }
 
     public void setDynamicFlingFrictionState(boolean dynamicDampingState){
@@ -345,8 +488,9 @@ public class AnOverScroller {
         return flingAnimer;
     }
     public Animer getFakeFlingAnimer(){
-        return springAsFlingAnimer;
+        return flingSpringAnimer;
     }
+
     public void setVertScroll(boolean is_vertical) {
         this.isVertical = is_vertical;
     }

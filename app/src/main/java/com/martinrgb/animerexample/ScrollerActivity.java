@@ -23,8 +23,6 @@ import com.martinrgb.animer.component.scrollview.AnScrollView;
 import com.martinrgb.animer.monitor.AnConfigRegistry;
 import com.martinrgb.animer.monitor.AnConfigView;
 
-import java.util.ArrayList;
-
 public class ScrollerActivity extends AppCompatActivity {
 
 

@@ -371,6 +371,22 @@ public class Animer<T> {
         setupBySolver(solver);
     }
 
+    public <K> Animer(float value) {
+        mTarget = null;
+        mProperty = null;
+        mPhysicsState = new PhysicsState((float)value);
+        ANIMATOR_MODE = VALUE_ANIMATOR_MODE;
+        setupBySolver(currentSolver);
+    }
+
+    public <K> Animer(AnimerSolver solver,float value) {
+        mTarget = null;
+        mProperty = null;
+        mPhysicsState = new PhysicsState((float) value);
+        ANIMATOR_MODE = VALUE_ANIMATOR_MODE;
+        setupBySolver(solver);
+    }
+
     public <K> Animer(K target, AnimerSolver solver, AnimerProperty property) {
         mTarget = target;
         mProperty = property;

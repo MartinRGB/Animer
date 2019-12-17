@@ -2134,6 +2134,9 @@ public class AnScrollView extends FrameLayout {
     public Animer getFlingAnimer(){
         return mScroller.getFlingAnimer();
     }
+    public Animer getFakeFlingAnimer(){
+        return mScroller.getFakeFlingAnimer();
+    }
     public void setDyanmicFriction(boolean boo){
         mScroller.setDynamicFlingFrictionState(boo);
     }

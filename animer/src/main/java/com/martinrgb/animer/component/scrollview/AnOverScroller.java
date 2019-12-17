@@ -19,13 +19,19 @@ public class AnOverScroller {
     private SpringAnimation springAnimation;
     private Animer flingAnimer;
     private Animer springAnimer;
+    private Animer springAsFlingAnimer;
     private FloatValueHolder scrollValue;
     private FloatValueHolder scrollSpeed;
-    private boolean isSpringBackLocked = false;
+    private boolean canSpringBack = true;
     private boolean isDyanmicDamping = false;
     private boolean isVertical = true;
     private boolean isFixedScroll = false;
     private float fixedCellWidth = 0;
+    private final Animer.AnimerSolver defaultSpring = Animer.springDroid(150,0.99f);
+    private final Animer.AnimerSolver defaultFling = Animer.flingDroid(4000,0.8f);
+    private final Animer.AnimerSolver springAsFling = Animer.springDroid(50,0.99f);
+
+
 
     public AnOverScroller(Context context) {
         this(context, null);
@@ -48,10 +54,13 @@ public class AnOverScroller {
     public AnOverScroller(Context context, Interpolator interpolator, boolean flywheel) {
 
         springAnimer = new Animer();
-        springAnimer.setSolver(Animer.springDroid(150,0.99f));
+        springAnimer.setSolver(defaultSpring);
 
         flingAnimer = new Animer();
-        flingAnimer.setSolver(Animer.flingDroid(4000,0.8f));
+        flingAnimer.setSolver(defaultFling);
+
+        springAsFlingAnimer = new Animer();
+        springAsFlingAnimer.setSolver(springAsFling);
 
         scrollValue = new FloatValueHolder();
         scrollSpeed = new FloatValueHolder();
@@ -72,15 +81,16 @@ public class AnOverScroller {
         springAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
             @Override
             public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                if(!getSpringBackLockedState()){
-                    setSpringBackLockedState(true);
+                if(isSpringBack()){
+                    setSpringBack(false);
                 }
+                scrollSpeed.setValue(velocity);
             }
         });
         springAnimation.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
             public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                setSpringBackLockedState(false);
+                setSpringBack(true);
                 scrollSpeed.setValue(0);
             }
         });
@@ -88,7 +98,7 @@ public class AnOverScroller {
     }
 
     public final int getCurrX() {
-        if(ScrollerisVertScroll()){
+        if(scrollerisVertScroll()){
             return 0;
         }
         else {
@@ -97,7 +107,7 @@ public class AnOverScroller {
     }
 
     public final int getCurrY() {
-        if(ScrollerisVertScroll()){
+        if(scrollerisVertScroll()){
             return Math.round(scrollValue.getValue());
         }
         else {
@@ -107,7 +117,7 @@ public class AnOverScroller {
     }
 
     public float getCurrVelocityY() {
-        if(ScrollerisVertScroll()){
+        if(scrollerisVertScroll()){
             return (float) scrollSpeed.getValue();
         }
         else {
@@ -116,7 +126,7 @@ public class AnOverScroller {
     }
 
     public float getCurrVelocityX() {
-        if(ScrollerisVertScroll()){
+        if(scrollerisVertScroll()){
             return 0;
         }
         else {
@@ -125,7 +135,7 @@ public class AnOverScroller {
     }
 
     public void startScroll(int startX, int startY, int dx, int dy) {
-        if(ScrollerisVertScroll()){
+        if(scrollerisVertScroll()){
             scrollValue.setValue(startY);
         }
         else {
@@ -135,14 +145,33 @@ public class AnOverScroller {
 
     public boolean springBack(int startX, int startY, int velocityX,int velocityY,int minX, int maxX, int minY, int maxY) {
 
-        if(ScrollerisVertScroll()){
+        Log.e("springBack","SpringBack");
+        Log.e("speed",String.valueOf(scrollSpeed.getValue()));
+        if(scrollerisVertScroll()){
 
             if (startY > maxY || startY < minY) {
 
-                flingAnimation.cancel();
+                if(!isFixedScroll){
+                    flingAnimation.cancel();
 
 
-                if (!getSpringBackLockedState()) {
+                    if (isSpringBack()) {
+                        scrollValue.setValue(startY);
+                        springAnimation.setStartValue(startY);
+                        springAnimation.setStartVelocity(scrollSpeed.getValue());
+
+                        springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
+                        springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
+
+                        if (startY > maxY) {
+                            springAnimation.getSpring().setFinalPosition(maxY);
+                        } else if (startY < minY) {
+                            springAnimation.getSpring().setFinalPosition(minY);
+                        }
+                        springAnimation.start();
+                    }
+                }
+                else {
                     scrollValue.setValue(startY);
                     springAnimation.setStartValue(startY);
                     springAnimation.setStartVelocity(scrollSpeed.getValue());
@@ -165,10 +194,27 @@ public class AnOverScroller {
         else {
             if (startX > maxX || startX < minX) {
 
-                flingAnimation.cancel();
+                if(!isFixedScroll){
+                    flingAnimation.cancel();
 
+                    if (isSpringBack()) {
+                        scrollValue.setValue(startX);
+                        springAnimation.setStartValue(startX);
+                        springAnimation.setStartVelocity(scrollSpeed.getValue());
 
-                if (!getSpringBackLockedState()) {
+                        springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
+                        springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
+
+                        if (startX > maxX) {
+                            springAnimation.getSpring().setFinalPosition(maxX);
+                        } else if (startX < minX) {
+                            springAnimation.getSpring().setFinalPosition(minX);
+                        }
+                        springAnimation.start();
+                    }
+                }
+                else {
+
                     scrollValue.setValue(startX);
                     springAnimation.setStartValue(startX);
                     springAnimation.setStartVelocity(scrollSpeed.getValue());
@@ -182,6 +228,7 @@ public class AnOverScroller {
                         springAnimation.getSpring().setFinalPosition(minX);
                     }
                     springAnimation.start();
+
                 }
 
                 return true;
@@ -194,14 +241,18 @@ public class AnOverScroller {
     public void fling(int startX, int startY, int velocityX, int velocityY,
                       int minX, int maxX, int minY, int maxY, int overX, int overY) {
 
-
-        // TODO:springBack 机制
         if(isFixedScroll()){
-            FlingCalculator flingCalculator = new FlingCalculator(velocityX,(float)flingAnimer.getArgument2());
+            FlingCalculator flingCalculator;
+            if(scrollerisVertScroll()){
+                flingCalculator = new FlingCalculator(velocityY,(float)flingAnimer.getArgument2());
+            }
+            else {
+                flingCalculator = new FlingCalculator(velocityX,(float)flingAnimer.getArgument2());
+            }
+
             float flingTransition = flingCalculator.getTransiton();
 
-
-            if(ScrollerisVertScroll()){
+            if(scrollerisVertScroll()){
                 springAnimation.setStartVelocity(velocityY);
                 scrollValue.setValue(startY);
                 springAnimation.setStartValue(startY);
@@ -212,23 +263,22 @@ public class AnOverScroller {
                 springAnimation.setStartValue(startX);
             }
 
-            springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
-            springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
+            springAnimation.getSpring().setStiffness((float)springAsFlingAnimer.getArgument1());
+            springAnimation.getSpring().setDampingRatio((float)springAsFlingAnimer.getArgument2());
 
-            if(ScrollerisVertScroll()){
-
-                float roundValue = Math.round(((startY + flingCalculator.getTransiton())/fixedCellWidth))*fixedCellWidth;
+            if(scrollerisVertScroll()){
+                float roundValue = Math.round(((startY + flingTransition)/fixedCellWidth))*fixedCellWidth;
                 springAnimation.getSpring().setFinalPosition(roundValue);
             }
             else {
-                float roundValue = Math.round(((startX + flingCalculator.getTransiton())/fixedCellWidth))*fixedCellWidth;
+                float roundValue = Math.round(((startX + flingTransition)/fixedCellWidth))*fixedCellWidth;
                 springAnimation.getSpring().setFinalPosition(roundValue);
             }
             springAnimation.start();
 
         }
         else {
-            if(ScrollerisVertScroll()){
+            if(scrollerisVertScroll()){
                 flingAnimation.setStartVelocity(velocityY);
                 scrollValue.setValue(startY);
             }
@@ -238,7 +288,7 @@ public class AnOverScroller {
             }
 
             if(getDynamicFlingFrictionState()){
-                float dynamicDamping = (ScrollerisVertScroll())? (float) mapValueFromRangeToRange(Math.abs(velocityY),0,24000,1.35,0.5) :  (float) mapValueFromRangeToRange(Math.abs(velocityX),0,24000,1.35,0.5);
+                float dynamicDamping = (scrollerisVertScroll())? (float) mapValueFromRangeToRange(Math.abs(velocityY),0,24000,1.35,0.5) :  (float) mapValueFromRangeToRange(Math.abs(velocityX),0,24000,1.35,0.5);
                 flingAnimation.setFriction(dynamicDamping);
             }
             else {
@@ -246,10 +296,6 @@ public class AnOverScroller {
             }
             flingAnimation.start();
         }
-
-
-
-
 
     }
 
@@ -265,30 +311,6 @@ public class AnOverScroller {
         return toLow + (valueScale * toRangeSize);
     }
 
-    public void setDynamicFlingFrictionState(boolean dynamicDampingState){
-        isDyanmicDamping = dynamicDampingState;
-    }
-
-    public boolean getDynamicFlingFrictionState(){
-        return isDyanmicDamping;
-    }
-
-    public void setFixedScroll(boolean fixedScroll,float cellWidth){
-        isFixedScroll = fixedScroll;
-        fixedCellWidth = cellWidth;
-    }
-    private boolean isFixedScroll(){
-        return  isFixedScroll;
-    }
-
-    private void setSpringBackLockedState(boolean springBackLocked) {
-        isSpringBackLocked = springBackLocked;
-    }
-
-    private boolean getSpringBackLockedState() {
-        return isSpringBackLocked;
-    }
-
     public boolean computeScrollOffset() {
         return (flingAnimation.isRunning() || springAnimation.isRunning());
     }
@@ -302,16 +324,44 @@ public class AnOverScroller {
         flingAnimation.cancel();
     }
 
+    public void setDynamicFlingFrictionState(boolean dynamicDampingState){
+        isDyanmicDamping = dynamicDampingState;
+    }
+
+    public boolean getDynamicFlingFrictionState(){
+        return isDyanmicDamping;
+    }
+
+    private void setSpringBack(boolean triggered) {
+        canSpringBack = triggered;
+    }
+
+    private boolean isSpringBack() {
+        return canSpringBack;
+    }
+
     public Animer getSpringAnimer(){
         return springAnimer;
     }
     public Animer getFlingAnimer(){
         return flingAnimer;
     }
+    public Animer getFakeFlingAnimer(){
+        return springAsFlingAnimer;
+    }
     public void setVertScroll(boolean is_vertical) {
         this.isVertical = is_vertical;
     }
-    private boolean ScrollerisVertScroll(){
+    private boolean scrollerisVertScroll(){
         return this.isVertical;
     }
+
+    public void setFixedScroll(boolean fixedScroll,float cellWidth){
+        isFixedScroll = fixedScroll;
+        fixedCellWidth = cellWidth;
+    }
+    private boolean isFixedScroll(){
+        return  isFixedScroll;
+    }
+
 }

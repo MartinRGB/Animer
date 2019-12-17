@@ -7,16 +7,32 @@
     tools:context=".MainActivity">
 
     <com.martinrgb.animer.component.scrollview.AnScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/scrollView_h"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
         <LinearLayout
-            android:id="@+id/content_view"
+            android:id="@+id/content_view_h"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             />
     </com.martinrgb.animer.component.scrollview.AnScrollView>
+
+    <com.martinrgb.animer.component.scrollview.AnScrollView
+        android:id="@+id/scrollView_v"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true">
+        <LinearLayout
+            android:id="@+id/content_view_v"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            />
+    </com.martinrgb.animer.component.scrollview.AnScrollView>
+
+
 
     <com.martinrgb.animer.monitor.AnConfigView
         android:id="@+id/an_configurator"

@@ -1,31 +1,20 @@
 package com.martinrgb.animerexample;
 
-import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -43,7 +32,8 @@ public class ScrollerActivity extends AppCompatActivity {
     private int[] imageViews = new int[]{R.drawable.img_1,R.drawable.img_2,R.drawable.img_3,R.drawable.img_4};
     private AnConfigView mAnimerConfiguratorView;
     private  int  cellSize;
-    private float screenWidth;
+    private float screenWidth,screenHeight;
+    private AnScrollView customScrollViewV,customScrollViewH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +41,25 @@ public class ScrollerActivity extends AppCompatActivity {
         deleteBars();
         setContentView(R.layout.activity_scroller);
         measureDisplay();
+        createLayout();
+        addAnimerConfig();
+    }
 
-        ViewGroup content = (ViewGroup) findViewById(R.id.content_view);
+    private void createLayout(){
+
+        // Vertical content
+        ViewGroup contentV = (ViewGroup) findViewById(R.id.content_view_v);
+        for (int i = 0; i < ROW_COUNT; i++) {
+
+            ExampleRowView exampleRowView = new ExampleRowView(getApplicationContext());
+            exampleRowView.setHeader("Header " + i);
+            exampleRowView.setSub("Sub " + i);
+            exampleRowView.setImage(imageViews[i%4]);
+            contentV.addView(exampleRowView);
+        }
+
+        // Horizontal content
+        ViewGroup contentH = (ViewGroup) findViewById(R.id.content_view_h);
         for (int i = 0; i < ROW_COUNT; i++) {
 
             ExampleRowView exampleRowView = new ExampleRowView(getApplicationContext());
@@ -75,17 +82,41 @@ public class ScrollerActivity extends AppCompatActivity {
                 params.setMargins( 0, 0, (int)(screenWidth - cellSize)/2, 0);
                 exampleRowView.setLayoutParams(params);
             }
-            content.addView(exampleRowView);
+            contentH.addView(exampleRowView);
         }
 
 
-        AnScrollView customScrollView = findViewById(R.id.scrollView);
-        customScrollView.setVerticalScroll(false);
-        //TODO
-        customScrollView.setFixedScroll(false,cellSize);
+        // Vertical sv
+        customScrollViewV = findViewById(R.id.scrollView_v);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                (int) screenHeight/2
+        );
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        customScrollViewV.setLayoutParams(params);
+        customScrollViewV.setVerticalScroll(true);
+
+        // Horizontal sv
+        customScrollViewH = findViewById(R.id.scrollView_h);
+        params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                (int) screenHeight/2
+        );
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        customScrollViewH.setLayoutParams(params);
+        customScrollViewH.setVerticalScroll(false);
+        customScrollViewH.setFixedScroll(true,cellSize);
+    }
+
+    private void addAnimerConfig(){
+
         mAnimerConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addAnimer("Fling",customScrollView.getFlingAnimer());
-        AnConfigRegistry.getInstance().addAnimer("SpringBack",customScrollView.getSpringAnimer());
+        AnConfigRegistry.getInstance().addAnimer("V_Fling",customScrollViewV.getFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("V_SpringBack",customScrollViewV.getSpringAnimer());
+        AnConfigRegistry.getInstance().addAnimer("V_FakeFling When Fixed Scroll",customScrollViewV.getFakeFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("H_Fling",customScrollViewH.getFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("H_SpringBack",customScrollViewH.getSpringAnimer());
+        AnConfigRegistry.getInstance().addAnimer("H_FakeFling When Fixed Scroll",customScrollViewH.getFakeFlingAnimer());
         mAnimerConfiguratorView.refreshAnimerConfigs();
     }
 
@@ -97,7 +128,7 @@ public class ScrollerActivity extends AppCompatActivity {
         public ExampleRowView(Context context) {
             super(context);
             LayoutInflater inflater = LayoutInflater.from(context);
-            ViewGroup view = (ViewGroup) inflater.inflate(R.layout.example_row_view, this, false);
+            ViewGroup view = (ViewGroup) inflater.inflate(R.layout.custom_cell_view, this, false);
             mHeaderView = (TextView) view.findViewById(R.id.head_view);
             mSubView = (TextView) view.findViewById(R.id.sub_view);
             mImageView = view.findViewById(R.id.img_view);
@@ -131,6 +162,7 @@ public class ScrollerActivity extends AppCompatActivity {
         float density  = getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
         float dpWidth  = outMetrics.widthPixels / density;
+        screenHeight = dpToPx(dpHeight,getResources());
         screenWidth = dpToPx(dpWidth,getResources());
         cellSize =  (int) getResources().getDimension(R.dimen.cell_size_dp);
         Log.e("inDP","doHeight"+ dpHeight + "dpWidth" + dpWidth);

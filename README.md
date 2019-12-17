@@ -2,7 +2,11 @@
 
 ## About
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif"/>
+<div id="container" style="display:flex">
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif" style="border-radius: 10px;border: 1px solid #dedede; !important"/>
+
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs_2.gif" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/gifs.gif_2" style="margin-left: 20px;border-radius: 10px;border: 1px solid #dedede; !important"/>
+</div>
 
 [中文说明](https://github.com/MartinRGB/Animer/blob/master/README.zh.md)
 

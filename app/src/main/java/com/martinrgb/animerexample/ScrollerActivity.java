@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class ScrollerActivity extends AppCompatActivity {
 
 
-    private final int ROW_COUNT = 50;
+    private final int ROW_COUNT = 20;
     private int[] imageViews = new int[]{R.drawable.img_1,R.drawable.img_2,R.drawable.img_3,R.drawable.img_4};
     private AnConfigView mAnimerConfiguratorView;
     private  int  cellSize;

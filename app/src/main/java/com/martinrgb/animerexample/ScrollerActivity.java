@@ -99,7 +99,7 @@ public class ScrollerActivity extends AppCompatActivity {
         );
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         customScrollViewV.setLayoutParams(params);
-        customScrollViewV.setVerticalScroll(true);
+        customScrollViewV.getScroller().setVertScroll(true);
 
         // Horizontal sv
         customScrollViewH = findViewById(R.id.scrollView_h);
@@ -109,19 +109,19 @@ public class ScrollerActivity extends AppCompatActivity {
         );
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         customScrollViewH.setLayoutParams(params);
-        customScrollViewH.setVerticalScroll(false);
-        customScrollViewH.setFixedScroll(true,cellSize);
+        customScrollViewH.getScroller().setVertScroll(false);
+        //customScrollViewH.getScroller().setFixedScroll(true,cellSize);
     }
 
     private void addAnimerConfig(){
 
         mAnimerConfiguratorView = (AnConfigView) findViewById(R.id.an_configurator);
-        AnConfigRegistry.getInstance().addAnimer("V_Fling",customScrollViewV.getFlingAnimer());
-        AnConfigRegistry.getInstance().addAnimer("V_SpringBack",customScrollViewV.getSpringAnimer());
-        AnConfigRegistry.getInstance().addAnimer("V_FakeFling When Fixed Scroll",customScrollViewV.getFakeFlingAnimer());
-        AnConfigRegistry.getInstance().addAnimer("H_Fling",customScrollViewH.getFlingAnimer());
-        AnConfigRegistry.getInstance().addAnimer("H_SpringBack",customScrollViewH.getSpringAnimer());
-        AnConfigRegistry.getInstance().addAnimer("H_FakeFling When Fixed Scroll",customScrollViewH.getFakeFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("V_Fling",customScrollViewV.getScroller().getFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("V_SpringBack",customScrollViewV.getScroller().getSpringAnimer());
+        AnConfigRegistry.getInstance().addAnimer("V_FakeFling When Fixed Scroll",customScrollViewV.getScroller().getFakeFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("H_Fling",customScrollViewH.getScroller().getFlingAnimer());
+        AnConfigRegistry.getInstance().addAnimer("H_SpringBack",customScrollViewH.getScroller().getSpringAnimer());
+        AnConfigRegistry.getInstance().addAnimer("H_FakeFling When Fixed Scroll",customScrollViewH.getScroller().getFakeFlingAnimer());
         mAnimerConfiguratorView.refreshAnimerConfigs();
     }
 

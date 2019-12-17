@@ -150,7 +150,7 @@ public class AnScrollView extends FrameLayout {
 
     private void initScrollView() {
         mScroller = new AnOverScroller(getContext());
-        mScroller.setVertScroll(isVertScroll());
+        //mScroller.setVertScroll(isVertScroll());
         setFocusable(true);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setWillNotDraw(false);
@@ -2128,28 +2128,9 @@ public class AnScrollView extends FrameLayout {
         return clampedX || clampedY;
     }
 
-    public Animer getSpringAnimer(){
-        return mScroller.getSpringAnimer();
-    }
-    public Animer getFlingAnimer(){
-        return mScroller.getFlingAnimer();
-    }
-    public Animer getFakeFlingAnimer(){
-        return mScroller.getFakeFlingAnimer();
-    }
-    public void setDyanmicFriction(boolean boo){
-        mScroller.setDynamicFlingFrictionState(boo);
-    }
-    private boolean IS_VERTICAL_SCROLL = true;
-    public void setVerticalScroll(boolean boo) {
-        IS_VERTICAL_SCROLL = boo;
-        mScroller.setVertScroll(boo);
-    }
     private boolean isVertScroll(){
-        return IS_VERTICAL_SCROLL;
+        return mScroller.isVertScroll();
     }
-    public void setFixedScroll(boolean boo,float width){
-        mScroller.setFixedScroll(boo,width);
-    }
+    public AnOverScroller getScroller(){ return mScroller; }
 
 }

@@ -168,10 +168,5 @@
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.test.espresso:espresso-idling-resource:3.2.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: net.sf.kxml:kxml2:2.3.0@jar" level="project" />
     <orderEntry type="module" module-name="animer" />
-    <orderEntry type="module" module-name="animer" />
-    <orderEntry type="module" module-name="animer" />
-    <orderEntry type="module" module-name="animer" />
-    <orderEntry type="module" module-name="animer" />
-    <orderEntry type="module" module-name="animer" />
   </component>
 </module>

@@ -590,6 +590,8 @@ public class Animer<T> {
     // ## Android Style Animaton Interface,driven by PhysicsState's State Machine
     public void setFrom(float start){
         setStateValue("Start",start);
+        //# Then from-to-setVelocity-start can work
+        getCurrentPhysicsState().updatePhysicsValue(start);
         switch(currentSolver.getSolverMode())
         {
             case FLING_SOLVER_MODE:

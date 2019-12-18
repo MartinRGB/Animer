@@ -110,7 +110,7 @@ public class ScrollerActivity extends AppCompatActivity {
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         customScrollViewH.setLayoutParams(params);
         customScrollViewH.getScroller().setVertScroll(false);
-        //customScrollViewH.getScroller().setFixedScroll(true,cellSize);
+        customScrollViewH.getScroller().setFixedScroll(true,cellSize);
     }
 
     private void addAnimerConfig(){

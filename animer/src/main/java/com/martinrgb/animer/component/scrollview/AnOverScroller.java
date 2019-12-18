@@ -25,9 +25,9 @@ public class AnOverScroller {
     private final Animer.AnimerSolver defaultFling = Animer.flingDroid(4000,0.8f);
     private final Animer.AnimerSolver springAsFling = Animer.springDroid(50,0.99f);
 
-    private boolean isFling = false;
-    private boolean isSpringBack = false;
-    private boolean isAnimerDriven = false;
+    private boolean isFling = true;
+    private boolean isSpringBack = true;
+    private boolean isAnimerDriven = true;
 
     // ############################################
     // Constructor
@@ -181,7 +181,6 @@ public class AnOverScroller {
         float start =  (isVertScroll())?startY:startX;
         float min = (isVertScroll())?minY:minX;
         float max = (isVertScroll())?maxY:maxX;
-
         if (start > max || start < min) {
             if (!isAnimerDriven() && !isFixedScroll()) {
                 if (isFling()) {
@@ -239,45 +238,28 @@ public class AnOverScroller {
         return true;
     }
 
-    private  int i = 0;
-
     private void springFunctions(float val,float min,float max){
 
-        //Log.e("i",String.valueOf(i++));
         if(!isAnimerDriven()){
             scrollValue.setValue(val);
             springAnimation.setStartValue(val);
             springAnimation.setStartVelocity(scrollSpeed.getValue());
+            springAnimation.getSpring().setFinalPosition(((val > max))?max:min);
 
             springAnimation.getSpring().setStiffness((float)springAnimer.getArgument1());
             springAnimation.getSpring().setDampingRatio((float)springAnimer.getArgument2());
 
-            springAnimation.getSpring().setFinalPosition(((val > max))?max:min);
             springAnimation.start();
         }else {
 
-            // TODO: When fixedScroll, velocity is not correct;
-            // setFrom | setVelocity didnt work cause when start() triggered:
-            // mSpringAnimation.setStartValue(getCurrentPhysicsValue());
-            // mSpringAnimation.setStartVelocity(getCurrentPhysicsVelocity());
-            // mSpringAnimation.animateToFinalPosition(getStateValue(state));
-            // scrollAnimer.setFrom(val);
-            // scrollAnimer.setVelocity(scrollSpeed.getValue());
-
-            // TODO: Fix bug in Animer.java
-//            scrollValue.setValue(val);
-//            scrollAnimer.setFrom(val);
-//            scrollAnimer.setVelocity(scrollSpeed.getValue());
-
             scrollAnimer.setSolver(springAnimer.getCurrentSolver());
-
-//            scrollAnimer.setTo(((val > max))?max:min);
-
-            scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(val);
-            scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(scrollSpeed.getValue());
-
-            //scrollAnimer.start();
-            scrollAnimer.setEndValue(((val > max))?max:min);
+            // setFrom -  setCurrenetPhysicsValue();
+            // setVelocity -  setCurrenetPhysicsVelocity();
+            // start() - setStartValue(getCurrentPhysicsValue())|setStartVelocity(getCurrentPhysicsVelocity())
+            scrollAnimer.setFrom(val);
+            scrollAnimer.setTo(((val > max))?max:min);
+            scrollAnimer.setVelocity(scrollSpeed.getValue());
+            scrollAnimer.start();
         }
 
     }
@@ -297,9 +279,9 @@ public class AnOverScroller {
 
 
         if (!isAnimerDriven() && !isFixedScroll()) {
-            flingAnimation.setStartVelocity(startVelocity);
             scrollValue.setValue(startValue);
 
+            flingAnimation.setStartVelocity(startVelocity);
             if (isDynamicFlingFriction()) {
                 float dynamicDamping = (isVertScroll()) ? (float) mapValueFromRangeToRange(Math.abs(velocityY), 0, 24000, 1.35, 0.5) : (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5);
                 flingAnimation.setFriction(dynamicDamping);
@@ -323,13 +305,13 @@ public class AnOverScroller {
             springAnimation.start();
         }
 
+        //TODO
         if (isAnimerDriven() && !isFixedScroll()) {
             scrollAnimer.setSolver(flingAnimer.getCurrentSolver());
-            scrollAnimer.setArgument1((float)startVelocity);
-            scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(startVelocity);
             scrollAnimer.setFrom(startValue);
-            scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(startValue);
+            scrollAnimer.setVelocity(startVelocity);
 
+            scrollAnimer.setArgument1((float)startVelocity);
             if(isDynamicFlingFriction()){
                 float dynamicDamping = (isVertScroll()) ? (float) mapValueFromRangeToRange(Math.abs(velocityY), 0, 24000, 1.35, 0.5) : (float) mapValueFromRangeToRange(Math.abs(velocityX), 0, 24000, 1.35, 0.5);;
                 scrollAnimer.setArgument2((float)dynamicDamping);
@@ -340,21 +322,19 @@ public class AnOverScroller {
             scrollAnimer.start();
         }
 
+        //TODO
         if (isAnimerDriven() && isFixedScroll()) {
             scrollAnimer.cancel();
+            scrollAnimer.setSolver(flingSpringAnimer.getCurrentSolver());
             FlingCalculator flingCalculator = new FlingCalculator(startVelocity,(float)flingAnimer.getArgument2());
             float flingTransition = flingCalculator.getTransiton();
-
-            scrollAnimer.setVelocity(startVelocity);
-            scrollAnimer.getCurrentPhysicsState().updatePhysicsVelocity(startVelocity);
-            scrollAnimer.setFrom(startValue);
-            scrollAnimer.getCurrentPhysicsState().updatePhysicsValue(startValue);
             float roundValue = Math.round(((startValue + flingTransition)/fixedCellWidth))*fixedCellWidth;
+
+            scrollAnimer.setFrom(startValue);
             scrollAnimer.setTo(roundValue);
-
-            scrollAnimer.setSolver(flingSpringAnimer.getCurrentSolver());
-
+            scrollAnimer.setVelocity(startVelocity);
             scrollAnimer.start();
+
         }
 
 
@@ -381,9 +361,9 @@ public class AnOverScroller {
     }
 
     private static double mapValueFromRangeToRange(double value,double fromLow,
-            double fromHigh,
-            double toLow,
-            double toHigh) {
+                                                   double fromHigh,
+                                                   double toLow,
+                                                   double toHigh) {
         double fromRangeSize = fromHigh - fromLow;
         double toRangeSize = toHigh - toLow;
         double valueScale = (value - fromLow) / fromRangeSize;

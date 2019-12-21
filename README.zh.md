@@ -26,8 +26,6 @@ Animer 提供了可实时调节的控制UI和曲线图表，以便设计师和�
 
 网页版本(该网页主要功能是可以将其他平台、工具的参数转化为安卓原生动画类的参数) —— [Animer_Web](http://www.martinrgb.com/Animer_Web/#)
 
-AE 插件(目前仅仅是脚本形式，而且建议使用英文版 AE) —— [Animer_AE](https://github.com/MartinRGB/Animer_AE)
-
 ## 下载
 
 [ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.9) ](https://bintray.com/martinrgb/animer/animer/0.1.5.9/link)

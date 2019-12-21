@@ -18,8 +18,6 @@ It also provides a real-time controller & graph UI for tweaking parameters.
 
 Web version(Convert Any Animation tools' parameters to Android's) —— [Animer_Web](http://www.martinrgb.com/Animer_Web/#)
 
--- AE plugin(only scripts currently) —— [Animer_AE](https://github.com/MartinRGB/Animer_AE) --
-
 ## Download
 
 [ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.9) ](https://bintray.com/martinrgb/animer/animer/0.1.5.9/link)

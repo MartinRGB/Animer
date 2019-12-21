@@ -12,6 +12,9 @@ Animer is a java library which designed for a better Android animation experienc
 
 It contains animation curves in `Android` `iOS` `Origami(POP or Rebound in Client)` `Principle` `Protopie` `FramerJS`
 
+Unlike [Rebound](https://github.com/facebook/rebound)，Animer didn't use `Choreographer` or self-building `Looper` for 
+creating an Animator.
+
 All these animation algorithm will be translated into Android's native implementation like DynamicAnimation & TimingInterpolator,which can improve the performance of animation.
 
 It also provides a real-time controller & graph UI for tweaking parameters. 

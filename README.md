@@ -220,6 +220,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - LookupTable Interpolation Animator + RK4 Solver + DHO Solver ✅
 - Physics simulation from [Flutter Physics](https://api.flutter.dev/flutter/physics/physics-library.html) & [UIKit Dyanmic](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - Momentum
+- Calculating mass by Elements' area
 
 **Advanced Animation Setting**
 

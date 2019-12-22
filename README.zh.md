@@ -230,6 +230,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - Android 原生的 查找表插值器（LookupTable Interpolator） + RK4 弹性解算器 + DHO 弹性解算器 ✅
 - Flutter Physics 的[物理模拟](https://api.flutter.dev/flutter/physics/physics-library.html) & UIKit Dyanmic 的[物理模拟](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - 动量传递与保存（通过状态机实现）
+- 通过元素面积计算质量
 
 **高级动画**
 

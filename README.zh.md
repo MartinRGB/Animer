@@ -17,7 +17,7 @@ Animer 封装了:
 
 * Android 平台的 DynamicAnimation 和 Interpolator 的曲线
 * iOS 平台的 CASpringAnimation 和 UIViewSpring 的曲线
-* 贝塞尔函数曲线 (iOS Deafult Easing,Web Default CSS Easing，AE 拉两个关键帧间曲线 都可以用此法实现） 
+* 贝塞尔函数曲线 (iOS Deafult Easing,Web Default CSS Easing，AE 的关键帧间曲线 都可以用此法实现） 
 * Principle、Origami、Protopie、FramerJS 等动画工具的曲线
 
 Animer 并没有像 [Rebound](https://github.com/facebook/rebound) 那样，通过 Choreographer 或者自构建 Looper ，从头构建一套动画器，而是将上述曲线的算法通过转换器，最终会转换成 Android 原生的 DynamicAnimation 或者 TimingInterpolator，进而提高动画执行性能。

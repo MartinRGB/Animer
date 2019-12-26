@@ -206,6 +206,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 ## TODO
 
+- 以界面整体状态为考量的状态机系统，而不是单个对象的状态
 - 重新设计 API，重新编写文档，提高可用性
 - 重写绘制图表的 shader，目前使用了太多条件分歧，参考[如何在shader中避免使用if else](https://www.bilibili.com/read/cv1469216/)
 - 考虑转场的使用场景

@@ -221,6 +221,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - Physics simulation from [Flutter Physics](https://api.flutter.dev/flutter/physics/physics-library.html) & [UIKit Dyanmic](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - Momentum
 - Calculating mass by Elements' area
+- Limit SpringAnimation's by time or overshoot counts
 
 **Advanced Animation Setting**
 

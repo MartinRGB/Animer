@@ -199,10 +199,12 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 
 ## TODO
 
+- A State Machine which can control interface's state(current is only object propertyValue's state)
 - Redesign the API
 - Rewrite the glsl shader
 - Consider scences in activity/fragment transition
 - Hook mechanism 
+- Redesign the ConfigUI,it's difficult to tweak paras in small screen,maybe consider 'adb+electron in desktop client'
 
 ## Core concpet:
 

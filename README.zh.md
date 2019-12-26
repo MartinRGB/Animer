@@ -231,6 +231,7 @@ Animer.interpolatorDroid(new DecelerateInterpolator(),duration)         // Andro
 - Flutter Physics 的[物理模拟](https://api.flutter.dev/flutter/physics/physics-library.html) & UIKit Dyanmic 的[物理模拟](https://developer.apple.com/documentation/uikit/animation_and_haptics/uikit_dynamics)
 - 动量传递与保存（通过状态机实现）
 - 通过元素面积计算质量
+- 通过振荡次数或时间限制弹性动画运动时长
 
 **高级动画**
 

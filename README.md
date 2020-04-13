@@ -23,14 +23,6 @@ Web version(Convert Any Animation tools' parameters to Android's) —— [Animer
 
 ## Download
 
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.9) ](https://bintray.com/martinrgb/animer/animer/0.1.5.9/link)
-
-```
-dependencies {
-    implementation 'com.martinrgb:animer:0.1.5.9'
-}
-```
-
 [Simple Demo 1](https://github.com/MartinRGB/Animer/files/3948871/app-debug_2.zip)
 
 [Simple Demo 2](https://github.com/MartinRGB/Animer/files/3948863/app-debug.zip)

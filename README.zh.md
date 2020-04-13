@@ -28,13 +28,6 @@ Animer 提供了可实时调节的控制UI和曲线图表，以便设计师和�
 
 ## 下载
 
-[ ![Download](https://api.bintray.com/packages/martinrgb/animer/animer/images/download.svg?version=0.1.5.9) ](https://bintray.com/martinrgb/animer/animer/0.1.5.9/link)
-
-```
-dependencies {
-    implementation 'com.martinrgb:animer:0.1.5.9'
-}
-```
 
 ## 两个简单的 View 实现的快速原型
 

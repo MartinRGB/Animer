@@ -66,3 +66,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+local.properties
+app/.DS_Store
+app/.DS_Store

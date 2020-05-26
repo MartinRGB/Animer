@@ -2,12 +2,14 @@ package com.martinrgb.animerexample;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -95,7 +97,7 @@ public class ScrollerActivity extends AppCompatActivity {
         customScrollViewV = findViewById(R.id.scrollView_v);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                (int) screenHeight/2
+                (int)RelativeLayout.LayoutParams.MATCH_PARENT
         );
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         customScrollViewV.setLayoutParams(params);
@@ -111,6 +113,7 @@ public class ScrollerActivity extends AppCompatActivity {
         customScrollViewH.setLayoutParams(params);
         customScrollViewH.getScroller().setVertScroll(false);
         customScrollViewH.getScroller().setFixedScroll(true,cellSize);
+        customScrollViewH.setVisibility(View.INVISIBLE);
     }
 
     private void addAnimerConfig(){

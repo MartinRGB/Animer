@@ -7,6 +7,17 @@
     tools:context=".MainActivity">
 
 
+    <TextView
+        android:id="@+id/tv"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:outlineProvider="bounds"
+        android:elevation="-2dp"
+        android:text ="手势状态："
+        android:textSize="28sp"
+        android:translationY="20dp"/>
 
 
     <ImageView
@@ -20,6 +31,18 @@
         android:elevation="-2dp"
         android:translationY="200dp"
         android:background="@drawable/myrect"/>
+
+    <ImageView
+        android:id="@+id/iv5"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:outlineProvider="bounds"
+        android:elevation="-2dp"
+        android:translationY="200dp"
+        android:translationX="150dp"
+        android:background="#FF00FF"/>
 
 
     <ImageView

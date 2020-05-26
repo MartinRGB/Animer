@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="cell_size_dp">160dp</dimen>
+    <dimen name="cell_size_dp">100dp</dimen>
 </resources>

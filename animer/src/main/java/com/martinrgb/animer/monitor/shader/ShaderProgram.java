@@ -35,14 +35,14 @@ public class ShaderProgram {
     public static final String UNIFORM_DURATION = "u_duration";
 
     private int program = 0;
-    private int positionLoc;
-    private int resolutionLoc;
-    private int modeLoc;
-    private int timeLoc;
-    private int durationLoc;
+    private int positionLoc = -1;
+    private int resolutionLoc = -1;
+    private int modeLoc = -1;
+    private int timeLoc = -1;
+    private int durationLoc = -1;
+    private int mvpLoc = -1;
     private static int factorLength = 5;
     private final int factorLocs[] = new int[32];
-    private int mvpLoc;
 
     public ShaderProgram(Context context) {
         if (program != 0) { program = 0; }
@@ -58,9 +58,9 @@ public class ShaderProgram {
         mvpLoc = GLES20.glGetUniformLocation(program, UNIFORM_MVP);
         modeLoc = GLES20.glGetUniformLocation(program, UNIFORM_MODE);
         durationLoc = GLES20.glGetUniformLocation(program,UNIFORM_DURATION);
-        for (int i = 0;i < factorLength;i++ ) {
-            factorLocs[i] = GLES20.glGetUniformLocation(program,UNIFORM_FACTOR + (i+1));
-        }
+//        for (int i = 0;i < factorLength;i++ ) {
+//            factorLocs[i] = GLES20.glGetUniformLocation(program,UNIFORM_FACTOR + (i+1));
+//        }
 
         final float[] verticesData = {
                 1.0f,-1.0f,0.0f,1.0f,
@@ -107,7 +107,11 @@ public class ShaderProgram {
         if (durationLoc > -1) { GLES20.glUniform1f(durationLoc,duration); }
 
         //5 Factors
-        if (factorLocs != null){ for (int i = 0; i < factorLocs.length; ++i) {GLES20.glUniform1f(factorLocs[i],factors[i]);} }
+        for (int i = 0; i < factorLocs.length; ++i) {
+            factorLocs[i] = GLES20.glGetUniformLocation(program,UNIFORM_FACTOR + (i+1));
+            GLES20.glUniform1f(factorLocs[i],factors[i]);
+        }
+
 
         //Draw the triangle facing straight on.
         if(mvpLoc > -1){

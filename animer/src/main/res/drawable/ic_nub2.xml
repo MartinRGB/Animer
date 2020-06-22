@@ -7,16 +7,16 @@
         <aapt:attr name="android:fillColor">
             <gradient android:endX="169" android:endY="0.078"
                 android:startX="169" android:startY="147.838" android:type="linear">
-                <item android:color="@color/nub_start" android:offset="0"/>
-                <item android:color="@color/nub_end" android:offset="1"/>
+                <item android:color="@color/backgroundColor" android:offset="0"/>
+                <item android:color="@color/backgroundColor" android:offset="1"/>
             </gradient>
         </aapt:attr>
     </path>
-    <path android:fillAlpha="0.3" android:fillColor="#FFFFFF"
+    <path android:fillAlpha="0.3" android:fillColor="@color/secondaryColor"
         android:fillType="evenOdd"
         android:pathData="M203.5,54C204.328,54 205,54.672 205,55.5C205,56.328 204.328,57 203.5,57L134.5,57C133.672,57 133,56.328 133,55.5C133,54.672 133.672,54 134.5,54L203.5,54ZM203.5,39C204.328,39 205,39.672 205,40.5C205,41.328 204.328,42 203.5,42L134.5,42C133.672,42 133,41.328 133,40.5C133,39.672 133.672,39 134.5,39L203.5,39Z"
         android:strokeAlpha="0.3" android:strokeColor="#00000000" android:strokeWidth="1"/>
-    <path android:fillAlpha="0.3" android:fillColor="#FFFFFF"
+    <path android:fillAlpha="0.3" android:fillColor="@color/secondaryColor"
         android:fillType="evenOdd"
         android:pathData="M203.5,84C204.328,84 205,84.672 205,85.5C205,86.328 204.328,87 203.5,87L134.5,87C133.672,87 133,86.328 133,85.5C133,84.672 133.672,84 134.5,84L203.5,84ZM203.5,69C204.328,69 205,69.672 205,70.5C205,71.328 204.328,72 203.5,72L134.5,72C133.672,72 133,71.328 133,70.5C133,69.672 133.672,69 134.5,69L203.5,69Z"
         android:strokeAlpha="0.3" android:strokeColor="#00000000" android:strokeWidth="1"/>

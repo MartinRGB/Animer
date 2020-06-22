@@ -10,6 +10,8 @@ uniform float u_factor3;
 uniform float u_factor4;
 uniform float u_factor5;
 uniform float u_duration;
+uniform vec3 u_secondaryColor;
+uniform vec3 u_mainColor;
 
 
 varying vec2 vFlingCalc;
@@ -22,6 +24,9 @@ varying float v_factor2;
 varying float v_factor3;
 varying float v_factor4;
 varying float v_factor5;
+
+varying vec3 v_secondaryColor;
+varying vec3 v_mainColor;
 
 // ############################# compute functions #############################
 
@@ -113,6 +118,9 @@ void main() {
     v_factor3 = u_factor3;
     v_factor4 = u_factor4;
     v_factor5 = u_factor5;
+
+    v_mainColor = u_mainColor;
+    v_secondaryColor = u_secondaryColor;
 
 
     if(u_mode == 0.0){

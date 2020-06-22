@@ -20,10 +20,10 @@ public class PathInterpolator extends AnInterpolator {
         y2 = controlY2;
         initCubic(x1, y1, x2, y2);
 
-        initArgData(0,x1,"x1",0,1);
-        initArgData(1,y1,"y1",0,1);
-        initArgData(2,x2,"x2",0,1);
-        initArgData(3,y2,"y2",0,1);
+        initArgData(0,x1,"x1",0.0f,1.0f);
+        initArgData(1,y1,"y1",0.0f,1.0f);
+        initArgData(2,x2,"x2",0.0f,1.0f);
+        initArgData(3,y2,"y2",0.0f,1.0f);
     }
 
     @Override

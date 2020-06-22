@@ -12,17 +12,24 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
+import com.martinrgb.animer.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class AnSpinnerAdapter extends BaseAdapter {
+public class AnSpinnerAdapter extends BaseAdapter {
 
     private final Context mContext;
     private final List<String> mStrings;
     private final Resources mResources;
-    private final int mTextColor = Color.argb(255, 255, 255, 255);
+    //private final int mTextColor = Color.argb(255, 255, 255, 255);
+
+    private int mTextColor;
 
     public AnSpinnerAdapter(Context context,Resources resources) {
+        mTextColor = ContextCompat.getColor(context, R.color.secondaryColor);
         mContext = context;
         mResources = resources;
         mStrings = new ArrayList<String>();
@@ -84,7 +91,6 @@ class AnSpinnerAdapter extends BaseAdapter {
         v = super.getDropDownView(position, null, parent);
         // If this is the selected item position
         if (position == seletecedIndex) {
-            //v.setBackgroundColor(Color.BLUE);
             v.setAlpha(1.f);
         }
         else {

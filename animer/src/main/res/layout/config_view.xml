@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/nub_height"
-        android:background="@drawable/gradient">
+        android:background="@color/backgroundColor">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -23,6 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MyTheme.HeaderBar.Spinner"
+                android:popupBackground="@drawable/popbackground_spinner"
                 android:paddingLeft="4dp"
                 android:layout_centerVertical="true"
                 android:spinnerMode="dropdown">
@@ -37,7 +38,7 @@
                 android:layout_marginRight="16dp"
                 android:gravity="center"
                 android:typeface="monospace"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/backgroundColor"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:text="FPS"
@@ -70,6 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MyTheme.HeaderBar.Spinner"
+                android:popupBackground="@drawable/popbackground_spinner"
                 android:layout_margin="@dimen/margin_size"
                 android:layout_centerVertical="true"
                 android:dropDownWidth="248dp"

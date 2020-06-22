@@ -14,7 +14,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class ShaderRenderer implements GLSurfaceView.Renderer {
 
-	private final float resolution[] = new float[]{0,0};
+	private float resolution[] = new float[]{0,0};
+	private float secondaryColor[] = new float[]{0,0,0};
+	private float mainColor[] = new float[]{0,0,0};
+
 	private long startTime;
 	private static final float NS_PER_SECOND = 1000000000f;
 
@@ -49,7 +52,7 @@ public class ShaderRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		//float time = (System.nanoTime() - startTime) / NS_PER_SECOND;
 		float time = (isInteraction)? (System.nanoTime() - startTime) / NS_PER_SECOND:0;
-		shaderProgram.setOnDrawFrame(resolution,time,factors,mode,duration);
+		shaderProgram.setOnDrawFrame(resolution,time,factors,mode,duration,mainColor,secondaryColor);
 		if(LoggerConfig.ON == true){
 			FPSCounter.logFrameRate();
 		}
@@ -63,6 +66,18 @@ public class ShaderRenderer implements GLSurfaceView.Renderer {
 
 	public void setFactorInput(float factor,int i){
 		factors[i] = factor;
+	}
+
+	public void setMainColor(float r,float g,float b){
+		mainColor[0] = r;
+		mainColor[1] = g;
+		mainColor[2] = b;
+	}
+
+	public void setSecondaryColor(float r,float g,float b){
+		secondaryColor[0] = r;
+		secondaryColor[1] = g;
+		secondaryColor[2] = b;
 	}
 
 	public void setCurveMode(float i){

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mainColor">#E44C5C</color>
-    <color name="colorWhite">#FFFFFF</color>
+    <color name="mainColor">#09CDFF</color>
+    <color name="secondaryColor">#FFFFFF</color>
+    <color name="secondaryColorTransparent">#4DFFFFFF</color>
+    <color name="backgroundColor">#000000</color>
+
+<!--    <color name="mainColor">#77A1FF</color>-->
+<!--    <color name="secondaryColor">#000000</color>-->
+<!--    <color name="secondaryColorTransparent">#4D000000</color>-->
+<!--    <color name="backgroundColor">#FFFFFF</color>-->
+
     <color name="colorTransparent">#00000000</color>
     <color name="lightMainColor">#4C4C4C</color>
     <color name="highlightColor">#B0B0B0</color>

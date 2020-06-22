@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -48,9 +49,13 @@ public class AnConfigView extends FrameLayout {
     private AnConfigRegistry anConfigRegistry;
     private LinearLayout listLayout;
     private SeekbarListener seekbarListener;
-    private SoverSelectedListener soverSelectedListener;
+    private SolverSelectedListener solverSelectedListener;
     private ShaderSurfaceView shaderSurfaceView;
-    private final int mTextColor = Color.argb(255, 255, 255, 255);
+    //private final int mTextColor = Color.argb(255, 255, 255, 255);
+
+    private int mainColor;
+    private int secondaryColor;
+    private int backgroundColor;
 
     private String currentObjectType = "NULL";
 
@@ -60,8 +65,10 @@ public class AnConfigView extends FrameLayout {
     private static int EDITTEXT_START_ID_START_ID = 25000;
     private static final int MAX_SEEKBAR_VAL = 100000;
     private static final int MIN_SEEKBAR_VAL = 1;
+    //TODO
     private static final DecimalFormat DECIMAL_FORMAT_2 = new DecimalFormat("#.##");
     private static final DecimalFormat DECIMAL_FORMAT_1 = new DecimalFormat("#.#");
+    private static final DecimalFormat DECIMAL_FORMAT_3 = new DecimalFormat("#.###");
     private float MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MAX_VAL5;
     private float[] MAX_VALUES = new float[]{MAX_VAL1,MAX_VAL2,MAX_VAL3,MAX_VAL4,MAX_VAL5};
     private float MIN_VAL1,MIN_VAL2,MIN_VAL3,MIN_VAL4,MIN_VAL5;
@@ -104,9 +111,11 @@ public class AnConfigView extends FrameLayout {
 
     private boolean hadInited = false;
     private void initView(Context context) {
+        secondaryColor = ContextCompat.getColor(context, R.color.secondaryColor);
+        mainColor = ContextCompat.getColor(context,R.color.mainColor);
+        backgroundColor = ContextCompat.getColor(context,R.color.backgroundColor);
         View view = inflate(getContext(), R.layout.config_view, null);
         addView(view);
-
 
         fpsView = findViewById(R.id.fps_view);
         fpsView.setOnTouchListener(new OnFPSTouchListener());
@@ -114,6 +123,9 @@ public class AnConfigView extends FrameLayout {
         shaderSurfaceView = findViewById(R.id.shader_surfaceview);
         shaderSurfaceView.setFactorInput(1500,0);
         shaderSurfaceView.setFactorInput(0.5f,1);
+        shaderSurfaceView.setMainColor((float)Color.red(mainColor)/255.f,(float) Color.green(mainColor)/255.f,(float) Color.blue(mainColor)/255.f  );
+
+        shaderSurfaceView.setSecondaryColor((float)Color.red(secondaryColor)/255.f,(float) Color.green(secondaryColor)/255.f,(float) Color.blue(secondaryColor)/255.f );
         mContext = context;
 
         // ## Spinner
@@ -141,14 +153,14 @@ public class AnConfigView extends FrameLayout {
         mSolverObjectSelectorSpinner = findViewById(R.id.object_spinner);
         mSolverTypeSelectorSpinner = findViewById(R.id.type_spinner);
 
-        soverSelectedListener = new SoverSelectedListener();
+        solverSelectedListener = new SolverSelectedListener();
         seekbarListener = new SeekbarListener();
 
         mSolverObjectSelectorSpinner.setAdapter(solverObjectSpinnerAdapter);
-        mSolverObjectSelectorSpinner.setOnItemSelectedListener(soverSelectedListener);
+        mSolverObjectSelectorSpinner.setOnItemSelectedListener(solverSelectedListener);
 
         mSolverTypeSelectorSpinner.setAdapter(solverTypeSpinnerAdapter);
-        mSolverTypeSelectorSpinner.setOnItemSelectedListener(soverSelectedListener);
+        mSolverTypeSelectorSpinner.setOnItemSelectedListener(solverSelectedListener);
 
         refreshAnimerConfigs();
 
@@ -186,6 +198,18 @@ public class AnConfigView extends FrameLayout {
                     mRevealAnimer.setCurrentValue(-(AnConfigView.this.getMeasuredHeight() - getResources().getDimension(R.dimen.nub_height)));
                     mFPSAnimer.setCurrentValue(1);
                     hadInited = true;
+
+
+                    float maxValue = 0;
+                    float minValue = -(AnConfigView.this.getMeasuredHeight() - getResources().getDimension(R.dimen.nub_height));
+                    if(setRevealed){
+                        mRevealAnimer.setCurrentValue(maxValue);
+                        nub.setVisibility(INVISIBLE);
+                    }
+                    else{
+                        mRevealAnimer.setCurrentValue(minValue);
+                        nub.setVisibility(VISIBLE);
+                    }
                 }
             }
         });
@@ -202,10 +226,42 @@ public class AnConfigView extends FrameLayout {
             solverObjectSpinnerAdapter.add(String.valueOf(mAnimerObjectsMap.getKey(i)));
         }
         solverObjectSpinnerAdapter.notifyDataSetChanged();
+
         if (solverObjectSpinnerAdapter.getCount() > 0) {
             // object first time selection
             mSolverObjectSelectorSpinner.setSelection(0);
             initTypeConfigs();
+        }
+
+
+
+        mSolverTypesMap = anConfigRegistry.getAllSolverTypes();
+        solverTypeSpinnerAdapter.clear();
+        for(int i = 0; i< mSolverTypesMap.size(); i++){
+            solverTypeSpinnerAdapter.add(String.valueOf(mSolverTypesMap.getKey(i)));
+        }
+        solverTypeSpinnerAdapter.notifyDataSetChanged();
+
+        if (solverObjectSpinnerAdapter.getCount() > 0) {
+            // solver first time selection
+            if(currentAnimer !=null && currentAnimer.getTriggerListener() !=null){
+                currentAnimer.removeTriggerListener();
+            }
+            currentAnimer = (Animer) mAnimerObjectsMap.getValue(0);
+            currentAnimer.setTriggerListener(triggeredListener);
+            //shaderSurfaceView.requestRender();
+
+            recreateList();
+            int typeIndex = 0;
+            // select the right interpolator
+            if(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")) == "AndroidInterpolator"){
+                typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getArg1().getClass().getSimpleName()));
+            }
+            // select the right animator
+            else{
+                typeIndex = mSolverTypesMap.getIndexByString(String.valueOf(currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("converter_type")));
+            }
+            mSolverTypeSelectorSpinner.setSelection(typeIndex,false);
         }
     }
 
@@ -272,7 +328,7 @@ public class AnConfigView extends FrameLayout {
             SEEKBAR_LABElS[i].setLayoutParams(params);
             SEEKBAR_LABElS[i].setPadding(PADDING_SIZE + dpToPx(8,getResources()), PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
             SEEKBAR_LABElS[i].setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-            SEEKBAR_LABElS[i].setTextColor(mTextColor);
+            SEEKBAR_LABElS[i].setTextColor(secondaryColor);
             SEEKBAR_LABElS[i].setTextSize(11);
             SEEKBAR_LABElS[i].setMaxLines(1);
             SEEKBAR_LABElS[i].setTypeface(Typeface.DEFAULT);
@@ -285,10 +341,10 @@ public class AnConfigView extends FrameLayout {
             EDITTEXTS[i].setLayoutParams(params);
             EDITTEXTS[i].setPadding(PADDING_SIZE,PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
             EDITTEXTS[i].setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
-            EDITTEXTS[i].setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
+            EDITTEXTS[i].setTextColor(secondaryColor);
             EDITTEXTS[i].setTextAlignment(TEXT_ALIGNMENT_CENTER);
             EDITTEXTS[i].setHint("0");
-            EDITTEXTS[i].setHintTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
+            EDITTEXTS[i].setHintTextColor(secondaryColor);
             EDITTEXTS[i].setBackground(ContextCompat.getDrawable(mContext,R.drawable.ic_edit_border));
             EDITTEXTS[i].setGravity(Gravity.LEFT);
             EDITTEXTS[i].setTypeface(Typeface.MONOSPACE);
@@ -298,6 +354,7 @@ public class AnConfigView extends FrameLayout {
             //TODO Refelection for old version
 //            EDITTEXTS[i].setTextCursorDrawable(ContextCompat.getDrawable(mContext,R.drawable.text_cursor));
 
+            //EDITTEXTS[i].setTextCursorDrawable(ContextCompat.getDrawable(mContext,R.drawable.text_cursor));
             EDITTEXTS[i].setTextSize(10);
             seekWrapper.addView(EDITTEXTS[i]);
 
@@ -307,8 +364,8 @@ public class AnConfigView extends FrameLayout {
             SEEKBARS[i].setLayoutParams(params);
             SEEKBARS[i].setPadding(PADDING_SIZE+ dpToPx(4,getResources()), PADDING_SIZE, PADDING_SIZE + dpToPx(16,getResources()), PADDING_SIZE);
             SEEKBARS[i].setId(SEEKBAR_START_ID + i);
-            SEEKBARS[i].setProgressBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorWhite)));
-            SEEKBARS[i].setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.mainColor)));
+            SEEKBARS[i].setProgressBackgroundTintList(ColorStateList.valueOf(secondaryColor));
+            SEEKBARS[i].setProgressTintList(ColorStateList.valueOf(mainColor));
             SEEKBARS[i].setThumb(ContextCompat.getDrawable(mContext,R.drawable.ic_thumb));
             //SEEKBARS[i].setBackgroundColor(Color.RED);
             seekWrapper.addView(SEEKBARS[i]);
@@ -325,7 +382,7 @@ public class AnConfigView extends FrameLayout {
     private boolean typeSpinnerIsFixedSelection = false;
     private int prevTypeIndex = -1,typeIndex = -1;
 
-    private class SoverSelectedListener implements AdapterView.OnItemSelectedListener {
+    private class SolverSelectedListener implements AdapterView.OnItemSelectedListener {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -588,7 +645,7 @@ public class AnConfigView extends FrameLayout {
                 for (int i = 0; i < listSize - 1; i++) {
                     if (seekBar == SEEKBARS[i]) {
                         SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[i] + MIN_VALUES[i];
-                        String roundedValue1Label = DECIMAL_FORMAT_2.format(SEEKBAR_VALUES[i]);
+                        String roundedValue1Label = DECIMAL_FORMAT_3.format(SEEKBAR_VALUES[i]);
                         SEEKBAR_LABElS[i].setText(((AnInterpolator) currentAnimer.getCurrentSolver().getArg1()).getArgString(i) + ": ");
                         if(canSetEditText){
                             EDITTEXTS[i].setText(roundedValue1Label);
@@ -691,6 +748,11 @@ public class AnConfigView extends FrameLayout {
 
     private float nubDragStartY,currViewTransY,nubDragMoveY;
 
+    private boolean setRevealed = false;
+    public void setRevealed(boolean boo){
+        setRevealed = boo;
+    }
+
     private class OnNubTouchListener implements View.OnTouchListener {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -760,7 +822,7 @@ public class AnConfigView extends FrameLayout {
                         }).show(mContext);
                     } else {
                         FPSDetector.hide(mContext);
-                        fpsView.setTextColor(Color.WHITE);
+                        fpsView.setTextColor(backgroundColor);
                         fpsView.setText("FPS");
                     }
                     break;
@@ -784,7 +846,7 @@ public class AnConfigView extends FrameLayout {
                         }).show(mContext);
                     } else {
                         FPSDetector.hide(mContext);
-                        fpsView.setTextColor(Color.WHITE);
+                        fpsView.setTextColor(backgroundColor);
                         fpsView.setText("FPS");
                     }
                     break;

@@ -44,6 +44,14 @@ public class ShaderSurfaceView extends GLSurfaceView {
 		renderer.setFactorInput(factor,i);
 	}
 
+	public void setMainColor(float r,float g,float b){
+		renderer.setMainColor(r,g,b);
+	}
+
+	public void setSecondaryColor(float r,float g,float b){
+		renderer.setSecondaryColor(r,g,b);
+	}
+
 	public void setCurveMode(float i){
 		renderer.setCurveMode(i);
 	}

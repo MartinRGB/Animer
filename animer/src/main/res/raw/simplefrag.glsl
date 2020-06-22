@@ -2,8 +2,11 @@
 precision highp float;
 #endif
 
+//#extension GL_OES_standard_derivatives : enable
+
 #define PI 3.14159265359
 #define E 2.718281828459045
+
 
 uniform vec2 u_resolution;
 uniform float u_time;
@@ -18,6 +21,9 @@ varying float v_factor2;
 varying float v_factor3;
 varying float v_factor4;
 varying float v_factor5;
+
+varying vec3 v_secondaryColor;
+varying vec3 v_mainColor;
 
 const float lineJitter = 0.5;
 const float lineWidth = 7.0;
@@ -287,6 +293,75 @@ float CustomMocosSpringInterpolator(in float ratio) {
 }
 
 
+float plot(vec2 st, float progress){
+
+    float pct;
+    if(vMode == 0.0){
+        pct = FlingSimulator(progress);
+    }
+    else if(vMode == 1.0){
+        pct = SpringSimulator(progress);
+    }
+    else if(vMode == 2.0){
+        pct = CubicBezierSimulator(progress,vec4(v_factor1,v_factor2,v_factor3,v_factor4));
+    }
+    else if(vMode == 2.01){
+        pct = LinearInterpolator(progress);
+    }
+    else if(vMode == 2.02){
+        pct = AccelerateDecelerateInterpolator(progress);
+    }
+    else if(vMode == 2.03){
+        pct = AccelerateInterpolator(progress);
+    }
+    else if(vMode == 2.04){
+        pct = DecelerateInterpolator(progress);
+    }
+    else if(vMode == 2.05){
+        pct = AnticipateInterpolator(progress);
+    }
+    else if(vMode == 2.06){
+        pct = OvershootInterpolator(progress);
+    }
+    else if(vMode == 2.07){
+        pct = AnticipateOvershootInterpolator(progress);
+    }
+    else if(vMode == 2.08){
+        pct = BounceInterpolator(progress);
+    }
+    else if(vMode == 2.09){
+        pct = CycleInterpolator(progress);
+    }
+    else if(vMode == 2.10){
+        pct = FastOutSlowInInterpolator(progress);
+    }
+    else if(vMode == 2.11){
+        pct = LinearOutSlowInInterpolator(progress);
+    }
+    else if(vMode == 2.12){
+        pct = FastOutLinearInInterpolator(progress);
+    }
+    else if(vMode == 2.13){
+        pct = CustomMocosSpringInterpolator(progress);
+    }
+    else if(vMode == 2.14){
+        pct = CustomSpringInterpolator(progress);
+    }
+    else if(vMode == 2.15){
+        pct = CustomBounceInterpolator(progress);
+    }
+    else if(vMode == 2.16){
+        pct = CustomDampingInterpolator(progress);
+    }
+    else if(vMode == 2.17){
+        pct = BounceInterpolator(progress);
+    }
+
+    return  smoothstep( pct - 0.025, pct, st.y) -
+    smoothstep( pct, pct + 0.025, st.y);
+}
+
+
 vec4 plot2D(in vec2 _st, in float _width ,vec3 initColor) {
     const float samples = float(Samples);
 
@@ -367,7 +442,7 @@ vec4 plot2D(in vec2 _st, in float _width ,vec3 initColor) {
     }
 
     if (abs(count)!=mySamples)
-        return vec4( vec3(abs(float(count))/float(mySamples))*1000.*initColor   ,1.);
+        return vec4( vec3(abs(float(count*50.))/float(mySamples))*initColor   ,1.); // count*10. make stroke soilder
     return vec4(0.);
 }
 
@@ -461,11 +536,30 @@ void main(){
     vec4 color = vec4(0.,0.,0.,0.);
 
     if(st.x>-0.01 &&st.y>-0.5 && st.y<1.5 && st.x<1.01){
-        color = plot2D(st,lineWidth,vec3(1.));
+        // ### Plot2D
+        color = plot2D(st,lineWidth,v_secondaryColor);
+
+        // ### Plot
+        //float v2 = plot(st, st.x);
+        //color = mix(color, vec4(v_secondaryColor,1.), v2);
+
         if(st.x<timeProgress){
-            color += plot2D(st,lineWidth,vec3(-0./255.,-255./255.,-255./255.));
+            // ### Plot2D
+            color = vec4(0.);
+            vec4 addColor = plot2D(st,lineWidth,v_mainColor);
+            addColor.r = min(v_mainColor.r,addColor.r);
+            addColor.g = min(v_mainColor.g,addColor.g);
+            addColor.b = min(v_mainColor.b,addColor.b);
+            color += addColor;
+
+            // ### Plot
+            //float v2 = plot(st, st.x);
+            //color = vec4(0.);
+            //color = mix(color, vec4(v_mainColor,1.), v2);
         }
     }
+
+
 
     float step = 0.005;
     circlePos = circle2D(timeProgress + step);
@@ -474,7 +568,7 @@ void main(){
     uv *= 1./mScale;
     uv -= (1./mScale - 1.)/2.;
 
-    color += vec4(1.,-1000.,-1000.,1.)*circle(uv - circlePos+vec2(0.001,0.004),circleRadius);
+    color += vec4(v_mainColor,1.)*circle(uv - circlePos+vec2(0.001,0.004),circleRadius);
 
     gl_FragColor = color;
 }

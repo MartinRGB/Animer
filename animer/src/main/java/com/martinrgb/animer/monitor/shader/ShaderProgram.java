@@ -33,6 +33,8 @@ public class ShaderProgram {
     public static final String UNIFORM_MVP = "u_MVPMatrix";
     public static final String UNIFORM_MODE = "u_mode";
     public static final String UNIFORM_DURATION = "u_duration";
+    public static final String UNIFORM_MAIN_COLOR = "u_mainColor";
+    public static final String UNIFORM_SECONDARY_COLOR = "u_secondaryColor";
 
     private int program = 0;
     private int positionLoc = -1;
@@ -41,6 +43,8 @@ public class ShaderProgram {
     private int timeLoc = -1;
     private int durationLoc = -1;
     private int mvpLoc = -1;
+    private int secondaryColorLoc = -1;
+    private int mainColorLoc = -1;
     private static int factorLength = 5;
     private final int factorLocs[] = new int[32];
 
@@ -58,6 +62,8 @@ public class ShaderProgram {
         mvpLoc = GLES20.glGetUniformLocation(program, UNIFORM_MVP);
         modeLoc = GLES20.glGetUniformLocation(program, UNIFORM_MODE);
         durationLoc = GLES20.glGetUniformLocation(program,UNIFORM_DURATION);
+        mainColorLoc = GLES20.glGetUniformLocation(program,UNIFORM_MAIN_COLOR);
+        secondaryColorLoc = GLES20.glGetUniformLocation(program,UNIFORM_SECONDARY_COLOR);
 //        for (int i = 0;i < factorLength;i++ ) {
 //            factorLocs[i] = GLES20.glGetUniformLocation(program,UNIFORM_FACTOR + (i+1));
 //        }
@@ -95,7 +101,7 @@ public class ShaderProgram {
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
-    public void setOnDrawFrame(float[] resolution,float time,float[] factors,float mode,float duration){
+    public void setOnDrawFrame(float[] resolution,float time,float[] factors,float mode,float duration,float[] mainColor,float[] secondaryColor){
         // ######################### clear the canvas #########################
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         // #########################   first program  #########################
@@ -105,9 +111,11 @@ public class ShaderProgram {
         if (timeLoc > -1) { GLES20.glUniform1f(timeLoc,time); }
         if (modeLoc > -1) { GLES20.glUniform1f(modeLoc,mode); }
         if (durationLoc > -1) { GLES20.glUniform1f(durationLoc,duration); }
+        if (mainColorLoc > -1) { GLES20.glUniform3f(mainColorLoc,mainColor[0],mainColor[1],mainColor[2]); }
+        if (secondaryColorLoc > -1) { GLES20.glUniform3f(secondaryColorLoc,secondaryColor[0],secondaryColor[1],secondaryColor[2]); }
 
         //5 Factors
-        for (int i = 0; i < factorLocs.length; ++i) {
+        for (int i = 0; i < factorLength; ++i) { //factorLocs.length
             factorLocs[i] = GLES20.glGetUniformLocation(program,UNIFORM_FACTOR + (i+1));
             GLES20.glUniform1f(factorLocs[i],factors[i]);
         }

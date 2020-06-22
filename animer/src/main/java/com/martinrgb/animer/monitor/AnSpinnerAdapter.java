@@ -3,6 +3,7 @@ package com.martinrgb.animer.monitor;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -24,6 +25,7 @@ public class AnSpinnerAdapter extends BaseAdapter {
     private final Context mContext;
     private final List<String> mStrings;
     private final Resources mResources;
+    private int mFontSize;
     //private final int mTextColor = Color.argb(255, 255, 255, 255);
 
     private int mTextColor;
@@ -33,6 +35,7 @@ public class AnSpinnerAdapter extends BaseAdapter {
         mContext = context;
         mResources = resources;
         mStrings = new ArrayList<String>();
+        mFontSize = resources.getDimensionPixelSize(R.dimen.font_size);
     }
 
     @Override
@@ -76,7 +79,8 @@ public class AnSpinnerAdapter extends BaseAdapter {
             int ninePx = dpToPx(9, mResources);
             textView.setPadding(dpToPx(32,mResources), ninePx, dpToPx(32,mResources),ninePx);
             textView.setTextColor(mTextColor);
-            textView.setTextSize(10);
+            textView.setTextSize(mFontSize);
+            textView.setTypeface( Typeface.createFromAsset(mContext.getAssets(), "Montserrat-SemiBold.ttf"));
         } else {
             textView = (TextView) convertView;
         }

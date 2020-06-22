@@ -56,6 +56,8 @@ public class AnConfigView extends FrameLayout {
     private int mainColor;
     private int secondaryColor;
     private int backgroundColor;
+    private int fontSize;
+    private Typeface typeface;
 
     private String currentObjectType = "NULL";
 
@@ -111,19 +113,29 @@ public class AnConfigView extends FrameLayout {
 
     private boolean hadInited = false;
     private void initView(Context context) {
+        typeface = Typeface.createFromAsset(context.getAssets(), "Montserrat-SemiBold.ttf");
         secondaryColor = ContextCompat.getColor(context, R.color.secondaryColor);
         mainColor = ContextCompat.getColor(context,R.color.mainColor);
         backgroundColor = ContextCompat.getColor(context,R.color.backgroundColor);
+        fontSize = getResources().getDimensionPixelSize(R.dimen.font_size);
         View view = inflate(getContext(), R.layout.config_view, null);
         addView(view);
 
+
+        //Log.e("r: ",String.valueOf() + "g:" + String.valueOf(Color.green(mainColor)) + "b:" + String.valueOf(String.valueOf(Color.blue(mainColor))) );
+
         fpsView = findViewById(R.id.fps_view);
+        fpsView.setTypeface(typeface);
+        fpsView.setTextSize(fontSize);
         fpsView.setOnTouchListener(new OnFPSTouchListener());
 
         shaderSurfaceView = findViewById(R.id.shader_surfaceview);
         shaderSurfaceView.setFactorInput(1500,0);
         shaderSurfaceView.setFactorInput(0.5f,1);
         shaderSurfaceView.setMainColor((float)Color.red(mainColor)/255.f,(float) Color.green(mainColor)/255.f,(float) Color.blue(mainColor)/255.f  );
+        Log.e("rgb-r:", String.valueOf((float)Color.red(mainColor)/255.f));
+        Log.e("rgb-g:", String.valueOf((float)Color.green(mainColor)/255.f));
+        Log.e("rgb-b:", String.valueOf((float)Color.blue(mainColor)/255.f));
 
         shaderSurfaceView.setSecondaryColor((float)Color.red(secondaryColor)/255.f,(float) Color.green(secondaryColor)/255.f,(float) Color.blue(secondaryColor)/255.f );
         mContext = context;
@@ -323,20 +335,21 @@ public class AnConfigView extends FrameLayout {
             listLayout.addView(seekWrapper);
 
             SEEKBAR_LABElS[i] = new TextView(getContext());
-            params = createLayoutParams(dpToPx(86,getResources()), ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = createLayoutParams(dpToPx(108,getResources()), ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE);
             SEEKBAR_LABElS[i].setLayoutParams(params);
             SEEKBAR_LABElS[i].setPadding(PADDING_SIZE + dpToPx(8,getResources()), PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
             SEEKBAR_LABElS[i].setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
             SEEKBAR_LABElS[i].setTextColor(secondaryColor);
-            SEEKBAR_LABElS[i].setTextSize(11);
+            SEEKBAR_LABElS[i].setTextSize(fontSize-1);
             SEEKBAR_LABElS[i].setMaxLines(1);
-            SEEKBAR_LABElS[i].setTypeface(Typeface.DEFAULT);
+            SEEKBAR_LABElS[i].setTypeface(typeface);
             SEEKBAR_LABElS[i].setId(SEEKLABEL_START_ID_START_ID + i);
+            SEEKBAR_LABElS[i].setAlpha(0.6f);
             seekWrapper.addView(SEEKBAR_LABElS[i]);
 
             EDITTEXTS[i] = new EditText(getContext());
-            params = createLayoutParams(dpToPx(56,getResources()),ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = createLayoutParams(dpToPx(70,getResources()),ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(MARGIN_SIZE,MARGIN_SIZE,MARGIN_SIZE,MARGIN_SIZE);
             EDITTEXTS[i].setLayoutParams(params);
             EDITTEXTS[i].setPadding(PADDING_SIZE,PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
@@ -347,7 +360,7 @@ public class AnConfigView extends FrameLayout {
             EDITTEXTS[i].setHintTextColor(secondaryColor);
             EDITTEXTS[i].setBackground(ContextCompat.getDrawable(mContext,R.drawable.ic_edit_border));
             EDITTEXTS[i].setGravity(Gravity.LEFT);
-            EDITTEXTS[i].setTypeface(Typeface.MONOSPACE);
+            EDITTEXTS[i].setTypeface(typeface);
             SEEKBAR_LABElS[i].setId(EDITTEXT_START_ID_START_ID + i);
             EDITTEXTS[i].addTextChangedListener(new EditTextListener(EDITTEXTS[i],i));
 
@@ -355,14 +368,15 @@ public class AnConfigView extends FrameLayout {
 //            EDITTEXTS[i].setTextCursorDrawable(ContextCompat.getDrawable(mContext,R.drawable.text_cursor));
 
             //EDITTEXTS[i].setTextCursorDrawable(ContextCompat.getDrawable(mContext,R.drawable.text_cursor));
-            EDITTEXTS[i].setTextSize(10);
+            EDITTEXTS[i].setTextSize(fontSize);
             seekWrapper.addView(EDITTEXTS[i]);
 
             SEEKBARS[i] =  new SeekBar(mContext);
             params = createLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE);
+            params.gravity = Gravity.CENTER_VERTICAL;
             SEEKBARS[i].setLayoutParams(params);
-            SEEKBARS[i].setPadding(PADDING_SIZE+ dpToPx(4,getResources()), PADDING_SIZE, PADDING_SIZE + dpToPx(16,getResources()), PADDING_SIZE);
+            SEEKBARS[i].setPadding(PADDING_SIZE+ dpToPx(4,getResources()), PADDING_SIZE+ (fontSize - 10)*2, PADDING_SIZE + dpToPx(16,getResources()), PADDING_SIZE+ (fontSize - 10)*2);
             SEEKBARS[i].setId(SEEKBAR_START_ID + i);
             SEEKBARS[i].setProgressBackgroundTintList(ColorStateList.valueOf(secondaryColor));
             SEEKBARS[i].setProgressTintList(ColorStateList.valueOf(mainColor));
@@ -594,7 +608,7 @@ public class AnConfigView extends FrameLayout {
                     if (seekBar == SEEKBARS[i]) {
                         SEEKBAR_VALUES[i] = ((float) (val - MIN_SEEKBAR_VAL) / (MAX_SEEKBAR_VAL - MIN_SEEKBAR_VAL)) * RANGE_VALUES[i] + MIN_VALUES[i];
                         if (i == 0) {
-                            String roundedValue1Label = DECIMAL_FORMAT_1.format(SEEKBAR_VALUES[i]);
+                            String roundedValue1Label = DECIMAL_FORMAT_2.format(SEEKBAR_VALUES[i]);
                             SEEKBAR_LABElS[i].setText((String) currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": ");
                             if(canSetEditText){
                                 EDITTEXTS[i].setText(roundedValue1Label);
@@ -602,7 +616,7 @@ public class AnConfigView extends FrameLayout {
 
                             currentAnimer.getCurrentSolver().getConfigSet().addConfig("arg" + String.valueOf(i + 1) + "", Float.valueOf(roundedValue1Label));
                         } else if (i == 1) {
-                            String roundedValue1Label = DECIMAL_FORMAT_2.format(SEEKBAR_VALUES[i]);
+                            String roundedValue1Label = DECIMAL_FORMAT_3.format(SEEKBAR_VALUES[i]);
                             SEEKBAR_LABElS[i].setText((String) currentAnimer.getCurrentSolver().getConfigSet().getKeyByString("arg" + String.valueOf(i + 1) + "_name") + ": ");
                             if(canSetEditText){
                                 EDITTEXTS[i].setText(roundedValue1Label);

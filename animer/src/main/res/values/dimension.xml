@@ -3,4 +3,5 @@
     <dimen name="margin_size">4dp</dimen>
     <dimen name="padding_size">4dp</dimen>
     <dimen name="nub_height">46dp</dimen>
+    <dimen name="font_size">13px</dimen>
 </resources>

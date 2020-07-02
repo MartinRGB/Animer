@@ -148,6 +148,21 @@ mAnimerConfiguratorView.refreshAnimerConfigs();
 ```
 
 
+### 将自定义曲线预设添加到 config UI 中
+
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG"" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG"" width="360"  />
+
+先需要清空默认的所有预设，然后添加自己的动画预设。
+
+```java
+AnConfigRegistry.getInstance().removeAllSolverConfig();
+AnConfigRegistry.getInstance().addSolver("Preset1",Animer.springDroid(500.0f,0.96f));
+AnConfigRegistry.getInstance().addSolver("Preset2",Animer.flingDroid(400.f,0.95f));
+...
+mAnimerConfiguratorView.refreshAnimerConfigs();
+```
+
+
 ### 支持的 View 属性
 
 ```

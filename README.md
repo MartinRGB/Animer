@@ -143,6 +143,8 @@ mAnimerConfiguratorView.refreshAnimerConfigs();
 
 ### Add custom animation curve presets
 
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG"" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG"" width="360"  />
+
 first you need clean all the solver configs,then add yourselves.
 
 ```java

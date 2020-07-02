@@ -150,7 +150,8 @@ mAnimerConfiguratorView.refreshAnimerConfigs();
 
 ### 将自定义曲线预设添加到 config UI 中
 
-<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG"" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/configui.jpg?token=ABVV6IQRHX6MK3KK4RIFMLS564BKG"" width="360"  />
+
+<img src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/preset_reset.jpg" alt="" data-canonical-src="https://raw.githubusercontent.com/MartinRGB/Animer/master/art/preset_reset.jpg" width="360"/>
 
 先需要清空默认的所有预设，然后添加自己的动画预设。
 

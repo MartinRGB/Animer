@@ -146,11 +146,11 @@ mAnimerConfiguratorView.refreshAnimerConfigs();
 first you need clean all the solver configs,then add yourselves.
 
 ```java
-   AnConfigRegistry.getInstance().removeAllSolverConfig();
-     AnConfigRegistry.getInstance().addSolver("Preset1",Animer.springDroid(500.0f,0.96f));
-     AnConfigRegistry.getInstance().addSolver("Preset2",Animer.flingDroid(400.f,0.95f));
-     ...
-     mAnimerConfiguratorView.refreshAnimerConfigs();
+AnConfigRegistry.getInstance().removeAllSolverConfig();
+AnConfigRegistry.getInstance().addSolver("Preset1",Animer.springDroid(500.0f,0.96f));
+AnConfigRegistry.getInstance().addSolver("Preset2",Animer.flingDroid(400.f,0.95f));
+...
+mAnimerConfiguratorView.refreshAnimerConfigs();
 ```
 
 
